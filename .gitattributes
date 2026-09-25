@@ -1,0 +1,15 @@
+*.cmd text eol=crlf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.cs text eol=lf
+# Unity YAML uses an empty scalar as "key: "; do not treat that serialized form
+# as a whitespace error while still normalizing line endings.
+*.meta text eol=lf whitespace=-trailing-space
+*.asset text eol=lf whitespace=-trailing-space
+*.unity text eol=lf whitespace=-trailing-space
+*.mat text eol=lf whitespace=-trailing-space
+.gitignore text eol=lf
+.gitattributes text eol=lf

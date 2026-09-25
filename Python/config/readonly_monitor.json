@@ -1,0 +1,56 @@
+{
+  "zed": {
+    "serial_number": null,
+    "resolution": "HD720",
+    "fps": 30,
+    "retry_interval_s": 2.0,
+    "depth_mode": "PERFORMANCE",
+    "capture_depth": false
+  },
+  "global_camera": {
+    "enabled": false,
+    "device_name": "DroidCam Video",
+    "watermark_present": false,
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "retry_interval_s": 2.0
+  },
+  "jaka": {
+    "host": "<ROBOT_IP>",
+    "port": 10001,
+    "timeout_s": 0.8,
+    "poll_hz": 30.0,
+    "tool_refresh_s": 10.0,
+    "sdk_directory": "third_party/jaka_sdk"
+  },
+  "misumi_gripper": {
+    "enabled": false,
+    "port": "COM3",
+    "slave_id": 1,
+    "baudrate": 115200,
+    "timeout_s": 0.12,
+    "read_function_code": 3,
+    "fully_closed_position_units": 5000,
+    "position_unit_mm": 0.01
+  },
+  "monitor": {
+    "title": "JAKA Jog portable recorder",
+    "display_width": 960,
+    "display_height": 540,
+    "display_fps": 10,
+    "refresh_ms": 100,
+    "stale_after_s": 2.0
+  },
+  "recorder": {
+    "output_directory": "datasets/observations",
+    "max_snapshot_gap_ms": 100.0,
+    "max_global_camera_gap_ms": 100.0,
+    "alignment_delay_ms": 120.0
+  },
+  "demonstration": {
+    "output_directory": "datasets/episodes",
+    "sample_hz": 15.0,
+    "default_duration_s": 6.0
+  }
+}

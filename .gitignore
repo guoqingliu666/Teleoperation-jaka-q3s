@@ -1,0 +1,53 @@
+# 本机历史版本：保留以便追溯，但不把事故日志/旧二进制提交到公开仓库。
+Archive/*
+!Archive/README.md
+
+# Python 运行产物与本地采集数据。
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+Python/datasets/
+Python/logs/
+Logs/
+
+# Unity 可重新生成的缓存、用户配置与 IDE 文件。
+.idea/
+.vs/
+QuestPoseBridge/Library/
+QuestPoseBridge/Logs/
+QuestPoseBridge/Temp/
+QuestPoseBridge/Obj/
+QuestPoseBridge/UserSettings/
+QuestPoseBridge/*.csproj
+QuestPoseBridge/*.sln
+# 本机 Unity/UOS 加密配置含生成密钥，绝不能随公开仓库提交。
+QuestPoseBridge/Assets/UOSLauncherEncrypt/
+QuestPoseBridge/Assets/UOSLauncherEncrypt.meta
+
+# 本机 CAD 原件和第三方运行时需要核对授权后再分发。
+3D模型/
+Python/third_party/
+
+# 本机 Unity Player 构建与厂家/合作方模型不直接进入公开源码仓库。
+# Player 可在确认授权后单独放 GitHub Release；模型由使用者按来源说明自行放置。
+Player_通信修复/
+QuestPoseBridge/Assets/StreamingAssets/JakaS5/
+QuestPoseBridge/Assets/StreamingAssets/CompleteEndEffector/
+
+# 真实控制器、SDK、限位与本机解释器路径只放本地配置；仓库提交示例模板。
+本机配置.cmd
+
+# 验证目录只提交说明、离线分析和明确的小型测试夹具。
+# 原始真机记录、截图、日志、合成输出全部留在本机。
+Validation/*
+!Validation/README.md
+!Validation/*.md
+!Validation/unity_v2_fixture.json
+!Validation/jaka_robot_state_fixture.json
+!Validation/gui_test_config.json
+!Validation/mapping_test_config.json
+
+# 当前 Player 是本机 Windows 构建产物；发布时须另核对 Unity/模型授权。
+# 若要让 GitHub 源码仓库保持轻量，发布构建包至 Release 后可取消下一行注释。
+# Player_通信修复/

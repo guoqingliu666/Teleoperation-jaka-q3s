@@ -1,0 +1,102 @@
+{
+  "jaka": {
+    "host": "<ROBOT_IP>",
+    "model_label": "JAKA model - configure me",
+    "sdk_directory": "third_party/jaka_sdk",
+    "poll_hz": 30.0
+  },
+  "jog": {
+    "speed_mm_s": 50.0,
+    "step_mm": 2.0,
+    "coord": "base",
+    "mode": "continuous",
+    "default_tool_id": 0
+  },
+  "keys": {
+    "w": {
+      "axis": 1,
+      "direction": 1
+    },
+    "s": {
+      "axis": 1,
+      "direction": -1
+    },
+    "a": {
+      "axis": 0,
+      "direction": -1
+    },
+    "d": {
+      "axis": 0,
+      "direction": 1
+    },
+    "e": {
+      "axis": 2,
+      "direction": 1
+    },
+    "q": {
+      "axis": 2,
+      "direction": -1
+    }
+  },
+  "tools": [
+    {
+      "id": 0,
+      "name": "法兰(flange) - configure TCP before use"
+    }
+  ],
+  "gripper": {
+    "enabled": true,
+    "model": "configure me",
+    "port": "COM3",
+    "slave_id": 1,
+    "baudrate": 115200,
+    "timeout_s": 0.12,
+    "poll_hz": 10,
+    "fully_closed_position_units": 5000,
+    "closed_zero_tolerance_mm": 0.6,
+    "position_unit_mm": 0.01,
+    "enable_value": 1,
+    "open_position_units": 0,
+    "close_position_units": 5000,
+    "speed_percent": 30,
+    "force_percent": 20
+  },
+  "quest_vr": {
+    "udp_bind": "127.0.0.1",
+    "udp_port": 60250,
+    "grip_on": 0.7,
+    "grip_off": 0.55,
+    "trigger_on": 0.7,
+    "trigger_off": 0.2,
+    "packet_timeout_s": 0.5,
+    "translation_scale": 1.0,
+    "rotation_enabled": false,
+    "rotation_scale": 1.0,
+    "max_relative_translation_mm": 200.0,
+    "max_linear_speed_mm_s": 50.0,
+    "max_angular_speed_deg_s": 280.0,
+    "target_deadband_mm": 0.5,
+    "direction_mapping": {
+      "forward": "X+",
+      "backward": "X-",
+      "left": "Y+",
+      "right": "Y-",
+      "up": "Z+",
+      "down": "Z-"
+    },
+    "rotation_control_version": 2
+  },
+  "key_bindings": {
+    "jog_x_neg": "a",
+    "jog_x_pos": "d",
+    "jog_y_neg": "s",
+    "jog_y_pos": "w",
+    "jog_z_neg": "control_l",
+    "jog_z_pos": "space",
+    "jog_rz_pos": "e",
+    "jog_rz_neg": "q",
+    "gripper_open": "bracketright",
+    "gripper_close": "bracketleft",
+    "gripper_soft_stop": "f12"
+  }
+}

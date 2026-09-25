@@ -1,0 +1,26 @@
+name: offline-safety-tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  sampled-follow-core:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: Python
+    env:
+      PYTHONPATH: ${{ github.workspace }}\Python\src
+      PYTHONPYCACHEPREFIX: ${{ runner.temp }}\quest-jaka-pycache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python sources
+        run: python -m compileall -q .
+      - name: Run current sampled-follow safety tests
+        run: python -m unittest discover -s tests -p "verify_sampled_*.py"
+      - name: Run finite-lookahead shadow tests
+        run: python -m unittest discover -s tests -p "verify_lookahead_shadow.py"
