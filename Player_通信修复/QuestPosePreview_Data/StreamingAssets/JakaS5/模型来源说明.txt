@@ -1,0 +1,12 @@
+模型来源：JAKA S5描述资料中的`jaka_description`目录。
+本发布包不记录原始工作站绝对路径。
+
+使用文件：jaka_s5.urdf、Link_00.STL—Link_06.STL。
+几何尺寸和 6 个关节的 origin/rpy 均按厂家 URDF 原值读取，STL 单位为米。
+
+Unity 运行时使用二进制 STL 加载器，以 ROS(x前、y左、z上) 转换到
+Unity(x右、y上、z前)。红/白材质只是便于在 VR 中区分连杆；原 STL 不含
+SolidWorks 的完整材质层级，因此颜色不是外观复原证据，几何和运动链才是本阶段验收对象。
+
+模型在 VR 场景中的摆放位置仅用于让佩戴者看清，不代表机器人—房间外参标定。
+实体模型只接受 Python 广播的 JAKA 实测关节角，不接受 Unity 控制命令。

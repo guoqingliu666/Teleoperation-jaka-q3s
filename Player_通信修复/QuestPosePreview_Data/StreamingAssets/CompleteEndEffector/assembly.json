@@ -1,0 +1,723 @@
+{
+  "schema": "jaka_dh116_assembly.v1",
+  "units": "metres_radians",
+  "mount_xyz": [
+    -0.0008663434759752266,
+    0.0008207868592806453,
+    0.10634632348975014
+  ],
+  "mount_rpy": [
+    0.002801801249884439,
+    -0.0016598754167282959,
+    -0.7831651102877943
+  ],
+  "rigid": [
+    {
+      "name": "quick_change_a",
+      "mesh": "quick_change_a.stl",
+      "triangles": 177140
+    },
+    {
+      "name": "quick_change_b",
+      "mesh": "quick_change_b.stl",
+      "triangles": 50850
+    },
+    {
+      "name": "connecting_flange",
+      "mesh": "connecting_flange.stl",
+      "triangles": 12414
+    }
+  ],
+  "links": [
+    {
+      "name": "base_link",
+      "mesh": "base_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger11_link",
+      "mesh": "finger11_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger12_link",
+      "mesh": "finger12_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger13_link",
+      "mesh": "finger13_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger14_link",
+      "mesh": "finger14_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger21_link",
+      "mesh": "finger21_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger22_link",
+      "mesh": "finger22_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger23_link",
+      "mesh": "finger23_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger31_link",
+      "mesh": "finger31_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger32_link",
+      "mesh": "finger32_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger33_link",
+      "mesh": "finger33_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger41_link",
+      "mesh": "finger41_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger42_link",
+      "mesh": "finger42_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger43_link",
+      "mesh": "finger43_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger51_link",
+      "mesh": "finger51_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger52_link",
+      "mesh": "finger52_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "finger53_link",
+      "mesh": "finger53_link.STL",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "finger11",
+      "type": "revolute",
+      "parent": "base_link",
+      "child": "finger11_link",
+      "xyz": [
+        0.018,
+        0.021747,
+        0.043279
+      ],
+      "rpy": [
+        -0.087266,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "lower": 0.0,
+      "upper": 1.047198
+    },
+    {
+      "name": "finger12",
+      "type": "revolute",
+      "parent": "finger11_link",
+      "child": "finger12_link",
+      "xyz": [
+        0.018876,
+        0.0049375,
+        -0.0056093
+      ],
+      "rpy": [
+        0.0,
+        0.95149,
+        0.25585
+      ],
+      "axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 0.523599
+    },
+    {
+      "name": "finger13",
+      "type": "revolute",
+      "parent": "finger12_link",
+      "child": "finger13_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.045
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "lower": 0.004592,
+      "upper": 0.594583
+    },
+    {
+      "name": "finger14",
+      "type": "fixed",
+      "parent": "finger13_link",
+      "child": "finger14_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger21",
+      "type": "revolute",
+      "parent": "base_link",
+      "child": "finger21_link",
+      "xyz": [
+        -0.011581,
+        0.031971,
+        0.10003
+      ],
+      "rpy": [
+        -0.052657,
+        0.10625,
+        -0.0055894
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger22",
+      "type": "revolute",
+      "parent": "finger21_link",
+      "child": "finger22_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.035
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.011072,
+      "upper": 1.687426
+    },
+    {
+      "name": "finger23",
+      "type": "fixed",
+      "parent": "finger22_link",
+      "child": "finger23_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lower": 0.011072,
+      "upper": 1.687426
+    },
+    {
+      "name": "finger31",
+      "type": "revolute",
+      "parent": "base_link",
+      "child": "finger31_link",
+      "xyz": [
+        -0.013501,
+        0.0105,
+        0.10286
+      ],
+      "rpy": [
+        0.0,
+        0.10214,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger32",
+      "type": "revolute",
+      "parent": "finger31_link",
+      "child": "finger32_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.035
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.011072,
+      "upper": 1.687426
+    },
+    {
+      "name": "finger33",
+      "type": "fixed",
+      "parent": "finger32_link",
+      "child": "finger33_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger41",
+      "type": "revolute",
+      "parent": "base_link",
+      "child": "finger41_link",
+      "xyz": [
+        -0.015081,
+        -0.010971,
+        0.10183
+      ],
+      "rpy": [
+        0.052889,
+        0.14148,
+        0.0074648
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger42",
+      "type": "revolute",
+      "parent": "finger41_link",
+      "child": "finger42_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.035
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.011072,
+      "upper": 1.687426
+    },
+    {
+      "name": "finger43",
+      "type": "fixed",
+      "parent": "finger42_link",
+      "child": "finger43_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger51",
+      "type": "revolute",
+      "parent": "base_link",
+      "child": "finger51_link",
+      "xyz": [
+        -0.013081,
+        -0.032156,
+        0.097798
+      ],
+      "rpy": [
+        0.078754,
+        0.073706,
+        0.0058113
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.396263
+    },
+    {
+      "name": "finger52",
+      "type": "revolute",
+      "parent": "finger51_link",
+      "child": "finger52_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.035
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "lower": 0.011072,
+      "upper": 1.687426
+    },
+    {
+      "name": "finger53",
+      "type": "fixed",
+      "parent": "finger52_link",
+      "child": "finger53_link",
+      "xyz": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rpy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axis": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lower": 0.0,
+      "upper": 1.57
+    }
+  ],
+  "registration": {
+    "cad_flange_to_urdf_link06": [
+      [
+        0.9999997768146446,
+        -0.0005836008439632606,
+        -0.0003252394756180172,
+        -0.0002501502259175299
+      ],
+      [
+        0.000583412355594744,
+        0.9999996620027293,
+        -0.0005793310352939435,
+        0.00024868274333247854
+      ],
+      [
+        0.0003255774637696976,
+        0.0005791411572641041,
+        0.9999997792973923,
+        -0.013189972011341764
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "flange_fit_mean_trimmed_mm": 0.2429127015566869,
+    "hand_urdf_to_cad": [
+      [
+        0.0016506622816324298,
+        0.9999962944662113,
+        -0.0021648020419041463,
+        0.004185970640631858
+      ],
+      [
+        0.0018381151375798743,
+        0.0021617672296713386,
+        0.999995974039487,
+        -0.06272048315326217
+      ],
+      [
+        0.9999969483187298,
+        -0.0016546347915343195,
+        -0.001834539978753591,
+        0.006698430627178737
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "hand_fit_mean_trimmed_mm": 0.4889545891157157,
+    "note": "Surface-fit display transform; not a TCP or robot-to-room calibration."
+  },
+  "source_assembly": "本地JAKA S5-快换-法兰-DH116装配源文件（绝对路径不发布）",
+  "warning": "Display only. CAD frame registration is approximate; not calibrated TCP/collision/safety geometry.",
+  "passive_joint_note": "Unity uses vendor MJCF polynomial couplings; passive joints have no encoders in this stream.",
+  "mesh_sha256": {
+    "base_link.STL": "094504fed409afe137eafa6643c36f081934df873ef1cf9924ebb9725436b161",
+    "connecting_flange.stl": "d33af3f096f7e184598dcc803711e1aa41b38d45e0f06c370df83f5643ab4039",
+    "finger11_link.STL": "5659ee7dd15833a86f30c2138685baf48671fa7458a79cbb1d611ddb7f3648c8",
+    "finger12_link.STL": "8807c48538b9396e1d132df7c5cf6ee0a44c28c4dcb759b5b00a74003b715e67",
+    "finger13_link.STL": "594501a21c86d1d19b73cf17572b7a04ae488c5fee4b623e25c618dd15eb3419",
+    "finger14_link.STL": "c58b2a741f13cbe1da9b6bbffb0ce6acf97de28b829fe45ea65458313efff449",
+    "finger21_link.STL": "7162d86cefa849458536cbb77968560dbf4e6c7a8b1734777640f9da1f828886",
+    "finger22_link.STL": "5ebb8a2084495cb9e87b6ee531681500cfe5a37280320e97270d6e52c804081d",
+    "finger23_link.STL": "ccbd2de17dac2fe356e4275240f5f00f8eee01dd2f32a44fc5b1e150f93d99f6",
+    "finger31_link.STL": "2d4ec902f4b2d06872cfbda2e5a63f387aa82dfd522fd44da5e38b83f90cf2b6",
+    "finger32_link.STL": "f3cf0d1634338d331bc58ae7838023925a1654003f5728423de25808f490821e",
+    "finger33_link.STL": "2082e780c44d9e2ac91a9c355c3751f084fcbb42c39e33961178b81e5b3ce147",
+    "finger41_link.STL": "5366f649baa0c5c29cc1afdbcc6163b2bcb9001f0b9b8ae69a213f5209860289",
+    "finger42_link.STL": "4382f6f699a2cb342f00f5bf4ddbe20b7d2b664b522c5abcd49cfee551e748ae",
+    "finger43_link.STL": "4e0b20fc9c464825b466d3ca51ff4557f70d4a3ea935a00b09ad5639722251df",
+    "finger51_link.STL": "f1b5983e1cd4b29f5e4609001c525e93ff80bb1d921711a6327fd8e688fad1db",
+    "finger52_link.STL": "7c5f953a3cde495eae505dfa3ea248e768c69ab911c21f61825ddb42b4531994",
+    "finger53_link.STL": "63eb67492fce45f80b798d9ead4d194a9eafdae1ed6c0893820222ef3ffedbf1",
+    "quick_change_a.stl": "4f992885562e1140ab8dbf6d9e2e22413ec77a4ce0263bf6fad5ac20fdd2d0b0",
+    "quick_change_b.stl": "415c146c347cc1150b7beba0a2c63fe0d522fd943b3bdced6e0d6f4202da5182"
+  }
+}

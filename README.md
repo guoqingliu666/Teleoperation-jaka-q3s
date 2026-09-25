@@ -1,6 +1,17 @@
 # Meta Quest 3S → JAKA S5 数字孪生与六维遥操作
 
-这是一套 Windows/Unity/Meta Quest 3S/JAKA S5 的研究工程。现行②已经完成启动TCP周围100cm软件包络、50mm/s和会话初始姿态±30°的连续六维功能验收；现场确认方向与连续性正确、关节无异常大幅变化，且无抖动、异响或报警。控制链每条完整TCP命令≤20mm且≤2°，段内调用厂商`kine_inverse`筛查并使用`linear_move_extend_ori`执行，不使用伺服，也不补跑手柄历史轨迹。当前新增100mm/s、400mm/s²、姿态20°/s的高速档作为下一项现场验收；高速档仍保留相同的单段、逆解、关节连续性、限位余量和停止门槛，未经验收前不作为已验证性能。灵巧手实物开合仍未放开。项目曾发生J4欠压及保护停机，见[安全事件记录](docs/安全事件_20260919_真机遥操作停用与初步调查.md)。
+这是一套 Windows/Unity/Meta Quest 3S/JAKA S5 的研究工程。`v1.0.0` 已完成启动TCP周围100cm软件包络、100mm/s、400mm/s²和会话初始姿态±30°、20°/s的连续六维现场验收；操作者确认速度提升明显，方向与连续性正确，关节无异常大幅变化，且无抖动、异响、报警或SDK超时。控制链每条完整TCP命令≤20mm且≤2°，段内调用厂商`kine_inverse`筛查并使用`linear_move_extend_ori`执行，不使用伺服，也不补跑手柄历史轨迹。灵巧手实物开合仍未放开。项目曾发生J4欠压及保护停机，见[安全事件记录](docs/安全事件_20260919_真机遥操作停用与初步调查.md)。
+
+## 下载后复现 v1.0.0
+
+1. 下载仓库的 `v1.0.0` 标签或 Release 源码包，完整解压到D盘目录；不要只复制两个CMD。
+2. 仓库已包含现场验收所用的 `Player_通信修复` Windows构建。JAKA厂家SDK不随仓库再分发，需使用现场已有的匹配SDK。
+3. 先双击`验证第一版文件.cmd`，确认关键Player与控制文件哈希一致。
+4. 把`本机配置.example.cmd`复制为`本机配置.cmd`，填写Python解释器、控制柜IP、JAKA SDK目录和控制器导出的`usersettings.ini`路径。
+5. 安装`Python/requirements.txt`；先双击①并确认HUD显示`TRACKED`和新鲜的实测关节反馈，再双击②。
+6. 首次恢复只做“只读通信检查”；确认Tool 1、用户坐标系、负载、限位、急停与扫掠空间和验收现场一致后，才进入100mm/s正式六维模式。
+
+这保证GitHub下载包具备与本次验收一致的自有源码和Windows Player；控制器固件、厂家SDK、Quest/OpenXR运行环境与现场配置仍属于外部依赖，版本不匹配时不能声称复现成功。详见[第一版复现说明](docs/v1.0.0_下载与复现.md)。
 
 ## 先找到需要的文件
 
@@ -29,13 +40,13 @@
 ①*.cmd / ②*.cmd       当前两个 Windows 入口
 Python/                当前 GUI、运行入口、算法模块、离线测试
 QuestPoseBridge/       Unity 工程源码：Quest 输入与数字孪生
-Player_通信修复/        当前本机 Windows Player 构建
+Player_通信修复/        v1.0.0现场验收所用 Windows Player 构建
 docs/                  当前技术路线、索引与安全审查
 Validation/            测试夹具与本机验收输出
 Archive/               旧构建、旧入口、旧文档和快照（默认不提交）
 3D模型/                CAD 原件（默认不提交）
 ```
 
-GitHub 上传前先检查[忽略规则](.gitignore)和[源码安全分级](docs/源码安全分级.md)：Unity `Library`、本机 UOS 生成密钥、录制数据、原始真机日志、CAD/机器人模型、第三方运行时和本机 Player 构建均不直接提交。本仓库自有源码使用[MIT许可证](LICENSE)；JAKA SDK、Unity运行时、JAKA/DH116模型、CAD和相机厂商SDK仍分别受其权利人许可约束，不随源码仓库分发。仓库尚未完成异机硬件验收，不要将“能克隆源码”误解为“能安全开机运行”。
+GitHub 上传前先检查[忽略规则](.gitignore)和[源码安全分级](docs/源码安全分级.md)：Unity `Library`、本机 UOS 生成密钥、录制数据、原始真机日志、CAD源文件、第三方SDK和本机配置均不提交；v1.0.0只额外提交已经现场验收的Windows Player构建。本仓库自有源码使用[MIT许可证](LICENSE)；JAKA SDK、JAKA/DH116模型和相机厂商SDK仍分别受其权利人许可约束。仓库尚未完成异机硬件验收，不要将“能下载运行文件”误解为“可跳过现场检查直接运动”。
 
 离线回归命令和夹具说明见 [Python/tests/README.md](Python/tests/README.md)。

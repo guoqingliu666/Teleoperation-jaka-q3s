@@ -22,6 +22,18 @@ from vla_lab.quest_vr_input import QuestUdpReceiver
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def complete_end_effector_folder():
+    """优先检查 Unity 源工程；发布包中则检查随 Player 交付的同一套模型。"""
+    candidates = (
+        ROOT/'QuestPoseBridge/Assets/StreamingAssets/CompleteEndEffector',
+        ROOT/'Player_通信修复/QuestPosePreview_Data/StreamingAssets/CompleteEndEffector',
+    )
+    for folder in candidates:
+        if (folder/'assembly.json').is_file():
+            return folder
+    raise FileNotFoundError('未找到 CompleteEndEffector 发布资源')
+
+
 class HandTests(unittest.TestCase):
     def test_grip_does_not_depend_on_trigger(self):
         for trigger in (0.,0.5,1.):
@@ -53,7 +65,7 @@ class HandTests(unittest.TestCase):
                 TriggerPolicy().step(permit=True,trigger=t,positions=[0.]*6,dt=.02,max_percent=30,speed_percent_s=10)
 
     def test_complete_urdf_references_tree_and_fit(self):
-        folder=ROOT/'QuestPoseBridge/Assets/StreamingAssets/CompleteEndEffector'
+        folder=complete_end_effector_folder()
         desc=json.loads((folder/'assembly.json').read_text(encoding='utf-8'))
         self.assertEqual(len(desc['links']),17); self.assertEqual(len(desc['joints']),16)
         self.assertEqual(len(desc['rigid']),3)

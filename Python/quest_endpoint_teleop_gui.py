@@ -46,7 +46,7 @@ class EndpointTeleopGui:
         except tk.TclError:
             pass
         root.protocol("WM_DELETE_WINDOW", self.close)
-        ttk.Label(root, text="100cm六维功能已通过；下一关：100mm/s高速六维验收",
+        ttk.Label(root, text="v1.0.0 高速六维已通过：100cm / 100mm/s / ±30°",
                   font=("Microsoft YaHei UI", 16, "bold"), foreground="#a02020").pack(anchor="w", padx=16, pady=14)
         ttk.Label(root, text="位置模式保持姿态；六维模式同时跟随位置和姿态。①单独时只读JAKA；②启动后独占连接并显示实测关节。首次与恢复后先松开Grip。").pack(anchor="w", padx=16)
         box = ttk.LabelFrame(root, text="启动时生效的参数")

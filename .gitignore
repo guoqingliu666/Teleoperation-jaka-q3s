@@ -29,9 +29,8 @@ QuestPoseBridge/Assets/UOSLauncherEncrypt.meta
 3D模型/
 Python/third_party/
 
-# 本机 Unity Player 构建与厂家/合作方模型不直接进入公开源码仓库。
-# Player 可在确认授权后单独放 GitHub Release；模型由使用者按来源说明自行放置。
-Player_通信修复/
+# v1.0.0 随仓库发布已经现场验收的 Windows Player，保证下载后具备①所需的可执行构建。
+# Unity工程里的厂家/合作方模型源文件仍不进入公开源码仓库。
 QuestPoseBridge/Assets/StreamingAssets/JakaS5/
 QuestPoseBridge/Assets/StreamingAssets/CompleteEndEffector/
 
@@ -47,7 +46,3 @@ Validation/*
 !Validation/jaka_robot_state_fixture.json
 !Validation/gui_test_config.json
 !Validation/mapping_test_config.json
-
-# 当前 Player 是本机 Windows 构建产物；发布时须另核对 Unity/模型授权。
-# 若要让 GitHub 源码仓库保持轻量，发布构建包至 Release 后可取消下一行注释。
-# Player_通信修复/
