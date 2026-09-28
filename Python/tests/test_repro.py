@@ -15,6 +15,46 @@ from vla_lab.jaka_jog_gui import build_parser
 
 
 class ReproTests(unittest.TestCase):
+    def test_bounded_history_preserves_release_and_regrip_order(self):
+        with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as probe:
+            probe.bind(("127.0.0.1",0)); port=probe.getsockname()[1]
+        receiver=QuestUdpReceiver("127.0.0.1",port,history_size=8)
+        try:
+            with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as sender:
+                for index, grip in enumerate((0.,1.,0.,1.)):
+                    packet=copy.deepcopy(self.packet)
+                    packet['right']['grip']=grip
+                    packet['sequence']=index
+                    sender.sendto(json.dumps(packet).encode(),("127.0.0.1",port))
+                deadline=time.monotonic()+1.
+                while time.monotonic()<deadline and (receiver.peek() is None or
+                        receiver.peek().raw_packet['sequence']!=3):
+                    time.sleep(.005)
+                frames=receiver.recent()
+                self.assertEqual([f.raw_packet['sequence'] for f in frames],list(range(4)))
+                self.assertEqual([f.grip for f in frames],[0.,1.,0.,1.])
+                self.assertFalse(receiver.history_overflow)
+        finally:
+            receiver.close()
+
+    def test_history_overflow_stays_latched(self):
+        with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as probe:
+            probe.bind(("127.0.0.1",0)); port=probe.getsockname()[1]
+        receiver=QuestUdpReceiver("127.0.0.1",port,history_size=2)
+        try:
+            with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as sender:
+                for index in range(4):
+                    packet=copy.deepcopy(self.packet);packet['sequence']=index
+                    sender.sendto(json.dumps(packet).encode(),("127.0.0.1",port))
+                deadline=time.monotonic()+1.
+                while time.monotonic()<deadline and not receiver.history_overflow:
+                    time.sleep(.005)
+                self.assertTrue(receiver.history_overflow)
+                self.assertEqual([f.raw_packet['sequence'] for f in receiver.recent()], [2,3])
+                self.assertTrue(receiver.history_overflow)
+        finally:
+            receiver.close()
+
     def setUp(self):
         self.packet = json.loads((Path(__file__).resolve().parents[2] / "Validation" / "unity_v2_fixture.json").read_text())
 

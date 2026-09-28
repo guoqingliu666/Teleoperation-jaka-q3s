@@ -84,6 +84,7 @@ class RotationShadow:
                 "mapping": [x for row in matrix for x in row],
                 "center_tcp": self.anchor,
                 "radius_mm": 20.0,
+                "position_enabled": False,
                 "position_only": False,
                 "rotation_enabled": True,
                 "rotation_limit_deg": self.angle_limit_deg,

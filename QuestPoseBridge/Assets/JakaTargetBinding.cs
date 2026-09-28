@@ -16,6 +16,10 @@ public static class JakaTargetBinding
         public float[] mapping;
         public float[] center_tcp;
         public float radius_mm;
+        // position_only 是旧协议字段，表示“只跟位置、不跟姿态”。
+        // position_enabled 明确表示是否把手柄位移映射到目标；六维模式必须为 true，
+        // 姿态只读影子则为 false。保留旧字段是为了兼容 v1.0.0 的位置模式。
+        public bool position_enabled;
         public bool position_only;
         public bool rotation_enabled;
         public float rotation_limit_deg;
@@ -39,11 +43,11 @@ public static class JakaTargetBinding
         if (b == null) return false;
         bool rotationValid = !b.rotation_enabled
             || (Finite(b.reference_rotation_xyzw, 4)
-                && b.rotation_limit_deg >= 1f && b.rotation_limit_deg <= 10f);
+                && b.rotation_limit_deg >= 1f && b.rotation_limit_deg <= 180f);
         return !string.IsNullOrEmpty(b.binding_id)
             && Finite(b.anchor_tcp, 6) && Finite(b.reference_m, 3)
             && Finite(b.mapping, 9) && Finite(b.center_tcp, 6)
-            && b.radius_mm >= 20f && b.radius_mm <= 200f && rotationValid;
+            && b.radius_mm >= 20f && b.radius_mm <= 1000f && rotationValid;
     }
 
     public static float[] Target(Binding b, Vector3 handMetres, Quaternion handRotation)
@@ -51,7 +55,7 @@ public static class JakaTargetBinding
         if (!Valid(b) || float.IsNaN(handMetres.sqrMagnitude) || float.IsInfinity(handMetres.sqrMagnitude))
             throw new ArgumentException("显示绑定无效");
         var p = (float[])b.anchor_tcp.Clone();
-        if (b.position_only)
+        if (b.position_enabled || b.position_only)
         {
             Vector3 delta = handMetres - new Vector3(b.reference_m[0], b.reference_m[1], b.reference_m[2]);
             for (int i = 0; i < 3; i++)
@@ -72,8 +76,13 @@ public static class JakaTargetBinding
             Quaternion mappedQ = Quaternion.LookRotation(
                 new Vector3(mapped.m02,mapped.m12,mapped.m22),
                 new Vector3(mapped.m01,mapped.m11,mapped.m21));
-            mappedQ = Quaternion.RotateTowards(Quaternion.identity, mappedQ, b.rotation_limit_deg);
             Matrix4x4 composed = Matrix4x4.Rotate(mappedQ) * RpyMatrix(p[3],p[4],p[5]);
+            // 与Python相同：限制的是相对会话中心的最终朝向，不是相对Grip的增量。
+            // 180度覆盖全部朝向；这仅是显示，不放宽任何机器人关节保护。
+            Matrix4x4 centerRotation = RpyMatrix(b.center_tcp[3],b.center_tcp[4],b.center_tcp[5]);
+            Quaternion targetQ = Quaternion.LookRotation(composed.GetColumn(2), composed.GetColumn(1));
+            Quaternion centerQ = Quaternion.LookRotation(centerRotation.GetColumn(2), centerRotation.GetColumn(1));
+            composed = Matrix4x4.Rotate(Quaternion.RotateTowards(centerQ, targetQ, b.rotation_limit_deg));
             Vector3 rpy = MatrixRpy(composed);
             p[3] = Unwrap(rpy.x,p[3]); p[4] = Unwrap(rpy.y,p[4]); p[5] = Unwrap(rpy.z,p[5]);
         }

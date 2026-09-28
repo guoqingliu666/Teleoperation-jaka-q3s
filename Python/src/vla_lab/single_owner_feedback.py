@@ -33,7 +33,7 @@ class SingleOwnerFeedback:
         self.window_start = clock()
         self.hz = 0.0
 
-    def tick(self) -> bool:
+    def tick(self, measured_sample=None) -> bool:
         """到期时串行读取一帧并广播；未到期不访问 SDK。
 
         先读状态，再读关节/TCP；若这一帧读取超过时效门槛就报错，
@@ -56,10 +56,19 @@ class SingleOwnerFeedback:
             # 运动安全状态由SampledFollower在10Hz及每次下发前核对；显示层只需
             # 每秒刷新电源/使能/Tool，避免和控制层重复轰击同一SDK连接。
             self.status_due = self.clock() + 1.0
-        joints = six(checked(self.robot.get_actual_joint_position(), "实测显示关节"))
-        tcp = six(checked(self.robot.get_actual_tcp_position(), "实测显示TCP"))
-        ended = self.clock()
-        if ended - started > 0.15:
+        if (measured_sample is not None
+                and 0 <= now-measured_sample[3] <= self.period_s
+                and 0 <= measured_sample[3]-measured_sample[2] <= .15):
+            # 只复用同一所有者刚读回的测量，不接受规划关节。保留原查询时间，
+            # 而不是给旧测量盖上本轮的新时间戳。
+            joints, tcp = six(measured_sample[0]), six(measured_sample[1])
+            started, ended = measured_sample[2:]
+            sample_ns -= int((now-started)*1e9)
+        else:
+            joints = six(checked(self.robot.get_actual_joint_position(), "实测显示关节"))
+            tcp = six(checked(self.robot.get_actual_tcp_position(), "实测显示TCP"))
+            ended = self.clock()
+        if self.clock() - started > 0.15:
             raise RuntimeError("实测显示反馈迟到，拒绝当作新姿态")
         self.count += 1
         if ended - self.window_start >= 1.0:

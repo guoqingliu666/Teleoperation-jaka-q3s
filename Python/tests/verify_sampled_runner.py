@@ -4,6 +4,7 @@
 """
 import importlib.util
 import io
+import json
 import math
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -47,9 +48,93 @@ class OrientationAutoCompleteRobot(FakeRobot):
         return super().is_in_pos()
 
 
+class PoseBlendRobot(OrientationAutoCompleteRobot):
+    """模拟控制柜两条六维命令入队后连续执行并在末端到位。"""
+    def __init__(self):
+        super().__init__()
+        self.motion_status_reads = 0
+        self.aborted = False
+    def get_motion_status(self):
+        self.motion_status_reads += 1
+        if self.aborted:
+            return (0,[0,0,1,0,0,0,0,0,0,0,0])
+        if not self.orientation_moves:
+            return (0,[0,0,1,0,0,0,0,0,0,0,0])
+        if len(self.orientation_moves)==1:
+            return (0,[1,0,0,0,1,0,0,0,0,0,0])
+        if self.motion_status_reads < 6:
+            return (0,[2,0,0,0,1,1,0,0,0,0,0])
+        self.tcp=self.orientation_moves[-1][0]
+        self.in_pos=True
+        return (0,[2,0,1,0,0,0,0,0,0,0,0])
+    def motion_abort(self):
+        self.aborted=True
+        return super().motion_abort()
+
+
+class RollingQueueRobot(FakeRobot):
+    """模拟控制柜的一条执行段加一条预排段，供完整入口离线验收。"""
+    def __init__(self):
+        super().__init__()
+        self.orientation_moves = []
+        self.active_target = None
+        self.queued_target = None
+        self.phase = 0
+        self.aborted = False
+
+    def kine_inverse(self, reference, pose):
+        # 绝对、连续且可重复的伪厂商解；不会引入分支跳变。
+        return (0, ((pose[0]-400.0)*.001, (pose[1]-100.0)*.001,
+                    (pose[2]-300.0)*.001, 0.0, 0.0, pose[5]))
+
+    def linear_move_extend_ori(self, target, *args):
+        target = tuple(target)
+        self.orientation_moves.append((target, args))
+        self.in_pos = False
+        if self.active_target is None:
+            self.active_target = target
+            self.phase = 0
+        elif self.queued_target is None:
+            self.queued_target = target
+        else:
+            return (-99,)
+        return (0,)
+
+    def _arrive(self, target):
+        self.tcp = tuple(target)
+        self.joints = self.kine_inverse(self.joints, target)[1]
+
+    def get_motion_status(self):
+        if self.aborted:
+            return (0, [0,0,1,0,0,0,0,0,0,0,0])
+        if self.active_target is None:
+            return (0, [0,0,1,0,0,0,0,0,0,0,0])
+        self.phase += 1
+        if self.queued_target is not None:
+            if self.phase >= 3:
+                self._arrive(self.active_target)
+                self.active_target = self.queued_target
+                self.queued_target = None
+                self.phase = 0
+                return (0, [1,0,0,0,1,1,0,0,0,0,0])
+            return (0, [2,0,0,0,2,1,0,0,0,0,0])
+        if self.phase >= 3:
+            self._arrive(self.active_target)
+            self.active_target = None
+            self.phase = 0
+            self.in_pos = True
+            return (0, [0,0,1,0,0,0,0,0,0,0,0])
+        return (0, [1,0,0,0,1,1,0,0,0,0,0])
+
+    def motion_abort(self):
+        self.active_target = self.queued_target = None
+        self.aborted = True
+        return super().motion_abort()
+
+
 class Receiver:
     error = None
-    def __init__(self, *_): self.calls=0
+    def __init__(self, *_, **__): self.calls=0
     def latest(self):
         self.calls += 1
         return frame(time.monotonic, grip=0 if self.calls <= 3 else 1,
@@ -131,9 +216,25 @@ class ExpandedSixDofReceiver(Receiver):
                      rotation_xyzw=(0.0,math.sin(half),0.0,math.cos(half)))
 
 
+class HandTwoPointReceiver(Receiver):
+    def latest(self):
+        self.calls += 1
+        return frame(time.monotonic, grip=0 if self.calls <= 3 else 1,
+                     y=1 + max(0,min(self.calls-4,55))*.001)
+
+
+class RollingQueueReceiver(Receiver):
+    def latest(self):
+        self.calls += 1
+        # 连续变化足以产生五十个新端点；控制器只能在唯一预排槽空闲时取最新值。
+        # 用往复轨迹留在100cm软件球内，避免单向假输入抵达边界后不再产生端点。
+        return frame(time.monotonic, grip=0 if self.calls <= 3 else 1,
+                     y=1 + .70*math.sin(max(0, self.calls-4)*.02))
+
+
 class Permit:
-    # 假心跳有效期要长于测试的1秒会话，否则慢速CI会把性能波动误判为产品失效。
-    def __init__(self): self.until=time.monotonic()+5.0
+    # 假心跳有效期要长于扩展滚动队列测试，否则慢速CI会把性能波动误判为产品失效。
+    def __init__(self): self.until=time.monotonic()+12.0
     def valid(self): return time.monotonic()<self.until
 
 
@@ -150,6 +251,14 @@ class RunnerTests(unittest.TestCase):
                  bounded_six_dof=False,
                  expanded_six_dof=False,
                  production_six_dof=False,
+                 development_pose_acceptance=False,
+                 development_continuous=False,
+                 development_pose_blend=False,
+                 development_hand_pose_blend=False,
+                 development_rolling_pose=False,
+                 production_rolling_pose=False, pose_priority=False,
+                 expanded_pose_priority=False, adaptive_trajectory=False,
+                 adaptive_pilot=False,
                  robot_class=FakeRobot,
                  receiver_class=Receiver, expected_code=0):
         robot=robot_class()
@@ -164,8 +273,10 @@ class RunnerTests(unittest.TestCase):
              patch.object(runner,"SdkOwnerLease",return_value=SimpleNamespace(close=lambda:None)), \
              patch.object(runner.socket,"socket",return_value=Socket()), redirect_stdout(output):
             flags=[mode,"--ui-heartbeat","--ui-protocol","2","--session-seconds",
-                   "3" if twenty_segment else "1",
+                   "8" if development_rolling_pose else
+                   "3" if (twenty_segment or development_hand_pose_blend) else "1",
                    "--host","192.168.1.10","--limits-file","unused.ini"]
+            if mode == "--live": flags.append("--configure-frames")
             if display: flags.append("--single-owner-display")
             if one_segment: flags.append("--one-segment-acceptance")
             if two_segment: flags.append("--two-segment-acceptance")
@@ -179,10 +290,34 @@ class RunnerTests(unittest.TestCase):
             if bounded_six_dof: flags.append("--bounded-six-dof")
             if expanded_six_dof: flags.append("--expanded-six-dof")
             if production_six_dof:
-                flags.extend(["--production-six-dof", "--radius-mm", "1000",
-                              "--speed-mm-s", "45", "--acceleration-mm-s2", "90",
-                              "--rotation-radius-deg", "25",
-                              "--orientation-speed-deg-s", "8"])
+                flags.extend([
+                    "--production-six-dof", "--radius-mm", "200" if adaptive_pilot else "1000",
+                    "--speed-mm-s", "30" if adaptive_pilot else "200" if expanded_pose_priority else "150",
+                    "--acceleration-mm-s2", "60" if adaptive_pilot else "500" if expanded_pose_priority else "400",
+                    "--rotation-radius-deg", "10" if adaptive_pilot else "45" if expanded_pose_priority else "25",
+                    "--orientation-speed-deg-s", "5" if adaptive_pilot else "45" if expanded_pose_priority else "30",
+                    "--segment-mm", "20" if adaptive_pilot else "80" if expanded_pose_priority else "60",
+                    "--max-orientation-step-deg", "2" if adaptive_pilot else "4" if expanded_pose_priority else "6"])
+            if development_pose_acceptance:
+                flags.append("--development-one-pose-acceptance")
+            if development_continuous:
+                flags.append("--development-continuous-long")
+            if development_pose_blend:
+                flags.append("--development-two-pose-blend-acceptance")
+            if development_hand_pose_blend:
+                flags.append("--development-hand-two-pose-blend")
+            if development_rolling_pose:
+                flags.append("--development-rolling-pose-queue")
+            if production_rolling_pose:
+                flags.append("--production-rolling-pose")
+            if adaptive_trajectory:
+                flags.append("--adaptive-trajectory")
+            if adaptive_pilot:
+                flags.append("--adaptive-pilot")
+            if pose_priority:
+                flags.append("--pose-priority")
+            if expanded_pose_priority:
+                flags.append("--expanded-pose-priority")
             code=runner.main(flags)
         self.assertEqual(code,expected_code,output.getvalue())
         self.assertEqual(robot.logouts,1)
@@ -273,19 +408,154 @@ class RunnerTests(unittest.TestCase):
             self.assertAlmostEqual(math.degrees(args[6]),20.0)
         self.assertIn('"expanded_six_dof": true',output)
 
-    def test_production_six_dof_uses_adjustable_limits_but_same_short_segments(self):
+    def test_production_six_dof_uses_adjustable_long_endpoint_segments(self):
         robot,output=self.run_fake(
             "--live",display=True,production_six_dof=True,
             robot_class=OrientationAutoCompleteRobot,
             receiver_class=ExpandedSixDofReceiver)
-        self.assertGreaterEqual(len(robot.orientation_moves),12)
+        self.assertGreaterEqual(len(robot.orientation_moves),4)
         self.assertEqual(robot.moves,[])
         for target,args in robot.orientation_moves:
             self.assertLessEqual(math.dist(target[:3],(400,100,300)),1000.000001)
-            self.assertEqual(args[:5],(0,False,45.,90.,0.0))
-            self.assertAlmostEqual(math.degrees(args[5]),8.0)
-            self.assertAlmostEqual(math.degrees(args[6]),32.0)
+            self.assertEqual(args[:5],(0,False,150.,400.,0.0))
+            self.assertAlmostEqual(math.degrees(args[5]),30.0)
+            self.assertAlmostEqual(math.degrees(args[6]),120.0)
+        self.assertTrue(any(math.dist(target[:3],(400,100,300))>20
+                            for target,_ in robot.orientation_moves))
+        self.assertTrue(any(max(abs(math.degrees(value)) for value in target[3:])>2
+                            for target,_ in robot.orientation_moves))
         self.assertIn('"production_six_dof": true',output)
+
+    def test_production_six_dof_shadow_checks_same_parameters_but_never_moves(self):
+        robot,output=self.run_fake(
+            "--shadow",display=True,production_six_dof=True,
+            robot_class=OrientationAutoCompleteRobot,
+            receiver_class=ExpandedSixDofReceiver)
+        self.assertEqual(robot.orientation_moves,[])
+        self.assertEqual(robot.moves,[])
+        self.assertEqual(robot.abort_count,0)
+        self.assertIn('"production_six_dof": true',output)
+        self.assertIn('"live": false',output)
+        self.assertIn('"state": "shadow"',output)
+        self.assertIn('"movement_commands_sent": 0',output)
+
+    def test_development_pose_acceptance_sends_exactly_one_long_vendor_command(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            development_pose_acceptance=True,
+            robot_class=OrientationAutoCompleteRobot,
+            receiver_class=ExpandedSixDofReceiver)
+        self.assertEqual(len(robot.orientation_moves),1)
+        self.assertEqual(robot.moves,[])
+        target,args=robot.orientation_moves[0]
+        self.assertEqual(args[:5],(0,False,150.,400.,0.0))
+        self.assertLessEqual(math.dist(target[:3],(400,100,300)),60.000001)
+        self.assertIn('"state": "pose_acceptance_complete"',output)
+        self.assertIn('"movement_commands_sent": 1',output)
+
+    def test_development_continuous_long_uses_fixed_production_profile(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            development_continuous=True,
+            robot_class=OrientationAutoCompleteRobot,
+            receiver_class=ExpandedSixDofReceiver)
+        self.assertGreaterEqual(len(robot.orientation_moves),2)
+        self.assertEqual(robot.moves,[])
+        for target,args in robot.orientation_moves:
+            self.assertEqual(args[:5],(0,False,150.,400.,0.0))
+            self.assertLessEqual(math.dist(target[:3],(400,100,300)),1000.000001)
+        self.assertIn('"development_continuous_long": true',output)
+
+    def test_development_two_pose_blend_queues_two_vendor_orientation_moves(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            development_pose_blend=True,robot_class=PoseBlendRobot,
+            receiver_class=Receiver)
+        self.assertEqual(len(robot.orientation_moves),2)
+        self.assertEqual(robot.orientation_moves[0][1][:5],(0,False,150.,400.,5.))
+        self.assertEqual(robot.orientation_moves[1][1][:5],(0,False,150.,400.,0.))
+        self.assertIn('"state": "pose_blend_acceptance_complete"',output)
+        self.assertIn('"movement_commands_sent": 2',output)
+
+    def test_hand_two_point_blend_samples_then_queues_exactly_two_vendor_moves(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            development_hand_pose_blend=True,robot_class=PoseBlendRobot,
+            receiver_class=HandTwoPointReceiver)
+        self.assertEqual(len(robot.orientation_moves),2)
+        self.assertEqual(robot.orientation_moves[0][1][:5],(0,False,150.,400.,5.))
+        self.assertEqual(robot.orientation_moves[1][1][:5],(0,False,150.,400.,0.))
+        self.assertIn('"state": "hand_pose_blend_first_captured"',output)
+        self.assertIn('"state": "hand_pose_blend_acceptance_complete"',output)
+        self.assertIn('"movement_commands_sent": 2',output)
+
+    def test_rolling_pose_queue_runs_fifty_latest_target_segments_with_depth_two(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            development_rolling_pose=True,robot_class=RollingQueueRobot,
+            receiver_class=RollingQueueReceiver)
+        self.assertEqual(len(robot.orientation_moves),50)
+        self.assertEqual([move[1][4] for move in robot.orientation_moves[:-1]],[5.0]*49)
+        self.assertEqual(robot.orientation_moves[-1][1][4],0.0)
+        self.assertEqual(robot.abort_count,0)
+        self.assertIn('"state": "rolling_pose_acceptance_complete"',output)
+        self.assertIn('"movement_commands_sent": 50',output)
+        events=[json.loads(line) for line in output.splitlines() if line.startswith("{")]
+        finished=[event for event in events if event.get("state")=="finished"][-1]
+        self.assertEqual(finished["movement_commands_sent"],50)
+        self.assertGreaterEqual(len([
+            event for event in events if event.get("state")=="rolling_pose_handoff"]),8)
+        self.assertIn('"max_active_queue": 1',output)
+
+    def test_production_pose_priority_runs_until_session_timeout_not_fifty(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            production_rolling_pose=True,pose_priority=True,
+            robot_class=RollingQueueRobot,receiver_class=RollingQueueReceiver)
+        self.assertGreater(len(robot.orientation_moves),0)
+        self.assertIn('"production_rolling_pose": true',output)
+        self.assertIn('"pose_priority": true',output)
+        self.assertIn('"position_radius_mm": 100.0',output)
+        self.assertIn('"state": "rolling_pose_session_complete"',output)
+
+    def test_dynamic_runner_uses_new_planner_and_existing_vendor_move_api(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,production_rolling_pose=True,
+            adaptive_trajectory=True,robot_class=RollingQueueRobot,receiver_class=Receiver)
+        self.assertGreater(len(robot.orientation_moves),0)
+        self.assertIn('"state": "adaptive_queue_configuration"',output)
+        self.assertIn('"state": "adaptive_queue_plan"',output)
+        self.assertIn('"sampling_mode": "adaptive"',output)
+        self.assertIn('"state": "rolling_pose_session_complete"',output)
+
+    def test_medium_adaptive_pilot_is_bounded_and_uses_vendor_api(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,production_rolling_pose=True,
+            adaptive_trajectory=True,adaptive_pilot=True,
+            robot_class=RollingQueueRobot,receiver_class=Receiver)
+        self.assertGreater(len(robot.orientation_moves),0)
+        self.assertLessEqual(len(robot.orientation_moves),10)
+        self.assertIn('"position_radius_mm": 100.0',output)
+        self.assertIn('"rotation_radius_deg": 10.0',output)
+        for _,params in robot.orientation_moves:
+            self.assertEqual(params[:4],(0,False,30.,60.))
+            self.assertAlmostEqual(math.degrees(params[5]),5.)
+            self.assertAlmostEqual(math.degrees(params[6]),20.)
+
+    def test_expanded_pose_priority_uses_fixed_30cm_45deg_200mm_s_profile(self):
+        robot,output=self.run_fake(
+            "--live",display=True,production_six_dof=True,
+            production_rolling_pose=True,pose_priority=True,
+            expanded_pose_priority=True,
+            robot_class=RollingQueueRobot,receiver_class=RollingQueueReceiver)
+        self.assertGreater(len(robot.orientation_moves),0)
+        self.assertIn('"expanded_pose_priority": true',output)
+        self.assertIn('"position_radius_mm": 300.0',output)
+        self.assertIn('"rotation_radius_deg": 45.0',output)
+        for _,args in robot.orientation_moves:
+            self.assertEqual(args[:5],(0,False,200.,500.,5.))
+            self.assertAlmostEqual(math.degrees(args[5]),45.0)
+            self.assertAlmostEqual(math.degrees(args[6]),180.0)
 
     def test_continuous_live_is_locked_before_any_sdk_connection(self):
         with self.assertRaises(SystemExit) as caught:

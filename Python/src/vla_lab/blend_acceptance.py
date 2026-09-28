@@ -147,7 +147,13 @@ def abort_and_confirm(robot, *, clock=time.monotonic, sleep=time.sleep) -> None:
     deadline = clock() + 2.0
     last_state = None
     while clock() < deadline:
-        last_state = motion_status(robot)
+        # 故障锁仍禁止普通查询和新运动，但必须留下专用的停稳读回通道。
+        # 未包装的离线假SDK/原SDK继续使用原接口。
+        stop_query = getattr(robot, "get_stop_motion_status", None)
+        last_state = (MotionStatus.parse(checked(stop_query(), "停止确认状态"))
+                      if callable(stop_query) else motion_status(robot))
+        if clock() >= deadline:
+            break  # 本地调用可能阻塞；超出确认窗口的结果不能当成及时确认。
         if last_state.inpos and last_state.queue == 0 and last_state.active_queue == 0:
             return
         sleep(0.02)

@@ -21,6 +21,43 @@ class Robot:
 
 
 class Tests(unittest.TestCase):
+    def test_busy_queue_cannot_be_reported_as_confirmed_stop(self):
+        from vla_lab.blend_acceptance import abort_and_confirm
+        now=[0.]
+        raw,log=Robot(),Trace()
+        raw.get_motion_status=lambda:(0,[1,0,0,0,1,0,0,0,0,0,0])
+        sdk=TracedSdk(raw,log,clock=lambda:now[0])
+        sdk.fault='此前通信迟到'
+        def sleep(dt): now[0]+=dt
+        with self.assertRaisesRegex(RuntimeError,'停止未确认'):
+            abort_and_confirm(sdk,clock=lambda:now[0],sleep=sleep)
+        self.assertEqual(raw.moves,0)
+        self.assertEqual(raw.stops,1)
+        self.assertIsNotNone(sdk.fault)
+
+    def test_late_abort_allows_only_timely_stop_readback_not_motion(self):
+        from vla_lab.blend_acceptance import abort_and_confirm
+        raw, log = Robot(), Trace()
+        raw.get_motion_status=lambda:(0,[0,0,1,0,0,0,0,0,0,0,0])
+        times=iter([0.,.158,.158,.159])
+        sdk=TracedSdk(raw,log,clock=lambda:next(times))
+        abort_and_confirm(sdk)
+        self.assertIsNotNone(sdk.fault)
+        self.assertEqual(raw.stops,1)
+        with self.assertRaises(RuntimeError): sdk.linear_move_extend()
+        with self.assertRaises(RuntimeError): sdk.get_motion_status()
+        self.assertEqual(raw.moves,0)
+
+    def test_late_stop_status_is_not_accepted_and_scope_is_closed(self):
+        from vla_lab.blend_acceptance import abort_and_confirm
+        raw,log=Robot(),Trace()
+        raw.get_motion_status=lambda:(0,[0,0,1,0,0,0,0,0,0,0,0])
+        times=iter([0.,.158,.158,.400])
+        sdk=TracedSdk(raw,log,clock=lambda:next(times))
+        with self.assertRaises(TimeoutError): abort_and_confirm(sdk)
+        self.assertFalse(sdk._stop_query)
+        with self.assertRaises(RuntimeError): sdk.linear_move_extend()
+
     def test_start_written_before_native_call(self):
         raw,log=Robot(),Trace()
         raw.get_actual_joint_position=lambda:(0,len(log.events))

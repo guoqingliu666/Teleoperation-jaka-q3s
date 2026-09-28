@@ -7,7 +7,9 @@ import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"src"))
 
-from vla_lab.bounded_pose_follow import BoundedPoseFollower, plan_pose_segment
+from vla_lab.bounded_pose_follow import (
+    BoundedPoseFollower, plan_pose_segment, rpy_matrix,
+)
 from vla_lab.sampled_follow import Settings
 from verify_sampled_follow import Clock, LIMITS, MAPPING, Robot, frame
 
@@ -31,6 +33,20 @@ class PoseRobot(Robot):
 
 
 class Tests(unittest.TestCase):
+    def test_full_orientation_mapping_crosses_180_without_rpy_wrap(self):
+        robot = PoseRobot()
+        follow = BoundedPoseFollower(robot, MAPPING,
+            Settings(radius_mm=1000,speed_mm_s=150,acceleration_mm_s2=400,segment_mm=60),
+            LIMITS, rotation_radius_deg=180,orientation_speed_deg_s=30,
+            orientation_acceleration_deg_s2=120,max_orientation_step_deg=6)
+        follow.initialize()
+        follow.anchor = tuple(robot.tcp[:3]) + (0.,0.,0.)
+        follow.center_rotation = rpy_matrix((0.,0.,0.))
+        for degree in range(0, 361):
+            follow._update_target(None,(0.,0.,0.),rpy_matrix((0.,0.,math.radians(degree))))
+            self.assertAlmostEqual(follow.desired[5],math.radians(degree),places=6)
+        self.assertEqual(robot.orientation_moves, [])
+
     def setup_follow(self):
         robot,clock,events=PoseRobot(),Clock(),[]
         follow=BoundedPoseFollower(robot,MAPPING,Settings(radius_mm=200,speed_mm_s=30,
@@ -124,6 +140,57 @@ class Tests(unittest.TestCase):
             orientation_acceleration_deg_s2=32,max_orientation_step_deg=2)
         self.assertEqual(follow.settings.radius_mm,1000)
         self.assertEqual(follow.max_orientation_step_deg,2)
+
+    def test_development_profile_allows_longer_endpoint_segment_but_keeps_vendor_ik(self):
+        robot=PoseRobot()
+        settings=Settings(radius_mm=1000,speed_mm_s=150,acceleration_mm_s2=400,
+                          segment_mm=60,deadband_mm=3)
+        follow=BoundedPoseFollower(
+            robot,MAPPING,settings,LIMITS,
+            rotation_radius_deg=30,orientation_speed_deg_s=30,
+            orientation_acceleration_deg_s2=120,max_orientation_step_deg=6)
+        target,solutions=plan_pose_segment(
+            robot,robot.joints,robot.tcp,(500,100,300,0,math.radians(12),0),
+            settings,LIMITS,max_orientation_step_deg=6)
+        self.assertLessEqual(math.dist(target[:3],robot.tcp[:3]),60.000001)
+        self.assertLessEqual(math.degrees(abs(target[4])),6.000001)
+        # 60mm / 6°仍按2mm / 0.2°逐点调用厂商逆解，不是跳过中间检查。
+        self.assertGreaterEqual(len(solutions),30)
+        self.assertEqual(follow.settings.segment_mm,60)
+
+    def test_pose_priority_keeps_full_orientation_but_clamps_xyz_to_10cm(self):
+        robot = PoseRobot()
+        settings = Settings(radius_mm=1000,speed_mm_s=150,
+                            acceleration_mm_s2=400,segment_mm=60,deadband_mm=3)
+        follow = BoundedPoseFollower(
+            robot,MAPPING,settings,LIMITS,
+            rotation_radius_deg=30,orientation_speed_deg_s=30,
+            orientation_acceleration_deg_s2=120,max_orientation_step_deg=3,
+            position_radius_mm=100)
+        follow.initialize()
+        follow.anchor = robot.tcp
+        follow._update_target(
+            None,(500.0,0.0,0.0),rpy_matrix((0.0,math.radians(30.0),0.0)))
+        self.assertAlmostEqual(math.dist(follow.desired[:3],robot.tcp[:3]),100.0)
+        self.assertAlmostEqual(math.degrees(follow.desired[4]),30.0,places=5)
+        self.assertEqual(follow.position_radius_mm,100.0)
+
+    def test_expanded_pose_priority_clamps_xyz_to_30cm_and_orientation_to_45deg(self):
+        robot = PoseRobot()
+        settings = Settings(radius_mm=1000,speed_mm_s=200,
+                            acceleration_mm_s2=500,segment_mm=80,deadband_mm=3)
+        follow = BoundedPoseFollower(
+            robot,MAPPING,settings,LIMITS,
+            rotation_radius_deg=45,orientation_speed_deg_s=45,
+            orientation_acceleration_deg_s2=180,max_orientation_step_deg=4,
+            position_radius_mm=300)
+        follow.initialize()
+        follow.anchor = robot.tcp
+        follow._update_target(
+            None,(600.0,0.0,0.0),rpy_matrix((0.0,math.radians(60.0),0.0)))
+        self.assertAlmostEqual(math.dist(follow.desired[:3],robot.tcp[:3]),300.0)
+        self.assertAlmostEqual(math.degrees(follow.desired[4]),45.0,places=5)
+        self.assertEqual(follow.position_radius_mm,300.0)
 
 
 if __name__=="__main__": unittest.main()

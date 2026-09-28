@@ -15,11 +15,12 @@ import sys
 import threading
 import time
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import filedialog, messagebox, ttk
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 from vla_lab.sampled_follow import Settings
+from vla_lab.adaptive_sampling import AdaptiveSampling
 
 
 class EndpointTeleopGui:
@@ -46,22 +47,24 @@ class EndpointTeleopGui:
         except tk.TclError:
             pass
         root.protocol("WM_DELETE_WINDOW", self.close)
-        ttk.Label(root, text="v1.0.0 高速六维已通过：100cm / 100mm/s / ±30°",
+        ttk.Label(root, text="V1.5：动态采样 + JAKA 厂商逆解与深度2圆滑队列",
                   font=("Microsoft YaHei UI", 16, "bold"), foreground="#a02020").pack(anchor="w", padx=16, pady=14)
         ttk.Label(root, text="位置模式保持姿态；六维模式同时跟随位置和姿态。①单独时只读JAKA；②启动后独占连接并显示实测关节。首次与恢复后先松开Grip。").pack(anchor="w", padx=16)
         box = ttk.LabelFrame(root, text="启动时生效的参数")
         box.pack(fill="x", padx=16, pady=12)
         self.controls = []
-        self.speed = self.slider(box, 0, "TCP速度", 5, 100, 100, "mm/s")
+        self.speed = self.slider(box, 0, "TCP速度", 5, 300, 150, "mm/s")
         self.radius = self.slider(box, 1, "活动半径", 20, 100, 100, "cm（以启动TCP为中心）")
-        self.acceleration = self.slider(box, 2, "TCP加速度", 10, 400, 400, "mm/s²")
+        self.acceleration = self.slider(box, 2, "TCP加速度", 10, 800, 400, "mm/s²")
         self.rotation_radius = self.slider(box, 3, "姿态范围", 10, 30, 30, "°（相对启动姿态）")
-        self.orientation_speed = self.slider(box, 4, "姿态速度", 1, 20, 20, "°/s")
+        self.orientation_speed = self.slider(box, 4, "姿态速度", 1, 60, 30, "°/s")
+        self.segment_mm = self.slider(box, 5, "单条最大位移", 20, 100, 60, "mm（端点采样，不补历史轨迹）")
+        self.orientation_step = self.slider(box, 6, "单条最大姿态", 2, 10, 6, "°（段内仍逐点厂商逆解）")
         self.live = tk.BooleanVar(value=False)
         check = ttk.Checkbutton(box, text="受限连续真机跟随（不勾选为只读预览）", variable=self.live)
-        check.grid(row=5, column=0, columnspan=4, sticky="w", padx=10, pady=10)
+        check.grid(row=7, column=0, columnspan=4, sticky="w", padx=10, pady=10)
         self.controls.append(check)
-        ttk.Label(box, text="正式六维采用上方参数并在启动时锁定；旧验收按钮仍使用按钮标注的固定限值。").grid(row=6, column=0, columnspan=4, sticky="w", padx=10, pady=5)
+        ttk.Label(box, text="已验收入口固定30mm/s、5°/s、10cm/10°；150mm/s全范围入口仍是待验收候选。过载时丢弃未接纳增量，不积压补跑。").grid(row=8, column=0, columnspan=4, sticky="w", padx=10, pady=5)
         bar = ttk.Frame(root); bar.pack(fill="x", padx=16)
         self.start_button = ttk.Button(bar, text="启动 / 重新连接", command=self.start)
         self.start_button.pack(side="left")
@@ -127,12 +130,119 @@ class EndpointTeleopGui:
         production_bar = ttk.Frame(root); production_bar.pack(fill="x", padx=16, pady=(6, 0))
         self.production_six_dof_button = ttk.Button(
             production_bar,
-            text="高速正式六维（最大100cm / 100mm/s / ±30°）",
+            text="可调正式六维（100cm / 5—300mm/s / ±30°）",
             command=lambda:self.start(production_six_dof=True))
         self.production_six_dof_button.pack(side="left")
         self.controls.append(self.production_six_dof_button)
+        self.production_shadow_button = ttk.Button(
+            production_bar,
+            text="v1.2长段六维只读影子（30秒 / 零运动）",
+            command=lambda:self.start(production_shadow=True))
+        self.production_shadow_button.pack(side="left", padx=12)
+        self.controls.append(self.production_shadow_button)
+        self.development_pose_acceptance_button = ttk.Button(
+            production_bar,
+            text="v1.2一次≤60mm/6°真机验收（150mm/s）",
+            command=lambda:self.start(development_pose_acceptance=True))
+        self.development_pose_acceptance_button.pack(side="left", padx=12)
+        self.controls.append(self.development_pose_acceptance_button)
+        self.development_continuous_button = ttk.Button(
+            production_bar,
+            text="v1.2连续长段六维验收（150mm/s / 60mm / 6°）",
+            command=lambda:self.start(development_continuous=True))
+        self.development_continuous_button.pack(side="left", padx=12)
+        self.controls.append(self.development_continuous_button)
+        blend_bar = ttk.Frame(root); blend_bar.pack(fill="x", padx=16, pady=(6, 0))
+        self.development_pose_blend_button = ttk.Button(
+            blend_bar,
+            text="v1.2两段六维厂商圆滑验收（2×30mm/3°）",
+            command=lambda:self.start(development_pose_blend=True))
+        self.development_pose_blend_button.pack(side="left")
+        self.controls.append(self.development_pose_blend_button)
+        self.development_hand_pose_blend_button = ttk.Button(
+            blend_bar,
+            text="v1.2手柄两端点圆滑验收（队列2）",
+            command=lambda:self.start(development_hand_pose_blend=True))
+        self.development_hand_pose_blend_button.pack(side="left", padx=12)
+        self.controls.append(self.development_hand_pose_blend_button)
+        self.development_rolling_pose_button = ttk.Button(
+            blend_bar,
+            text="v1.5扩展滚动六维（100cm / 50段）",
+            command=lambda:self.start(development_rolling_pose=True))
+        self.development_rolling_pose_button.pack(side="left", padx=12)
+        self.controls.append(self.development_rolling_pose_button)
+        v15_bar = ttk.Frame(root); v15_bar.pack(fill="x", padx=16, pady=(6, 0))
+        self.production_rolling_pose_button = ttk.Button(
+            v15_bar,
+            text="V1.5正式连续六维（100cm / Grip重复启停）",
+            command=lambda:self.start(production_rolling_pose=True))
+        self.production_rolling_pose_button.pack(side="left")
+        self.controls.append(self.production_rolling_pose_button)
+        self.pose_priority_button = ttk.Button(
+            v15_bar,
+            text="V1.5姿态优先（XYZ≤10cm / 姿态±30°）",
+            command=lambda:self.start(production_rolling_pose=True,
+                                      pose_priority=True))
+        self.pose_priority_button.pack(side="left", padx=12)
+        self.controls.append(self.pose_priority_button)
+        self.expanded_pose_priority_button = ttk.Button(
+            v15_bar,
+            text="V1.5扩展姿态优先（XYZ≤30cm / ±45° / 200mm/s）",
+            command=lambda:self.start(production_rolling_pose=True,
+                                      pose_priority=True,
+                                      expanded_pose_priority=True))
+        self.expanded_pose_priority_button.pack(side="left", padx=12)
+        self.controls.append(self.expanded_pose_priority_button)
+        diagnostic_bar = ttk.Frame(root)
+        diagnostic_bar.pack(fill="x", padx=16, pady=(6, 0))
+        self.trajectory_diagnostic_button = ttk.Button(
+            diagnostic_bar, text="新轨迹离线诊断（选日志，不连接机器人）",
+            command=self.trajectory_diagnostic)
+        self.trajectory_diagnostic_button.pack(side="left")
+        self.controls.append(self.trajectory_diagnostic_button)
+        self.diagnostic_running = False
+        self.readonly_test_active = False
+        self.readonly_test_result = None
+        self.trajectory_readonly_button = ttk.Button(
+            diagnostic_bar,text="新调度只读测试（120秒，不运动）",
+            command=self.start_trajectory_readonly)
+        self.trajectory_readonly_button.pack(side="left",padx=8)
+        self.controls.append(self.trajectory_readonly_button)
+        self.medium_pilot_readonly_button = ttk.Button(
+            diagnostic_bar,text="中等幅同参数只读预检（60秒，不运动）",
+            command=lambda:self.start_trajectory_readonly(medium_pilot=True))
+        self.medium_pilot_readonly_button.pack(side="left",padx=8)
+        self.controls.append(self.medium_pilot_readonly_button)
+        self.trajectory_readonly_stop = ttk.Button(
+            diagnostic_bar,text="结束只读测试",command=self.stop_waiting,state="disabled")
+        self.trajectory_readonly_stop.pack(side="left")
+        adaptive_bar=ttk.Frame(root)
+        adaptive_bar.pack(fill="x",padx=16,pady=(6,0))
+        ttk.Label(adaptive_bar,text="动态检查最大间隔（与运动段长度不同）：").pack(side="left")
+        self.check_mm=tk.StringVar(value="5")
+        self.check_deg=tk.StringVar(value="1")
+        for variable,unit in ((self.check_mm,"mm"),(self.check_deg,"°")):
+            entry=ttk.Entry(adaptive_bar,textvariable=variable,width=6)
+            entry.pack(side="left",padx=3)
+            ttk.Label(adaptive_bar,text=unit).pack(side="left")
+            self.controls.append(entry)
+        self.adaptive_live_button=ttk.Button(adaptive_bar,
+            text="有界意图六维候选（真机待验收）",
+            command=lambda:self.start(production_six_dof=True,production_rolling_pose=True,
+                                       adaptive_trajectory=True))
+        self.adaptive_live_button.pack(side="left",padx=10)
+        self.controls.append(self.adaptive_live_button)
+        self.adaptive_pilot_button=ttk.Button(adaptive_bar,
+            text="V1.5已验收中等幅跟随（10cm/10°）",
+            command=lambda:self.start(production_six_dof=True,production_rolling_pose=True,
+                                       adaptive_trajectory=True,adaptive_pilot=True))
+        self.adaptive_pilot_button.pack(side="left",padx=10)
+        self.controls.append(self.adaptive_pilot_button)
         self.state = tk.StringVar(value="尚未启动；先打开①并确认右手TRACKED")
         ttk.Label(root, textvariable=self.state, wraplength=1020, foreground="#205080").pack(anchor="w", padx=16, pady=10)
+        self.intent_status = tk.StringVar(value="新调度：黄色为手柄意图；受限时实际接纳目标可能有偏差，松握重新对齐。")
+        ttk.Label(root, textvariable=self.intent_status, wraplength=1020,
+                  foreground="#8a4b00").pack(anchor="w", padx=16, pady=(0, 4))
         ttk.Label(root, text="软件停止不替代物理急停。程序不自动上电、使能或清报警。修改参数前先停止会话。", foreground="#8a4b00").pack(anchor="w", padx=16, pady=(0, 6))
         self.log = tk.Text(root, height=22, wrap="word", state="disabled", font=("Consolas", 10))
         self.log.pack(fill="both", expand=True, padx=16, pady=6)
@@ -186,34 +296,211 @@ class EndpointTeleopGui:
         self.log.see("end")
         self.log.configure(state="disabled")
 
+    def trajectory_diagnostic(self):
+        """独立离线进程检查参考曲线，不复用真机会话/停止状态或SDK所有权。"""
+        if self.diagnostic_running:
+            return
+        if self.process is not None and self.process.poll() is None:
+            messagebox.showinfo("先结束当前会话", "请先正常停止当前会话，再进行离线轨迹诊断。")
+            return
+        source = filedialog.askopenfilename(
+            title="选择需要分析的真实会话日志（不要选.sdk.jsonl）",
+            initialdir=str(ROOT.parent / "Validation" / "continuous_sampled_follow"),
+            filetypes=[("会话日志", "*.jsonl")])
+        if not source:
+            return
+        self.diagnostic_running = True
+        self.append("离线分析启动：只生成参考曲线报告，不连接、不运动。\n")
+
+        def work():
+            try:
+                env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONDONTWRITEBYTECODE="1",
+                           TEMP=r"D:\ChatGPT\Temp", TMP=r"D:\ChatGPT\Temp")
+                result = subprocess.run(
+                    [sys.executable, "-B", str(ROOT / "轨迹连续性诊断.py"), "--replay", source],
+                    cwd=str(ROOT.parent), env=env, capture_output=True, text=True,
+                    encoding="utf-8", errors="replace", timeout=120,
+                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
+                self.lines.put(result.stdout + result.stderr)
+                self.lines.put(f"离线诊断退出码：{result.returncode}；不是实机连续性验收。\n")
+            except Exception as error:
+                self.lines.put(f"离线诊断失败：{error}\n")
+            finally:
+                self.diagnostic_running = False
+
+        threading.Thread(target=work, daemon=True, name="trajectory-offline-report").start()
+
+    def start_trajectory_readonly(self, medium_pilot=False):
+        """独立白名单子进程；不读取真机勾选框/运动滑杆，不清除既有故障锁。"""
+        if self.readonly_test_active or (self.process is not None and self.process.poll() is None):
+            messagebox.showinfo("会话正在运行","请先结束当前会话，再开始只读测试。")
+            return
+        if self.stop_fault_latched:
+            messagebox.showerror("先检查现场","之前的停止/故障状态尚未确认，请先处理现场；只读测试不会清除故障锁。")
+            return
+        try:
+            # 中等幅真机验收的预检参数必须固定，不能被界面输入框改大。
+            policy=AdaptiveSampling() if medium_pilot else self.sampling_policy()
+        except ValueError as error:
+            messagebox.showerror("动态采样参数无效",str(error))
+            return
+        seconds="60" if medium_pilot else "120"
+        args=[sys.executable,"-B","-u",str(ROOT/"只读检查新轨迹.py"),
+              "--live-readonly","--seconds",seconds,"--ui-control","--sampling","adaptive",
+              "--max-check-mm",str(policy.max_check_mm),"--max-check-deg",str(policy.max_check_deg)]
+        if medium_pilot:
+            args.append("--medium-pilot")
+        env=dict(os.environ,PYTHONIOENCODING="utf-8",PYTHONDONTWRITEBYTECODE="1",
+                 TEMP=r"D:\ChatGPT\Temp",TMP=r"D:\ChatGPT\Temp")
+        try:
+            child=subprocess.Popen(args,cwd=str(ROOT.parent),env=env,stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,stderr=subprocess.STDOUT,encoding="utf-8",errors="replace",
+                bufsize=1,creationflags=getattr(subprocess,"CREATE_NO_WINDOW",0))
+        except OSError as error:
+            messagebox.showerror("只读测试启动失败",str(error))
+            return
+        self.process=child
+        self.readonly_test_active=True
+        self.readonly_test_result=None
+        self.stopping=False
+        self.sdk_wait=None
+        self.start_button.configure(state="disabled")
+        for widget in self.controls: widget.configure(state="disabled")
+        self.stop_button.configure(state="normal")
+        self.trajectory_readonly_stop.configure(state="normal")
+        self.state.set("中等幅同参数只读预检连接中" if medium_pilot else
+                       "只读测试连接中：保持实机静止；先松右Grip，再握住移动/转动；不发送运动。")
+        self.append("\n" + ("中等幅同参数只读预检：60秒；先松Grip再握住，移动约5cm；不运动。\n"
+                            if medium_pilot else
+                            "新轨迹只读测试：120秒自动结束；可随时结束。不运动、不使能、不改参数。\n"))
+        threading.Thread(target=self.read_output,args=(child,),daemon=True).start()
+
+    def sampling_policy(self):
+        """同一份间隔供只读检查和动态执行使用，启动后参数随控件一起锁定。"""
+        return AdaptiveSampling(max_check_mm=float(self.check_mm.get()),
+                                max_check_deg=float(self.check_deg.get()))
+
+    def readonly_event(self,event):
+        """只读完成与真机停机确认严格分离，不能借此清除/生成运动许可。"""
+        state=event.get("state")
+        if state=="trajectory_input_status":
+            grip=event.get("grip")
+            trigger=event.get("trigger")
+            values=f"Grip={grip:.2f} / Trigger={trigger:.2f}" if grip is not None and trigger is not None else "等待手柄数据"
+            self.state.set(f"只读｜{event.get('message','')}｜{values}｜剩余{event.get('remaining_s','?')}秒")
+            planning=event.get("planning") or {}
+            if planning.get("scheduler")=="bounded_intent_v1":
+                self.show_intent_status(planning)
+                scale=planning.get("admission_scale",1.)
+                self.state.set(self.state.get()+f"｜缓存{planning.get('buffered_samples',0)}点"
+                               +f"｜接纳比例{scale:.0%}｜受限{planning.get('limited_frames',0)}帧")
+            else:
+                age=planning.get("oldest_received_age_s")
+                if age is not None:
+                    self.state.set(self.state.get()+f"｜待处理{age*1000:.0f}ms｜{planning.get('pressure','normal')}")
+        elif state=="trajectory_readonly_finished":
+            self.readonly_test_result=event
+        elif state=="process_exit":
+            result=self.readonly_test_result
+            if result is None:
+                message=f"只读进程退出（代码{event.get('code')}），未收到完整报告；不是测试通过。"
+            else:
+                outcome=result.get("outcome")
+                label={"cancelled":"已结束","incomplete":"未完成","failed":"失败",
+                       "readonly_candidates_observed":"已取得只读逆解候选（非真机验收）"}.get(outcome,"结果未知")
+                message=f"只读测试{label}；Grip窗口{result.get('grip_windows',0)}，候选{result.get('candidates',0)}，阻断{result.get('blocked_windows',0)}。"
+                if result.get("failure"): message+=str(result["failure"])
+            self.state.set(message)
+            self.readonly_test_active=False
+            self.stopping=False
+            self.process=None
+            self.start_button.configure(state="disabled" if self.stop_fault_latched else "normal")
+            for widget in self.controls: widget.configure(state="normal")
+            self.stop_button.configure(state="disabled")
+            self.trajectory_readonly_stop.configure(state="disabled")
+            if self.closing: self.root.destroy()
+        elif "message" in event:
+            self.state.set("只读｜"+str(event["message"]))
+
+    def show_intent_status(self, planning):
+        """单独保留接纳状态，运动日志刷新时也能看到当前是否缩小了输入。"""
+        scale = planning.get("admission_scale", 1.)
+        self.intent_status.set(
+            f"接纳比例 {scale:.0%}｜缓存 {planning.get('buffered_samples', 0)} 点"
+            f"｜受限 {planning.get('limited_frames', 0)} 帧"
+            + ("｜跟随受限：不补追未接纳增量，松Grip后重握可对齐"
+               if scale < .999 else "｜当前正常接纳；黄色为原始手柄意图"))
+
     def start(self, communications_only=False, one_segment=False, two_segment=False,
               five_segment=False, ten_segment=False, twenty_segment=False,
               rotation_shadow=False, orientation_acceptance=False,
               three_orientation_acceptance=False,
               ten_orientation_acceptance=False, bounded_six_dof=False,
-              expanded_six_dof=False, production_six_dof=False):
+              expanded_six_dof=False, production_six_dof=False,
+              production_shadow=False, development_pose_acceptance=False,
+              development_continuous=False, development_pose_blend=False,
+              development_hand_pose_blend=False,
+              development_rolling_pose=False,
+              production_rolling_pose=False, pose_priority=False,
+              expanded_pose_priority=False, adaptive_trajectory=False,
+              adaptive_pilot=False):
         """启动一个独立会话；真机验收按钮使用固定限值，普通按钮仅预览。"""
+        if self.readonly_test_active:
+            return
         if self.stop_fault_latched:
             messagebox.showerror("停止未确认", "本窗口禁止重新启动。请先在现场检查停止状态和故障记录，不要反复启动真机。")
             return
         if self.process is not None and self.process.poll() is None:
             return
         try:
+            # 真机验收档锁定采样密度；界面输入框不能悄悄改变此次验收含义。
+            dynamic_policy=(AdaptiveSampling() if adaptive_pilot else
+                            self.sampling_policy() if adaptive_trajectory else None)
             # 受限真机档位使用代码中的固定限值，不采用界面滑杆。
             # 滑杆只在普通只读预览时生效，避免误以为拖动滑杆就能扩大真机许可。
-            if production_six_dof:
-                settings = Settings(speed_mm_s=float(self.speed.get()),
-                                    radius_mm=float(self.radius.get()) * 10,
-                                    acceleration_mm_s2=float(self.acceleration.get()),
-                                    segment_mm=20,deadband_mm=3)
-                rotation_radius = float(self.rotation_radius.get())
-                orientation_speed = float(self.orientation_speed.get())
+            # 正式真机和同参数只读影子共用一套参数解析，避免“预览通过的不是将要执行的参数”。
+            if (production_six_dof or production_shadow or development_pose_acceptance
+                    or development_continuous or development_pose_blend
+                    or development_hand_pose_blend or development_rolling_pose
+                    or production_rolling_pose):
+                if adaptive_pilot:
+                    settings = Settings(speed_mm_s=30,radius_mm=200,
+                                        acceleration_mm_s2=60,segment_mm=20,deadband_mm=3)
+                    rotation_radius,orientation_speed,orientation_step=10.,5.,2.
+                elif (development_pose_acceptance or development_continuous
+                        or development_pose_blend or development_hand_pose_blend
+                        or development_rolling_pose or production_rolling_pose):
+                    # 已通过单条门槛和下一关连续长段使用同一固定参数，避免滑杆改变验收含义。
+                    settings = Settings(
+                        speed_mm_s=200 if expanded_pose_priority else 150,
+                        radius_mm=1000,
+                        acceleration_mm_s2=500 if expanded_pose_priority else 400,
+                        segment_mm=80 if expanded_pose_priority else 60,
+                        deadband_mm=3)
+                    rotation_radius = 45.0 if expanded_pose_priority else 30.0
+                    orientation_speed = 45.0 if expanded_pose_priority else 30.0
+                    # 姿态优先档把每个厂商队列段再缩到3°，但累计姿态仍可到±30°。
+                    # 这样既不是绝对锁位，也不会把一次较大的手腕转动塞进单个逆解段。
+                    orientation_step = (4.0 if expanded_pose_priority else
+                                        3.0 if pose_priority else 6.0)
+                else:
+                    settings = Settings(speed_mm_s=float(self.speed.get()),
+                                        radius_mm=float(self.radius.get()) * 10,
+                                        acceleration_mm_s2=float(self.acceleration.get()),
+                                        segment_mm=float(self.segment_mm.get()),deadband_mm=3)
+                    rotation_radius = float(self.rotation_radius.get())
+                    orientation_speed = float(self.orientation_speed.get())
+                    orientation_step = float(self.orientation_step.get())
                 if not 200 <= settings.radius_mm <= 1000:
                     raise ValueError("正式六维活动半径必须为20—100cm")
-                if not 10 <= rotation_radius <= 30:
-                    raise ValueError("正式六维姿态范围必须为10—30°")
-                if not 1 <= orientation_speed <= 20:
-                    raise ValueError("正式六维姿态速度必须为1—20°/s")
+                if not 10 <= rotation_radius <= 45:
+                    raise ValueError("正式六维姿态范围必须为10—45°")
+                if not 1 <= orientation_speed <= 60:
+                    raise ValueError("正式六维姿态速度必须为1—60°/s")
+                if not 20 <= settings.segment_mm <= 100:
+                    raise ValueError("正式六维单条最大位移必须为20—100mm")
+                if not 2 <= orientation_step <= 10:
+                    raise ValueError("正式六维单条最大姿态必须为2—10°")
             elif expanded_six_dof:
                 settings = Settings(radius_mm=500,speed_mm_s=50,acceleration_mm_s2=100,
                                     segment_mm=20,deadband_mm=3)
@@ -326,23 +613,129 @@ class EndpointTeleopGui:
             "JAKA App无报警且机器人静止，Tool 1/用户坐标系0正确。先松Grip，再握住做连续位置和姿态组合运动。\n\n"
             "任何反向、抖动、异响、异常大幅关节运动或报警，立即松Grip并按现场规程处理。是否启动？"):
             return
-        if production_six_dof and not messagebox.askyesno(
+        if production_six_dof and not adaptive_pilot and not messagebox.askyesno(
             "正式可调六维真机确认",
             f"本次位置与姿态同时跟随：启动TCP周围半径{settings.radius_mm/10:g}cm、"
             f"TCP速度{settings.speed_mm_s:g}mm/s、加速度{settings.acceleration_mm_s2:g}mm/s²；"
             f"姿态范围±{rotation_radius:g}°、速度{orientation_speed:g}°/s。"
-            "每条命令仍≤20mm且≤2°，最长10分钟。\n\n"
+            f"每条命令最多{settings.segment_mm:g}mm / {orientation_step:g}°，最长10分钟。\n\n"
             "100cm是软件包络，不表示每个点都可达；不可达路径由厂商逆解拒绝。"
             "请确认设定工作球及整条机械臂扫掠空间清空，人员在外，急停可立即触及；"
             "JAKA App无报警且机器人静止，Tool 1/用户坐标系0正确。先松Grip，再握住操作。\n\n"
             "任何反向、抖动、异响、异常大幅关节运动或报警，立即松Grip并按现场规程处理。是否启动？"):
             return
+        if development_pose_acceptance and not messagebox.askyesno(
+            "v1.2单条长段真机确认",
+            "本次最多下发一条六维命令：位移≤60mm、姿态≤6°；TCP速度150mm/s、"
+            "加速度400mm/s²、姿态速度30°/s，60秒超时。段内每2mm/0.2°调用厂商逆解；"
+            "关节路径检查不通过时不会运动。\n\n"
+            "请先完成同参数只读影子；确认机械臂、灵巧手和100cm软件包络对应的整条扫掠空间清空，"
+            "人员在外、急停可立即触及，JAKA App无报警且机械臂静止。先松Grip，再握住做一次"
+            "清晰但缓慢的组合动作；命令到位后会自动结束，不会继续追随。\n\n"
+            "任何反向、抖动、异响、异常大幅关节运动或报警，立即松Grip并按现场规程处理。是否启动？"):
+            return
+        if development_continuous and not messagebox.askyesno(
+            "v1.2连续长段六维真机确认",
+            "本次连续跟随固定使用：每条位移≤60mm、姿态≤6°；TCP速度150mm/s、"
+            "加速度400mm/s²、姿态速度30°/s；启动TCP周围100cm软件包络、相对姿态±30°，"
+            "最长180秒。每条仍由厂商逆解逐点检查，只追踪最新手柄目标，不补跑历史轨迹。\n\n"
+            "该档验证的是连续长段采样，仍为单命令精确到位，不是厂商队列圆滑。请确认整条机械臂、"
+            "灵巧手及整个扫掠空间清空，人员在外、急停可立即触及，JAKA App无报警且机械臂静止。"
+            "先松Grip，再握住连续操作；松Grip立即请求停止。\n\n"
+            "任何反向、明显顿挫恶化、抖动、异响、异常大幅关节运动或报警，立即松Grip并按现场规程处理。是否启动？"):
+            return
+        if development_pose_blend and not messagebox.askyesno(
+            "v1.2两段六维厂商圆滑现场确认",
+            "本次执行代码中固定的两段路径：先沿基坐标+Z 30mm并转动3°，随后沿基坐标+X "
+            "30mm并再转动3°。TCP速度150mm/s、加速度400mm/s²、姿态速度30°/s。"
+            "第一段使用5mm厂商圆滑容差，末段精确停止，队列最多2条。\n\n"
+            "两段均会先按2mm/0.2°调用JAKA厂商逆解检查；检查不通过不会运动。"
+            "请确认+Z、+X方向和两段完整扫掠空间均有净空，人员在外、急停可立即触及，"
+            "JAKA App无报警且机械臂静止并保持使能。先松Grip，再握住并持续保持到结束；"
+            "松Grip会请求厂商停止。\n\n"
+            "若方向错误、拐角停顿加重、关节突变、抖动、异响或报警，立即松Grip并按现场规程处理。是否启动？"):
+            return
+        if development_hand_pose_blend and not messagebox.askyesno(
+            "v1.2手柄两端点厂商圆滑现场确认",
+            "本次只执行一个手柄采样批次。先松Grip，再持续握住：平稳移动或转动至第一个端点"
+            "（相对起点至少20mm或2°），继续移动至第二个端点（相对第一点至少20mm或2°），"
+            "随后保持手柄不动。程序只采用这两个端点，不补跑中间手柄历史轨迹。\n\n"
+            "每段最多60mm/6°；TCP速度150mm/s、加速度400mm/s²、姿态速度30°/s；"
+            "第一段tol=5mm，第二段精确停止，厂商队列深度最多2。两个端点均先按2mm/0.2°"
+            "调用JAKA厂商逆解检查。\n\n"
+            "请确认预计两个方向及整条机械臂扫掠空间均有净空，人员在外、急停可立即触及，"
+            "JAKA App无报警且机械臂静止并保持使能。松Grip会停止；若有反向、关节突变、"
+            "抖动、异响、报警或SDK超时，立即松Grip并按现场规程处理。是否启动？"):
+            return
+        if development_rolling_pose and not messagebox.askyesno(
+            "v1.5滚动六维厂商队列现场确认",
+            "本次最多下发50段六维命令、最长10分钟，持续按住Grip移动手柄。启动TCP周围活动"
+            "半径保持100cm；扩展档只增加累计段数，不提高刚才通过的速度和单段上限。当前段"
+            "运行时queue=1/active_queue=1，下一段确实预排后必须观测到queue=2/active_queue=1；"
+            "交接回到queue=1时立即补入最新黄色目标，不补跑旧轨迹。前9段tol=5mm，"
+            "第50段tol=0精确停止。\n\n"
+            "每段≤60mm/6°，小目标先合并，只有相对队列末端达到20mm或2°才下发；TCP速度150mm/s、"
+            "加速度400mm/s²、姿态速度30°/s。每段仍按2mm/0.2°调用JAKA厂商逆解。"
+            "若短段在queue=2可见前已经完成，只有实测TCP精确到达最后目标才允许安全重建队列；"
+            "真正4秒无进展或目标不一致仍会停止。完成时还必须观察到至少8次连续交接。"
+            "达到50段后自动结束；途中松Grip会调用厂商停止并结束本次验收，需要重新启动后再试。\n\n"
+            "请确认预计运动方向和启动TCP周围100cm软件包络对应的整条机械臂扫掠空间有净空，"
+            "人员在外、急停可立即触及，JAKA App无报警且机械臂静止并保持使能。若出现反向、"
+            "关节突变、明显顿挫恶化、抖动、异响、报警或SDK超时，立即松Grip。是否启动？"):
+            return
+        if adaptive_pilot and not messagebox.askyesno(
+            "V1.5已验收中等幅跟随",
+            "本次仅运行60秒、最多10条运动命令；启动TCP周围半径10cm，姿态相对起点≤10°。"
+            "每条≤20mm/2°，速度30mm/s、加速度60mm/s²、姿态5°/s。"
+            "动态检查固定5mm/1°；厂商逆解或关节余量异常时停止并等待重新握持。\n\n"
+            "这不是全范围遥操作许可。请再次确认整条机械臂扫掠空间有净空、人员在外、"
+            "JAKA App无报警且机械臂静止、急停可触及。先松Grip，再缓慢握持移动；"
+            "方向异常、关节突变、抖动、异响或报警时立即松Grip并按现场规程处理。是否启动？"):
+            return
+        if adaptive_trajectory and not adaptive_pilot and not messagebox.askyesno(
+            "V1.5动态采样候选现场验收",
+            f"这是新的动态采样调度，尚未完成本版真机验收。\n"
+            f"检查最大间隔{dynamic_policy.max_check_mm:g}mm/{dynamic_policy.max_check_deg:g}°，"
+            "遇到关节风险时细分。厂商队列深度2，取消固定20mm/2°起发门槛。\n"
+            "本次150mm/s、400mm/s²、姿态30°/s，位置范围100cm、开放全部朝向。\n"
+            "不再使用启动姿态±30°测试限制；关节限位和路径筛查仍有效，不保证任意姿态可达。\n"
+            "过载时减小接纳增量并显示跟随受限，不补追未接纳动作；松握重新对齐。\n"
+            "黄色显示手柄意图，实际接纳目标可能落后；路径风险/断流仍会停止。\n"
+            "请先完成相同采样参数的只读检查，确认现场净空、静止无报警、急停可用。启动真机候选？"):
+            return
+        if production_rolling_pose and not adaptive_trajectory and not messagebox.askyesno(
+            "V1.5正式连续厂商队列现场确认",
+            ("本次不再按50段自动结束，最长30分钟；按住Grip跟随，松开Grip调用厂商停止，"
+             "停止确认后可再次握持，从新的实测TCP重新捕获。不可达、关节变化过大等厂商逆解"
+             "筛查结果只丢弃当前目标，不会终止整个会话。\n\n"
+             + ("扩展姿态优先已启用：XYZ按手柄1:1跟随并限制在启动TCP周围30cm，姿态范围±45°；"
+                "速度200mm/s、加速度500mm/s²、单段≤80mm/4°。\n\n"
+                if expanded_pose_priority else
+                "姿态优先已启用：姿态范围±30°，XYZ仍按手柄1:1小幅跟随，但被限制在启动TCP"
+                "周围10cm内；这不是绝对锁位，接触物体时仍可做小范围位置修正。\n\n"
+                if pose_priority else
+                "标准六维已启用：位置限制在启动TCP周围100cm，姿态范围±30°。\n\n")
+             + ("累计姿态可到±45°；" if expanded_pose_priority else
+                "单段仍≤60mm/3°，累计姿态可到±30°；" if pose_priority else
+                "单段仍≤60mm/6°，累计姿态可到±30°；")
+             + ("TCP速度200mm/s、加速度500mm/s²、姿态速度45°/s；"
+                if expanded_pose_priority else
+                "TCP速度150mm/s、加速度400mm/s²、姿态速度30°/s；")
+             + "20mm/2°合并采样，控制柜队列深度最多2。JAKA碰撞、报警、状态异常、4秒无进展、"
+               "实测路径偏离或停止未确认仍会结束会话。\n\n"
+               "请确认整个预期扫掠空间有净空、人员在外、急停可立即触及，JAKA App无报警且"
+               "机械臂静止并保持使能。任何反向、关节突变、抖动、异响或报警立即松Grip。是否启动？")):
+            return
         staged = (one_segment or two_segment or five_segment or ten_segment
                   or twenty_segment or orientation_acceptance
                   or three_orientation_acceptance or ten_orientation_acceptance
-                  or bounded_six_dof or expanded_six_dof or production_six_dof)
+                  or bounded_six_dof or expanded_six_dof or production_six_dof
+                  or production_shadow or development_pose_acceptance
+                  or development_continuous or development_pose_blend
+                  or development_hand_pose_blend or development_rolling_pose
+                  or production_rolling_pose)
         bounded_continuous = bool(self.live.get() and not staged and not communications_only)
-        if rotation_shadow:
+        if rotation_shadow or production_shadow:
             bounded_continuous = False
         if bounded_continuous and not messagebox.askyesno(
             "受限连续位置遥操作确认",
@@ -356,12 +749,17 @@ class EndpointTeleopGui:
         # 运行模式明确分开，减少嵌套条件表达式导致的误读。
         if rotation_shadow:
             mode = "--rotation-shadow"
+        elif production_shadow:
+            mode = "--shadow"
         elif communications_only:
             mode = "--comm-check"
         elif (one_segment or two_segment or five_segment or ten_segment
               or twenty_segment or orientation_acceptance
               or three_orientation_acceptance or ten_orientation_acceptance
               or bounded_six_dof or expanded_six_dof or production_six_dof
+              or development_pose_acceptance or development_continuous
+              or development_pose_blend or development_hand_pose_blend
+              or development_rolling_pose or production_rolling_pose
               or self.live.get()):
             mode = "--live"
         else:
@@ -371,8 +769,17 @@ class EndpointTeleopGui:
                 "--single-owner-display",
                 "--speed-mm-s", str(settings.speed_mm_s), "--radius-mm", str(settings.radius_mm),
                 "--acceleration-mm-s2", str(settings.acceleration_mm_s2)]
+        if mode == "--live":
+            args.append("--configure-frames")
         if communications_only or staged or bounded_continuous or rotation_shadow:
-            session_seconds = (600 if (bounded_continuous or bounded_six_dof or expanded_six_dof or production_six_dof) else 180 if twenty_segment else
+            session_seconds = (60 if adaptive_pilot else
+                               1800 if production_rolling_pose else
+                               30 if production_shadow else
+                               600 if development_rolling_pose else
+                               90 if development_hand_pose_blend else
+                               60 if (development_pose_acceptance or development_pose_blend) else
+                               180 if development_continuous else
+                               600 if (bounded_continuous or bounded_six_dof or expanded_six_dof or production_six_dof) else 180 if twenty_segment else
                                120 if ten_segment else 90 if (five_segment or ten_orientation_acceptance) else
                                45 if (two_segment or three_orientation_acceptance) else 30)
             args.extend(["--session-seconds", str(session_seconds)])
@@ -396,10 +803,36 @@ class EndpointTeleopGui:
             args.append("--bounded-six-dof")
         if expanded_six_dof:
             args.append("--expanded-six-dof")
-        if production_six_dof:
+        if (production_six_dof or production_shadow or development_pose_acceptance
+                or development_continuous or development_pose_blend
+                or development_hand_pose_blend or development_rolling_pose
+                or production_rolling_pose):
             args.extend(["--production-six-dof",
                          "--rotation-radius-deg", str(rotation_radius),
-                         "--orientation-speed-deg-s", str(orientation_speed)])
+                         "--orientation-speed-deg-s", str(orientation_speed),
+                         "--segment-mm", str(settings.segment_mm),
+                         "--max-orientation-step-deg", str(orientation_step)])
+        if development_pose_acceptance:
+            args.append("--development-one-pose-acceptance")
+        if development_continuous:
+            args.append("--development-continuous-long")
+        if development_pose_blend:
+            args.append("--development-two-pose-blend-acceptance")
+        if development_hand_pose_blend:
+            args.append("--development-hand-two-pose-blend")
+        if development_rolling_pose:
+            args.append("--development-rolling-pose-queue")
+        if production_rolling_pose:
+            args.append("--production-rolling-pose")
+        if adaptive_trajectory:
+            args.extend(("--adaptive-trajectory","--max-check-mm",str(dynamic_policy.max_check_mm),
+                         "--max-check-deg",str(dynamic_policy.max_check_deg)))
+        if adaptive_pilot:
+            args.append("--adaptive-pilot")
+        if pose_priority:
+            args.append("--pose-priority")
+        if expanded_pose_priority:
+            args.append("--expanded-pose-priority")
         if bounded_continuous:
             args.append("--bounded-continuous")
         env = os.environ.copy()
@@ -426,6 +859,15 @@ class EndpointTeleopGui:
         self.state.set("正在连接；保持Grip松开")
         self.append("\n启动" + ("只读通信检查" if communications_only else
                              "姿态只读影子（零运动）" if rotation_shadow else
+                             "v1.2长段六维只读影子（零运动）" if production_shadow else
+                             "v1.2一次≤60mm/6°真机验收" if development_pose_acceptance else
+                             "v1.2固定参数连续长段六维验收" if development_continuous else
+                             "v1.2两段六维厂商队列圆滑验收" if development_pose_blend else
+                             "v1.2手柄两端点厂商队列圆滑验收" if development_hand_pose_blend else
+                             "v1.5滚动六维厂商队列圆滑验收" if development_rolling_pose else
+                             ("V1.5扩展姿态优先连续六维" if expanded_pose_priority else
+                              "V1.5姿态优先连续六维" if pose_priority else
+                              "V1.5正式连续六维") if production_rolling_pose else
                              "正式可调六维跟随" if production_six_dof else
                              "扩展六维跟随" if expanded_six_dof else
                              "受限连续六维跟随" if bounded_six_dof else
@@ -469,6 +911,11 @@ class EndpointTeleopGui:
                     continue
                 if not isinstance(event, dict):
                     continue
+                if self.readonly_test_active:
+                    if event.get("state")!="trajectory_input_status": self.append(line)
+                    self.readonly_event(event)
+                    if self.closing and not self.readonly_test_active: return
+                    continue
                 if event.get("state") == "sdk_begin":
                     self.sdk_wait = (event.get("call_id"), event.get("method"), time.perf_counter())
                     continue
@@ -480,6 +927,8 @@ class EndpointTeleopGui:
                         self.append(f"SDK异常：{event.get('method')}，{event.get('elapsed_ms'):.1f}ms，返回{event.get('code')}\n")
                     continue
                 self.append(line)
+                if event.get("state") == "intent_admission":
+                    self.show_intent_status(event.get("planning") or {})
                 if "message" in event:
                     self.state.set(event["message"])
                 if event.get("state") in ("fault", "acceptance_incomplete", "stop_unconfirmed", "logout_warning"):
@@ -518,11 +967,12 @@ class EndpointTeleopGui:
         """只发停止请求，等待子进程报告停止确认。"""
         self.stopping = True
         self.send("STOP")
-        self.state.set("已请求停止；等待SDK确认和注销")
+        self.state.set("已请求结束只读测试；等待SDK返回并注销（不强杀进程）" if self.readonly_test_active
+                       else "已请求停止；等待SDK确认和注销")
 
     def close(self):
         """窗口关闭时先请求停机；子进程仍在运行就不直接销毁界面。"""
-        if self.process is not None and self.process.poll() is None:
+        if self.readonly_test_active or (self.process is not None and self.process.poll() is None):
             self.closing = True
             self.stop_waiting()
         else:

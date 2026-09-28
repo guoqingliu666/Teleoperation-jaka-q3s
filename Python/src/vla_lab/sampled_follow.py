@@ -59,8 +59,8 @@ class Settings:
     def __post_init__(self):
         # 数据结构允许最终目标所需的1m工作球；现行真机入口仍只开放代码固定的
         # 20/30/60/100/200mm分阶段档位，不能通过命令行或滑杆绕过。
-        for name, low, high in (("radius_mm", 20, 1000), ("speed_mm_s", 5, 100),
-                                ("acceleration_mm_s2", 10, 400), ("segment_mm", 2, 20),
+        for name, low, high in (("radius_mm", 20, 1000), ("speed_mm_s", 5, 300),
+                                ("acceleration_mm_s2", 10, 800), ("segment_mm", 2, 100),
                                 ("input_timeout_s", .05, .15), ("sample_period_s", .02, .1),
                                 ("deadband_mm", .5, 3)):
             value = getattr(self, name)
@@ -283,7 +283,7 @@ class SampledFollower:
                         "anchor_tcp": self.anchor, "reference_m": frame.position_m,
                         "mapping": [x for row in matrix for x in row],
                         "center_tcp": self.center, "radius_mm": self.settings.radius_mm,
-                        "position_only": True})
+                        "position_enabled": True, "position_only": True})
                 if name == "pose_delta":
                     delta, _ = value
                     requested = tuple(self.anchor[i] + delta[i] for i in range(3)) + self.anchor[3:]

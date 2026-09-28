@@ -13,6 +13,9 @@
 *.mat text eol=lf whitespace=-trailing-space
 .gitignore text eol=lf
 .gitattributes text eol=lf
+VERSION text eol=lf
+*_SHA256SUMS.txt text eol=lf
+*.ps1 text eol=crlf
 
 # 已验收的Unity Player必须逐字节保留，避免Git在不同Windows设置下改写运行时配置。
 Player_通信修复/** -text

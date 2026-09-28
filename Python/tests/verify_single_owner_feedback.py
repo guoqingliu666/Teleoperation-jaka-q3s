@@ -49,6 +49,23 @@ class Capture:
 
 
 class SingleOwnerTests(unittest.TestCase):
+    def test_recent_owner_measurement_is_reused_with_original_timestamp(self):
+        robot, capture = FakeRobot(), Capture()
+        reader = SingleOwnerFeedback(robot,broadcaster=capture,clock=lambda:1.,
+                                     wall_clock_ns=lambda:1_000_000_000)
+        sample=((.2,)*6,(450.,100.,500.,0.,0.,0.),.98,.99)
+        reader.tick(measured_sample=sample)
+        self.assertEqual(robot.calls,["status","tool"])
+        state=capture.sent[0][0]
+        self.assertEqual(state.joints_rad,(.2,)*6)
+        self.assertAlmostEqual(state.sample_time_ns,980_000_000,delta=1)
+
+    def test_stale_cached_measurement_falls_back_to_sdk(self):
+        robot=FakeRobot()
+        reader=SingleOwnerFeedback(robot,broadcaster=Capture(),clock=lambda:1.)
+        reader.tick(measured_sample=((.2,)*6,(0.,)*6,.5,.6))
+        self.assertEqual(robot.calls,["status","tool","joints","tcp"])
+
     def test_feedback_uses_measured_not_target(self):
         times = iter([0., 0., .001, .004, .01, .01, .02, .03])
         capture = Capture()

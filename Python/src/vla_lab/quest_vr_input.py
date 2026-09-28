@@ -201,8 +201,13 @@ class QuestUdpReceiver:
     才能取得锁；已锁来源失追踪超过 1 秒后，新的有效来源可接管。
     """
 
-    def __init__(self, host: str, port: int) -> None:
-        self._queue: queue.Queue[QuestFrame] = queue.Queue(maxsize=1)
+    def __init__(self, host: str, port: int, *, history_size: int = 1) -> None:
+        if not 1 <= history_size <= 64:
+            raise ValueError("输入历史容量必须在1到64帧之间")
+        self._queue: queue.Queue[QuestFrame] = queue.Queue(maxsize=history_size)
+        self._history_size = history_size
+        self.history_overflow = False
+        self._last_received: QuestFrame | None = None
         self._stop = threading.Event()
         self.error: str | None = None
         self.source_endpoint: str | None = None
@@ -316,9 +321,13 @@ class QuestUdpReceiver:
                         # 明明 VR 内看得到手柄，遥操作窗口却一直 tracked=False 的原因。
                         if frame.connected and frame.tracked and frame.valid:
                             locked_last_s = now_s
+                    self._last_received = frame
                     try:
                         self._queue.put_nowait(frame)
                     except queue.Full:
+                        if self._history_size > 1:
+                            # 连续模式不许把丢失的中间姿态伪装成连续输入。
+                            self.history_overflow = True
                         try:
                             self._queue.get_nowait()
                         except queue.Empty:
@@ -342,6 +351,19 @@ class QuestUdpReceiver:
                 latest = self._queue.get_nowait()
             except queue.Empty:
                 return latest
+
+    def recent(self) -> list[QuestFrame]:
+        """按收到的先后交付有界历史；溢出由调用方撤销运动许可。"""
+        frames = []
+        while True:
+            try:
+                frames.append(self._queue.get_nowait())
+            except queue.Empty:
+                return frames
+
+    def peek(self) -> QuestFrame | None:
+        """SDK下发前检查最新Grip，不消费尚待逐帧处理的历史。"""
+        return self._last_received
 
     def close(self) -> None:
         """结束 UDP 接收线程，不涉及 JAKA SDK。"""

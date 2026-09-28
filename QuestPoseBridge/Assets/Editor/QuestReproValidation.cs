@@ -69,7 +69,8 @@ public static class QuestReproValidation
             var binding = new JakaTargetBinding.Binding {
                 binding_id="offline-one", anchor_tcp=new float[]{400,100,300,0,0,0},
                 reference_m=new float[]{0,1,0}, mapping=new float[]{0,0,1,-1,0,0,0,1,0},
-                center_tcp=new float[]{400,100,300,0,0,0}, radius_mm=100, position_only=true
+                center_tcp=new float[]{400,100,300,0,0,0}, radius_mm=100,
+                position_enabled=true, position_only=true
             };
             var envelope = new JakaTargetBinding.Packet {
                 schema="quest_jaka_target_binding.v1", binding=binding,
@@ -106,6 +107,7 @@ public static class QuestReproValidation
             if(!view.TargetMarker.gameObject.activeSelf) throw new Exception("新绑定不能恢复显示");
             // 姿态只读绑定：位置保持，黄色工具轴随手柄旋转；不会改变实测关节。
             binding.binding_id="offline-rotation";
+            binding.position_enabled=false;
             binding.position_only=false;
             binding.rotation_enabled=true;
             binding.rotation_limit_deg=10f;
@@ -126,6 +128,36 @@ public static class QuestReproValidation
                                            new Vector3(binding.anchor_tcp[0],binding.anchor_tcp[1],binding.anchor_tcp[2]));
             if(tcpMove>.0001f || markerAngle<4f || jointAngle>.001f)
                 throw new Exception($"姿态只读影子未独立旋转或污染实测关节: palmMove={markerMove}, tcpMove={tcpMove}, marker={markerAngle}, joint={jointAngle}");
+            // 正式六维显示契约覆盖1000mm工作球、±30°姿态，并同时跟随位置与姿态。
+            binding.binding_id="offline-production-six-dof";
+            binding.position_enabled=true;
+            binding.position_only=false;
+            binding.radius_mm=1000f;
+            binding.rotation_limit_deg=30f;
+            binding.reference_m=new float[]{0,1,0};
+            binding.reference_rotation_xyzw=new float[]{0,0,0,1};
+            if(!JakaTargetBinding.Valid(binding))
+                throw new Exception("正式六维显示绑定被错误拒绝");
+            float[] productionTarget=JakaTargetBinding.Target(
+                binding,new Vector3(0.04f,1,0),Quaternion.AngleAxis(12f,Vector3.up));
+            float productionRotationDelta=Mathf.Sqrt(
+                Mathf.Pow(productionTarget[3]-binding.anchor_tcp[3],2f)
+                +Mathf.Pow(productionTarget[4]-binding.anchor_tcp[4],2f)
+                +Mathf.Pow(productionTarget[5]-binding.anchor_tcp[5],2f));
+            if(Vector3.Distance(new Vector3(productionTarget[0],productionTarget[1],productionTarget[2]),
+                                new Vector3(binding.anchor_tcp[0],binding.anchor_tcp[1],binding.anchor_tcp[2]))<39f
+                || productionRotationDelta<Mathf.Deg2Rad*8f)
+                throw new Exception("正式六维黄色目标未同时跟随位置与姿态");
+            // 全朝向候选必须被显示协议接纳；90°不能再裁成30°。
+            binding.rotation_limit_deg=180f;
+            binding.anchor_tcp=new float[]{0,0,0,0,0,0};
+            binding.center_tcp=new float[]{0,0,0,0,0,0};
+            binding.mapping=new float[]{1,0,0,0,1,0,0,0,1};
+            float[] fullTarget=JakaTargetBinding.Target(binding,new Vector3(0,1,0),
+                Quaternion.AngleAxis(90f,Vector3.forward));
+            if(Mathf.Abs(fullTarget[5]-Mathf.PI/2f)>.001f)
+                throw new Exception("全朝向黄色目标仍被小角度限制");
+            Debug.Log("QUEST_FULL_ORIENTATION_PASS: 90 degree target, no SDK/no physical commands");
             Debug.Log("QUEST_LOCAL_TARGET_PASS: independent target, release latch, rebind; no SDK/no physical commands");
             Debug.Log("QUEST_MEASURED_FEEDBACK_VALIDATION_PASS: 60 intermediate frames; old source/stale rejected");
         }

@@ -1,9 +1,9 @@
 """受限连续六维跟随：组合完整TCP目标，逐段调用JAKA厂商规划接口。
 
-本模块不做自编逆解，也不使用servo接口。手柄只生成最新目标；标准档每次最多
-平移10mm、旋转1°，扩展档每次最多平移20mm、旋转2°。两档均在段内按
-2mm/0.2°采样并调用厂商kine_inverse筛查。任何时刻只有一条命令在途，
-Grip松开或许可失效即请求停止。
+本模块不做自编逆解，也不使用servo接口。手柄只生成最新目标；正式档允许在
+界面中把单条端点采样段调整到20—100mm、2—10°，仍在段内按2mm/0.2°
+调用厂商kine_inverse筛查。任何时刻只有一条命令在途，Grip松开或许可失效
+即请求停止。较长段减少“到位—再规划”的启停次数，但不等同连续伺服。
 """
 from __future__ import annotations
 
@@ -25,6 +25,10 @@ from .sampled_follow import (
 
 def _clamp_rotation(rotation, center_rotation, maximum_deg):
     """把绝对姿态限制在会话初始姿态附近，避免反复松握扩大姿态许可。"""
+    # 任意两个朝向的最短角距离不超过180°；该值表示开放全部朝向，
+    # 不是允许关节无限转圈。分段路径、厂商逆解和实际关节限位仍须检查。
+    if maximum_deg == 180.0:
+        return rotation
     relative = matmul(rotation, transpose(center_rotation))
     angle_deg = math.degrees(rotation_angle_rad(relative))
     if angle_deg <= maximum_deg:
@@ -80,30 +84,39 @@ class BoundedPoseFollower:
                  emit=None, clock=time.monotonic, rotation_radius_deg=10.0,
                  orientation_speed_deg_s=5.0,
                  orientation_acceleration_deg_s2=10.0,
-                 max_orientation_step_deg=1.0):
+                 max_orientation_step_deg=1.0,
+                 position_radius_mm=None):
         self.robot, self.settings, self.limits = robot, settings, limits_deg
         self.emit, self.clock = emit or (lambda **_: None), clock
         self.rotation_radius_deg = float(rotation_radius_deg)
         self.orientation_speed_deg_s = float(orientation_speed_deg_s)
         self.orientation_acceleration_deg_s2 = float(orientation_acceleration_deg_s2)
         self.max_orientation_step_deg = float(max_orientation_step_deg)
+        self.position_radius_mm = float(
+            settings.radius_mm if position_radius_mm is None else position_radius_mm)
+        if not 20.0 <= self.position_radius_mm <= settings.radius_mm:
+            raise ValueError("六维位置子范围必须在20mm与总活动半径之间")
         profile=(self.rotation_radius_deg,self.orientation_speed_deg_s,
                  self.orientation_acceleration_deg_s2,self.max_orientation_step_deg,
                  float(settings.radius_mm),float(settings.speed_mm_s),
                  float(settings.acceleration_mm_s2),float(settings.segment_mm))
         standard = profile == (10.0,5.0,10.0,1.0,200.0,30.0,60.0,10.0)
         expanded = profile == (30.0,10.0,20.0,2.0,500.0,50.0,100.0,20.0)
+        # 动态调度的首次真机档：中等可视范围，但沿用已验收的低速上限。
+        # 这个档位只收紧目标包络，不改变厂商逆解或关节限位判据。
+        adaptive_pilot = profile == (10.0,5.0,20.0,2.0,200.0,30.0,60.0,20.0)
         production = (
-            self.max_orientation_step_deg == 2.0
-            and settings.segment_mm == 20.0
+            2.0 <= self.max_orientation_step_deg <= 10.0
+            and 20.0 <= settings.segment_mm <= 100.0
             and 200.0 <= settings.radius_mm <= 1000.0
-            and 5.0 <= settings.speed_mm_s <= 100.0
-            and 10.0 <= settings.acceleration_mm_s2 <= 400.0
-            and 10.0 <= self.rotation_radius_deg <= 30.0
-            and 1.0 <= self.orientation_speed_deg_s <= 20.0
+            and 5.0 <= settings.speed_mm_s <= 300.0
+            and 10.0 <= settings.acceleration_mm_s2 <= 800.0
+            and (10.0 <= self.rotation_radius_deg <= 45.0
+                 or self.rotation_radius_deg == 180.0)
+            and 1.0 <= self.orientation_speed_deg_s <= 60.0
             and self.orientation_acceleration_deg_s2 == min(
-                80.0, 4.0*self.orientation_speed_deg_s))
-        if not (standard or expanded or production):
+                240.0, 4.0*self.orientation_speed_deg_s))
+        if not (standard or expanded or adaptive_pilot or production):
             raise ValueError("六维真机参数必须使用已定义的标准档或扩展档")
         self.fresh_position_m=.04 if self.max_orientation_step_deg==2 else .02
         self.fresh_rotation_deg=10.0 if self.max_orientation_step_deg==2 else 5.0
@@ -111,6 +124,8 @@ class BoundedPoseFollower:
                                             trigger_on=.75, trigger_off=.55)
         self.center = self.center_rotation = self.initial_joints = None
         self.anchor = self.desired = self.active_target = None
+        # 目标的时间只在真正接受新手柄姿态时更新，不能随轮询/心跳刷新。
+        self.desired_received_s = None
         self.active_start_tcp = self.last_completed_measurement = None
         self.path_solutions = []
         self.pending = None
@@ -144,6 +159,7 @@ class BoundedPoseFollower:
     def stop(self, reason):
         self.emit(state="display_binding", binding=None)
         self.pending = self.desired = self.anchor = None
+        self.desired_received_s = None
         self.binding_id = None
         self.tracker.reset_grip()
         self.release_seen = False
@@ -155,14 +171,16 @@ class BoundedPoseFollower:
 
     def _update_target(self, frame, delta, mapped_rotation):
         requested_position = tuple(self.anchor[i] + delta[i] for i in range(3)) + self.anchor[3:]
-        position = clamp_position(requested_position, self.center, self.settings.radius_mm)
+        position = clamp_position(requested_position, self.center, self.position_radius_mm)
         desired_rotation = rpy_matrix(tuple(self.anchor[3:]))
         if mapped_rotation is not None:
             desired_rotation = matmul(mapped_rotation, desired_rotation)
         desired_rotation = _clamp_rotation(
             desired_rotation, self.center_rotation, self.rotation_radius_deg)
         self.desired = tuple(position[:3]) + _unwrap(
-            matrix_rpy(desired_rotation), self.center[3:])
+            matrix_rpy(desired_rotation),
+            (self.desired or self.anchor)[3:])
+        self.desired_received_s = frame.received_s if frame is not None else None
         self.emit(state="target", message="实时六维采样目标", target=self.desired)
 
     def tick(self, frame, *, permit=True, allow_plan=True):
@@ -213,7 +231,7 @@ class BoundedPoseFollower:
                           completed_segments=self.completed_segments)
             elif now-self.active_since>4:
                 raise RuntimeError("六维短段到位超时")
-        if (not allow_plan or self.active or self.stopping or not permit or not valid
+        if (self.active or self.stopping or not permit or not valid
                 or not self.heading or frame.grip<=.55):
             return
         if self.source is not None and frame.udp_source != self.source:
@@ -244,7 +262,8 @@ class BoundedPoseFollower:
                         "reference_m":frame.position_m,
                         "reference_rotation_xyzw":frame.rotation_xyzw,
                         "mapping":[x for row in matrix for x in row],
-                        "center_tcp":self.center,"radius_mm":self.settings.radius_mm,
+                        "center_tcp":self.center,"radius_mm":self.position_radius_mm,
+                        "position_enabled":True,
                         "position_only":False,"rotation_enabled":True,
                         "rotation_limit_deg":self.rotation_radius_deg})
                 elif name=="pose_delta":
@@ -262,7 +281,9 @@ class BoundedPoseFollower:
                             continue
                     self.previous_mapped_rotation=rotation
                     self._update_target(frame,delta,rotation)
-        if self.desired is None or now<self.next_plan:
+        # ``allow_plan=False`` 仍继续更新手柄绑定与黄色目标，只禁止生成新的
+        # 机器人命令。两端点队列验收正是用它先采样、后统一厂商逆解。
+        if not allow_plan or self.desired is None or now<self.next_plan:
             return
         self.next_plan=now+self.settings.sample_period_s
         joints,tcp=measured(self.robot)

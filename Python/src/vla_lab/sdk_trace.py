@@ -37,13 +37,26 @@ class TracedSdk:
         self.serial = 0
         self.fault = None
         self.cache = {}
+        self._stop_query = False
+
+    def get_stop_motion_status(self):
+        """仅供停止确认读取队列状态；不解除故障锁、不允许继续运动。
+
+        同一SDK所有者线程内调用。迟到的状态仍会抛错，不能据此宣称停稳。
+        """
+        self._stop_query = True
+        try:
+            return self.get_motion_status()
+        finally:
+            self._stop_query = False
 
     def __getattr__(self, name):
         method = getattr(self.raw, name)
         if not callable(method): return method
         if name not in self.cache:
             def call(*args, **kwargs):
-                if self.fault and name not in self.CLEANUP:
+                if (self.fault and name not in self.CLEANUP
+                        and not (self._stop_query and name == "get_motion_status")):
                     raise RuntimeError(f"SDK已锁定：{self.fault}；拒绝后续{name}")
                 self.serial += 1
                 call_id = self.serial
