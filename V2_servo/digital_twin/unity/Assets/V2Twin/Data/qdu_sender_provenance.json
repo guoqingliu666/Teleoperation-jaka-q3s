@@ -1,0 +1,6 @@
+{
+  "source": "F:\\规划\\工程\\设备\\VR\\QuestPoseBridge\\Assets\\VrPoseUdpSender.cs",
+  "sha256_original": "95f7207e8cfa4ff505511d3be116b993c479847012ce8a8385ef793639d7bda3",
+  "adaptation": "default UDP port 5005 -> 5006",
+  "license": "not located; local research use pending provenance/license confirmation"
+}

@@ -1,0 +1,2 @@
+# Exact numerical runtime used for the recorded acceptance.
+numpy==2.5.2

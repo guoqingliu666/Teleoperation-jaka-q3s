@@ -1,0 +1,190 @@
+{
+  "scope": "public_shadow_export_not_live_release",
+  "tag": "v2.0.0-shadow-smooth.20261004",
+  "changed_copied_paths": [
+    "config/teleop.json",
+    "src/v2_servo/launcher.py"
+  ],
+  "unchanged_teleop_modules": [
+    {
+      "path": "src/v2_servo/teleop/backends.py",
+      "sha256": "87340e73b3c7b49745092bff86faf0c80d961d275be1d172234c137ee3584798"
+    },
+    {
+      "path": "src/v2_servo/teleop/commissioning_guidance.py",
+      "sha256": "d5b9d2338a0cdccd0a680d558c239387b6219ca6daec1dc14eb1c059c6be379a"
+    },
+    {
+      "path": "src/v2_servo/teleop/continuous_pose.py",
+      "sha256": "1a1e6c172ffcb5a173b3a301bbda94b289968e9fa1e65963c1b609e40ca0bf4e"
+    },
+    {
+      "path": "src/v2_servo/teleop/continuous_shadow.py",
+      "sha256": "504ee9e849bb6247a1e0136db0ffd605e4bcf45ef58301ab007286ba2715e7ab"
+    },
+    {
+      "path": "src/v2_servo/teleop/edg.py",
+      "sha256": "e806beb97f9f34d30caa033361c243ddd6093bba017d003c36cecd7f32e22935"
+    },
+    {
+      "path": "src/v2_servo/teleop/engine.py",
+      "sha256": "94e5c07d3590bc6545d30c0cbc5620bb2423f409503aa3cc366b1226c41a37eb"
+    },
+    {
+      "path": "src/v2_servo/teleop/expansion_evidence.py",
+      "sha256": "2ed7d7a58f2db21c5efd476fe7eea92dc0b0abcc945467aaa0bee21d8d6d7fb9"
+    },
+    {
+      "path": "src/v2_servo/teleop/feedback.py",
+      "sha256": "1fe598b05bcc4d3f91c33908784312c7d4d539f1e31f768b1cc0eb940f76ef54"
+    },
+    {
+      "path": "src/v2_servo/teleop/gesture_completion.py",
+      "sha256": "624418418dcff02e201e061c27e6b5059c598ac9aa6a87dbea42856ed3853dd8"
+    },
+    {
+      "path": "src/v2_servo/teleop/global_kinematics.py",
+      "sha256": "d93cf361ad2b8e0c7cbfe9445ab1d15410091fcad212ceb299ce70c036a81860"
+    },
+    {
+      "path": "src/v2_servo/teleop/global_model_check.py",
+      "sha256": "d9322bccdbfc1aeec8dcf86430c9fdcdb898a0243f4157f666a7bf15d9a1c6d1"
+    },
+    {
+      "path": "src/v2_servo/teleop/input_gate.py",
+      "sha256": "70ae4d4e17cdb7cc756dfbc534c47a7cc9c6105b3824c01a70ef02f4af0a220b"
+    },
+    {
+      "path": "src/v2_servo/teleop/ipc.py",
+      "sha256": "bd9f480ecd1795ad48b42eae7443243a32b72e95f44d3829a5dc5f3ff4abe8af"
+    },
+    {
+      "path": "src/v2_servo/teleop/live_rotation_input.py",
+      "sha256": "fbad157784597c4d3f381abc5d4afc9228b11feb0e828c2c47416a2962f220a5"
+    },
+    {
+      "path": "src/v2_servo/teleop/local_nonlinear.py",
+      "sha256": "aaecee086e1ef61fdd369ec29fc9bdeb88725d998101eced1e89bdf5013f59bb"
+    },
+    {
+      "path": "src/v2_servo/teleop/local_rotation.py",
+      "sha256": "d237ea9b46ae97ad7286056776d6350a1c6d8f8cf3708026c974ff6f3be944a8"
+    },
+    {
+      "path": "src/v2_servo/teleop/local_xyz.py",
+      "sha256": "dc106453a8fbd54a61972888e42c577648fa8887eaf0478581d0024177d7df2c"
+    },
+    {
+      "path": "src/v2_servo/teleop/motion.py",
+      "sha256": "b7ae552ab4e05505ab1809a5a50780a86a82224daa549e5a7404364d2239ceb6"
+    },
+    {
+      "path": "src/v2_servo/teleop/native_sdk.py",
+      "sha256": "9ecc82f343dded6d7c58932617d66fa73c80b1cef873d087b3214b9956d23b2f"
+    },
+    {
+      "path": "src/v2_servo/teleop/official_local.py",
+      "sha256": "7c956b9813c4c00e57d2c5891e436431e03f76070f980793f4026d2562764aec"
+    },
+    {
+      "path": "src/v2_servo/teleop/pose_evidence.py",
+      "sha256": "e1977ce4939090ff2ee6c1eb764d10abee184caec9d13c5c439d9b6879440b6e"
+    },
+    {
+      "path": "src/v2_servo/teleop/pose_expansion.py",
+      "sha256": "0bebd1c68bc9182d114c4b35c899a96d1799f277daeacc366dbfa6b489e5aa94"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest.py",
+      "sha256": "913d0c980cd3aa3348e7b0fa62b6b75eab19ff988b724cae7f14ce609b40b513"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_j1.py",
+      "sha256": "90c77f90cf261c4e6266355c5bc7523594ac718f1b97aae6d86f49b2e8e443fa"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_pose_live.py",
+      "sha256": "dfccfd56a6adb45164ba1c753a6ff53495c4abb10ecd929ca5d3b17e4cb721b8"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_pose_shadow.py",
+      "sha256": "b7adf0a704fa998b43892687f388d3dc866f68f37fef6ff3d638a00e675d78a8"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_rotation.py",
+      "sha256": "68c833a960bd50049b44131cc732855a4a9c87bd598f3572b5d0223dc73dc563"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_tcp_axis.py",
+      "sha256": "59a05648aa89cde517dc2e924c04db15c92baf412f9340b00e1693bfb0ed5d50"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_tcp_rotation.py",
+      "sha256": "ef45b4eb565ffb9808d3ece0355b622ab80d3f3a2346a15856a97cbf6e680f34"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_tcp_xyz.py",
+      "sha256": "5b1ba55b6b07a0963ea47b68a6f0fa3b9c3f917720c32226dcab6adf84387c28"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_tcp_z.py",
+      "sha256": "5264f4d5470ebeb7ff5c978a47f66b7e3d9ea224ab405f8352e1da37bb9a5537"
+    },
+    {
+      "path": "src/v2_servo/teleop/quest_xyz.py",
+      "sha256": "1465f1fb5580dfa086b34245b0fc6975565e651044b032c1a7049454213c3ae7"
+    },
+    {
+      "path": "src/v2_servo/teleop/rotation_evidence.py",
+      "sha256": "a37d38b8574cb7ac597862a25b21504b8bc5ff17e6eebe19e27e1bcd2d64ff0f"
+    },
+    {
+      "path": "src/v2_servo/teleop/rotation_rehearsal.py",
+      "sha256": "bcc7e0bca0bd1a1376bca4b4ff597ba85602f27b74e0d950b078e08cbf4ad692"
+    },
+    {
+      "path": "src/v2_servo/teleop/shadow_start.py",
+      "sha256": "3831914aafdb126dc87a4cb941b4188a1e20df525a6b7c88ac214f54533b2ed0"
+    },
+    {
+      "path": "src/v2_servo/teleop/shadow_telemetry.py",
+      "sha256": "d54ad00b681b2a17abe9568fc19cf64232de65d9cb077b1804e4f02415e77a38"
+    },
+    {
+      "path": "src/v2_servo/teleop/single_axis.py",
+      "sha256": "2fc871b9eaf4089e4e28fc0d106211bf5b2832789d4c88a0e2a35b3af61186fd"
+    },
+    {
+      "path": "src/v2_servo/teleop/static_hold.py",
+      "sha256": "a1a79ad999ee3b975731ed9d6bd142c4388d9281ead525835b58d214910ce0ea"
+    },
+    {
+      "path": "src/v2_servo/teleop/twin_publish.py",
+      "sha256": "aeecd36fcf61ad9583917febbccbfe194dbb10e5d64b06b6429d22049500cf16"
+    },
+    {
+      "path": "src/v2_servo/teleop/workspace_evidence.py",
+      "sha256": "89516c8f2d041112c217f5c5e6aacc4a1ac7e542e654b9970c188a7b3c4bf4a8"
+    },
+    {
+      "path": "src/v2_servo/teleop/xyz_evidence.py",
+      "sha256": "d79b2a3aefc4497a298b75b078681dd7da6f842c80bacc5afa9c9a7a6ba3b74d"
+    },
+    {
+      "path": "src/v2_servo/teleop/__init__.py",
+      "sha256": "84874b3483faceb78858548e7132a4f039463e6c97a08eafa4a16db72fa38674"
+    }
+  ],
+  "SDK_bundled": false,
+  "raw_user_episodes_bundled": false,
+  "live_entry_disabled": true,
+  "physics_collision_accepted": false,
+  "new_real_Tool1_mm_deg": [
+    0,
+    0,
+    200,
+    0,
+    0,
+    0
+  ]
+}

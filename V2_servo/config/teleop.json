@@ -1,0 +1,36 @@
+{
+  "host": "192.168.110.224",
+  "feedback_transport": "edg_mode1",
+  "edg_client_ip": "192.168.110.96",
+  "edg_port": 30003,
+  "sdk_directory": "vendor/jaka/Windows/python3/x64",
+  "gui_refresh_ms": 40,
+  "input_heartbeat_ms": 20,
+  "commissioning_scheduler": {
+    "spin_s": 0.0005,
+    "thread_priority": "above_normal",
+    "progress_interval_s": 0.25
+  },
+  "joint_speed_scale": 0.1,
+  "acceleration_scale": 0.25,
+  "vr_port": 5006,
+  "vr_basis": [
+    [
+      0,
+      0,
+      1
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ]
+  ],
+  "vr_mapping_status": "simulation_only_until_site_calibrated",
+  "deployment_review": "config/live_deployment.json"
+}

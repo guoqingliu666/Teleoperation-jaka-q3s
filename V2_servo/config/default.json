@@ -1,0 +1,92 @@
+{
+  "version": "2.0.0-dev2",
+  "mode": "offline",
+  "seed": 20260927,
+  "period_s": 0.008,
+  "workspace": {
+    "policy": "full_configured_joint_domain",
+    "start_relative_radius_m": null,
+    "orientation_cap_deg": null,
+    "note": "2 degree joint-end margin only; scene collision and cable constraints still required"
+  },
+  "filters": {
+    "enabled": true,
+    "command_hz": 6.0,
+    "cartesian_hz": 6.0,
+    "velocity_hz": 10.0,
+    "acceleration_hz": 8.0,
+    "torque_hz": 12.0,
+    "controller_lpf_hz": 6.0,
+    "controller_lpf_policy": "preserve",
+    "moving_average": 1,
+    "notch_hz": null,
+    "notch_q": 4.0
+  },
+  "limits": {
+    "lower_rad": [
+      -6.2482787221397,
+      -1.4486232791552935,
+      -3.01941960595019,
+      -1.4486232791552935,
+      -6.2482787221397,
+      -6.2482787221397
+    ],
+    "upper_rad": [
+      6.2482787221397,
+      4.590215932745087,
+      3.01941960595019,
+      4.590215932745087,
+      6.2482787221397,
+      6.2482787221397
+    ],
+    "velocity_rad_s": [
+      1.5707963267948966,
+      1.5707963267948966,
+      1.5707963267948966,
+      1.5707963267948966,
+      1.5707963267948966,
+      1.5707963267948966
+    ],
+    "acceleration_rad_s2": [
+      3.141592653589793,
+      3.141592653589793,
+      3.141592653589793,
+      3.141592653589793,
+      3.141592653589793,
+      3.141592653589793
+    ],
+    "jerk_rad_s3": [
+      17.453292519943297,
+      17.453292519943297,
+      17.453292519943297,
+      17.453292519943297,
+      17.453292519943297,
+      17.453292519943297
+    ],
+    "torque_nm": null,
+    "provenance": "export for joint range; software simulation dynamics are experimental, not manufacturer or site approval"
+  },
+  "safety": {
+    "feedback_timeout_s": 0.024,
+    "input_timeout_s": 0.08,
+    "max_lateness_s": 0.004,
+    "max_call_s": 0.012,
+    "tracking_error_rad": 0.08726646259971647,
+    "measured_dynamics_factor": 1.2
+  },
+  "compensation": {
+    "delay_prediction_s": 0.0,
+    "friction": "disabled_without_identified_model",
+    "feedforward": "none_without_verified_interface"
+  },
+  "hardware": {
+    "motion_released": false,
+    "controller_version": null,
+    "tcp": null,
+    "payload": null,
+    "torque_limits": null,
+    "collision_model_validated": false,
+    "independent_watchdog_validated": false,
+    "concurrent_feedback_validated": false
+  }
+}

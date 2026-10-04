@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "not_validated",
+  "robot_serial": "S5160217",
+  "controller_version": "1.7.2_40_X64_cab2_1",
+  "feedback_transport": "edg_mode1",
+  "description": "Each evidence item must be an existing reviewed report with SHA256, tied to this robot and site. This template does not authorize motion.",
+  "evidence": {
+    "incident_hardware_inspection": null,
+    "physical_estop_and_network_watchdog": null,
+    "software_filter_ruckig_validation": null,
+    "full_arm_workspace_and_cables": null,
+    "feedback_10000_age_and_units": null,
+    "feedback_edg_age_and_units": null,
+    "lightweight_status_age_and_fields": null,
+    "end_to_end_servo_timing": null
+  },
+  "reviewed_by": null,
+  "valid_until_utc": null,
+  "controller_feedback_age_bound_s": null,
+  "network_abort_timeout_ms": null,
+  "cartesian_kinematics_validated": false,
+  "kinematics_calibration": null,
+  "vr_mapping_validated": false,
+  "torque_limits_nm": null
+}

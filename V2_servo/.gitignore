@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.deps/
+logs/
+reproduction/conda-packages/
+digital_twin/unity/Library/
+digital_twin/unity/Build/
+digital_twin/unity/Temp/
+digital_twin/unity/Logs/

@@ -1,0 +1,21 @@
+{
+  "scope": "H6_finite_translation_only_not_full_workspace_release",
+  "basis": [[0, 0, 1], [-1, 0, 0], [0, 1, 0]],
+  "mapping_status": "explicit_operator_command_axes_direction_rehearsal_required_not_physical_calibration",
+  "mapping_description": "Unity +Z -> robot base +X; Unity -X -> base +Y; Unity +Y -> base +Z",
+  "hand_deadzone_m": 0.003,
+  "translation_gain": 0.01,
+  "position_gain_s_inv": 2.0,
+  "cartesian_speed_mm_s": 0.15,
+  "joint_envelope_deg": 0.1,
+  "joint_velocity_deg_s": 0.05,
+  "joint_acceleration_deg_s2": 0.2,
+  "joint_jerk_deg_s3": 1.0,
+  "maximum_radius_mm": 0.5,
+  "goal_radius_fraction": 0.75,
+  "command_orientation_deg": 0.05,
+  "raw_orientation_deg": 0.1,
+  "controlled_stop_budget_s": 1.0,
+  "brake_samples": 17,
+  "brake_model_margin_mm": 0.005
+}

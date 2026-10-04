@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "status": "shadow_only_not_live_accepted",
+  "translation_gain": 1.0,
+  "rotation_gain": 0.5,
+  "position_deadzone_m": 0.001,
+  "orientation_error_deadzone_rad": 0.002,
+  "linear_speed_m_s": 0.12,
+  "angular_speed_rad_s": 0.5,
+  "joint_velocity_deg_s": 30.0,
+  "joint_acceleration_deg_s2": 120.0,
+  "joint_jerk_deg_s3": 600.0,
+  "position_servo_gain_s_inv": 6.0,
+  "rotation_servo_gain_s_inv": 6.0,
+  "controlled_stop_budget_s": 1.0,
+  "note": "Responsive SHADOW ONLY, validated against the 20261004_130954 hand record with ideal simulated feedback. Cartesian values limit requested twist, not the final Cartesian speed after joint jerk constraints. Never apply these values to live hardware without separate validation."
+}

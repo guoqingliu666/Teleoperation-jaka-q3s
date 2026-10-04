@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  JAKA S5 + EQC20-A + EQC20-B + DH116 right hand review assembly.
+
+  Arm geometry and six arm joint origins/limits are copied from the vendor
+  jaka_s5.urdf.  The attachment STEP files were tessellated to STL in this
+  review package.  Attachment links are visual/collision geometry only:
+  physical mass, inertia, cable constraints, TCP and hand actuator joints are
+  intentionally not invented here.
+
+  DO_1 is a controller I/O state, not an URDF joint.  See tool_io.json.
+-->
+<robot name="jaka_s5_eqc20_dh116_right">
+
+  <link name="world" />
+
+  <!-- JAKA S5 links: vendor ROS2 geometry, STL unit = m. -->
+  <link name="Link_00">
+    <inertial>
+      <origin xyz="0.0028167 -0.00019454 0.019544" rpy="0 0 0" />
+      <mass value="0.52663" />
+      <inertia ixx="0.0006297" ixy="6.7091E-08" ixz="3.4682E-06" iyy="0.00095727" iyz="2.4476E-07" izz="0.0014514" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_00.STL" /></geometry>
+      <material name="jaka_link_00"><color rgba="0.79216 0.81961 0.93333 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_00.STL" /></geometry>
+    </collision>
+  </link>
+
+  <link name="Link_01">
+    <inertial>
+      <origin xyz="-2.5186E-07 0.0033226 -0.001509" rpy="0 0 0" />
+      <mass value="15.135" />
+      <inertia ixx="0.044302" ixy="1.5349E-07" ixz="-6.1966E-07" iyy="0.043091" iyz="1.4326E-05" izz="0.030523" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_01.STL" /></geometry>
+      <material name="jaka_link_01"><color rgba="0.84706 0.84706 0.84706 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_01.STL" /></geometry>
+    </collision>
+  </link>
+
+  <link name="Link_02">
+    <inertial>
+      <origin xyz="0.215 6.4325E-09 -0.14315" rpy="0 0 0" />
+      <mass value="45.847" />
+      <inertia ixx="0.10377" ixy="-1.3562E-06" ixz="2.544E-07" iyy="1.5964" iyz="2.1509E-08" izz="1.5689" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_02.STL" /></geometry>
+      <material name="jaka_link_02"><color rgba="0.84706 0.84706 0.84706 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_02.STL" /></geometry>
+    </collision>
+  </link>
+
+  <link name="Link_03">
+    <inertial>
+      <origin xyz="0.19077 -1.059E-08 -0.010626" rpy="0 0 0" />
+      <mass value="18.05" />
+      <inertia ixx="0.02199" ixy="-3.4623E-06" ixz="-0.022409" iyy="0.41563" iyz="9.5677E-09" izz="0.41008" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_03.STL" /></geometry>
+      <material name="jaka_link_03"><color rgba="0.84706 0.84706 0.84706 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_03.STL" /></geometry>
+    </collision>
+  </link>
+
+  <link name="Link_04">
+    <inertial>
+      <origin xyz="-2.1463E-06 -0.0059512 0.0026789" rpy="0 0 0" />
+      <mass value="5.5377" />
+      <inertia ixx="0.0092004" ixy="1.17E-07" ixz="-1.3683E-08" iyy="0.0052083" iyz="-8.5741E-05" izz="0.0089125" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_04.STL" /></geometry>
+      <material name="jaka_link_04"><color rgba="0.84706 0.84706 0.84706 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_04.STL" /></geometry>
+    </collision>
+  </link>
+
+  <link name="Link_05">
+    <inertial>
+      <origin xyz="-2.0304E-06 -0.0028889 -0.0023424" rpy="0 0 0" />
+      <mass value="6.3339" />
+      <inertia ixx="0.012993" ixy="-1.0764E-07" ixz="5.8559E-09" iyy="0.0058454" iyz="4.5426E-05" izz="0.0127" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_05.STL" /></geometry>
+      <material name="jaka_link_05"><color rgba="0.84706 0.84706 0.84706 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_05.STL" /></geometry>
+    </collision>
+  </link>
+
+  <link name="Link_06">
+    <inertial>
+      <origin xyz="-0.00024331 0.00030548 -0.026411" rpy="0 0 0" />
+      <mass value="0.23261" />
+      <inertia ixx="0.0001349" ixy="-6.8669E-08" ixz="-9.4918E-08" iyy="0.00013541" iyz="2.8456E-07" izz="0.00018606" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_06.STL" /></geometry>
+      <material name="jaka_link_06"><color rgba="0.79216 0.81961 0.93333 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/Link_06.STL" /></geometry>
+    </collision>
+  </link>
+
+  <!-- End-effector review links: STEP-derived STL unit = mm, hence scale 0.001. -->
+  <link name="quick_change_a_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/quick_change_a_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+      <material name="quick_change_a_red"><color rgba="0.78 0.08 0.04 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/quick_change_a_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+    </collision>
+  </link>
+
+  <link name="quick_change_b_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/quick_change_b_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+      <material name="quick_change_b_black"><color rgba="0.08 0.10 0.12 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/quick_change_b_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+    </collision>
+  </link>
+
+  <link name="hand_adapter_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/hand_adapter_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+      <material name="hand_adapter_metal"><color rgba="0.60 0.62 0.66 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/hand_adapter_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+    </collision>
+  </link>
+
+  <link name="dh116_right_hand_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/dh116_right_with_sensor_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+      <material name="dh116_right_hand"><color rgba="0.78 0.80 0.84 1" /></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry><mesh filename="package://jaka_s5_eqc20_dh116_description/meshes/dh116_right_with_sensor_visual.stl" scale="0.001 0.001 0.001" /></geometry>
+    </collision>
+  </link>
+
+  <!-- JAKA S5 motion chain: only these six joints are actuated in this review model. -->
+  <joint name="world_to_link_00" type="fixed">
+    <parent link="world" />
+    <child link="Link_00" />
+  </joint>
+
+  <joint name="joint_1" type="revolute">
+    <origin xyz="0 -0.00022535 0.12015" rpy="0 0 0" />
+    <parent link="Link_00" />
+    <child link="Link_01" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.28" upper="6.28" effort="2000" velocity="3.14" />
+  </joint>
+
+  <joint name="joint_2" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5708 0 0" />
+    <parent link="Link_01" />
+    <child link="Link_02" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.48" upper="4.62" effort="5000" velocity="3.14" />
+  </joint>
+
+  <joint name="joint_3" type="revolute">
+    <origin xyz="0.43 0 0" rpy="0 0 0" />
+    <parent link="Link_02" />
+    <child link="Link_03" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.05" upper="3.05" effort="5000" velocity="3.14" />
+  </joint>
+
+  <joint name="joint_4" type="revolute">
+    <origin xyz="0.3685 0 -0.114" rpy="0 0 0" />
+    <parent link="Link_03" />
+    <child link="Link_04" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.48" upper="4.62" effort="2000" velocity="3.14" />
+  </joint>
+
+  <joint name="joint_5" type="revolute">
+    <origin xyz="0 -0.1135 0" rpy="1.5708 0 0" />
+    <parent link="Link_04" />
+    <child link="Link_05" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.28" upper="6.28" effort="3000" velocity="3.14" />
+  </joint>
+
+  <joint name="joint_6" type="revolute">
+    <origin xyz="0.00026137 0.1175 0.00025782" rpy="-1.5708 0 0" />
+    <parent link="Link_05" />
+    <child link="Link_06" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.28" upper="6.28" effort="1000" velocity="3.14" />
+  </joint>
+
+  <!--
+    Fixed review placement, not a calibrated mating transform:
+    A local X axis is mapped to the S5 tool +Z axis; B local Z follows A local X.
+    The hand is oriented so its CAD local +Y points along the tool +Z direction.
+  -->
+  <joint name="link_06_to_quick_change_a" type="fixed">
+    <origin xyz="0 0 0.07805" rpy="0 -1.5708 0" />
+    <parent link="Link_06" />
+    <child link="quick_change_a_link" />
+  </joint>
+
+  <joint name="quick_change_a_to_quick_change_b" type="fixed">
+    <origin xyz="0.0800 0 0" rpy="0 1.5708 0" />
+    <parent link="quick_change_a_link" />
+    <child link="quick_change_b_link" />
+  </joint>
+
+  <joint name="quick_change_b_to_hand_adapter" type="fixed">
+    <origin xyz="0 0 0.0465" rpy="0 0 0" />
+    <parent link="quick_change_b_link" />
+    <child link="hand_adapter_link" />
+  </joint>
+
+  <joint name="hand_adapter_to_dh116_right_hand" type="fixed">
+    <origin xyz="0.0140 0.0793 0.1050" rpy="1.5708 0 0" />
+    <parent link="hand_adapter_link" />
+    <child link="dh116_right_hand_link" />
+  </joint>
+
+</robot>

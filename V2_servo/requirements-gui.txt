@@ -1,0 +1,2 @@
+# Tkinter is supplied by the existing Conda Python; no pip tkinter package.
+ruckig==0.12.2
