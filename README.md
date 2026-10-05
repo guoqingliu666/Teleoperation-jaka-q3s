@@ -1,6 +1,8 @@
-# 新增V2流畅影子基线（独立于原V1.5）
+# JAKAS5-Quest3s 伺服遥操作 V2.0.0（独立于原 V1.5）
 
-[进入V2说明](V2_servo/README.md)。下载Release的windows-public.zip可离线恢复。原V2.0.0标签指向旧V1.5提交，本次使用独立不可覆盖标签 `v2.0.0-shadow-smooth.20261004`。新包不控制真机。
+[进入 V2 说明](V2_servo/README.md)。请从 [V2.0.0 Release](https://github.com/guoqingliu666/Teleoperation-jaka-q3s/releases/tag/V2.0.0) 下载 `JAKAS5-Quest3s-servo-V2.0.0-windows.zip` 和 `SHA256SUMS.txt`；附件包含离线 Conda 依赖与预编译 V2Twin，GitHub 自动 Source code ZIP 不包含这些运行文件。
+
+V2.0.0 包含当前 TCP1=`TCP2 local +Z 200 mm`、目标/反馈坐标标记、无中央遮挡的自由视角和连续影子闭环。它不包含厂家 SDK，不控制真机；DH116/O30、触觉力控和 ACT 正式采集属于后续版本。
 
 ---
 

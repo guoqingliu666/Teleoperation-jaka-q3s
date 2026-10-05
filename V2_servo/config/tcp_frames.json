@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "scope": "user_configured_shadow_tool_not_live_calibration",
+  "source": "user_controller_TCP1_and_TCP2_definition_20261004",
+  "tcp1_from_tcp2_mm_rad": [0, 0, 200, 0, 0, 0],
+  "tcp2_model_frame": "flange_recovered_by_removing_historical_official_tool_offset",
+  "tcp2_sensor_registration": "user_defined_on_J6_axis_not_independently_measured",
+  "controller_readback_verified": false,
+  "physical_calibration_validated": false,
+  "live_motion_approved": false
+}

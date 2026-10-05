@@ -113,5 +113,13 @@
     "scope": "mathematical_model_only"
   },
   "public_export_note": "Mathematical shadow fixture exported from readonly evidence; no hardware identity/session data; not new acceptance.",
-  "original_evidence_sha256": "adee7e8020cc71daceac5b1372d3b94b3f355849f8741641d0e45bcf1cbe8bec"
+  "original_evidence_sha256": "adee7e8020cc71daceac5b1372d3b94b3f355849f8741641d0e45bcf1cbe8bec",
+  "tcp_parameters": [
+    -23.702999114990234,
+    -60.145999908447266,
+    200.96299743652344,
+    0.0,
+    0.0,
+    0.7853981633974483
+  ]
 }

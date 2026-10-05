@@ -14,7 +14,8 @@ class TwinPublisher:
             'gripper_state':'unknown','zed_mount':'eye-in-hand','zed_transform_validated':False,
             'source_session':s.get('session'),'sent_wall_unix_s':time.time(),
             'feedback_age_basis':s.get('feedback_age_basis','backend_reported_age'),
-            'controller_sample_age_validated':bool(s.get('sample_age_validated',False))}
+            'controller_sample_age_validated':bool(s.get('sample_age_validated',False)),
+            'tracking':s.get('tracking')}
         try: self.latest.put_nowait(packet)
         except queue.Full:
             try: self.latest.get_nowait()

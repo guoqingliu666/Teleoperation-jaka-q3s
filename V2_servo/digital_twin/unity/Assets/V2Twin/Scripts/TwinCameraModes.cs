@@ -10,8 +10,23 @@ public sealed class TwinCameraModes : MonoBehaviour {
     public Vector3 focus;
     Vector3 xrAnchorPosition;
     Quaternion xrAnchorRotation;
+    bool recenterPending;
+    public static bool ShowDiagnostics=false;
+    public Quaternion AnchorRotation {get{return xrAnchorRotation;}}
+    public static Quaternion LevelYaw(Quaternion rotation) {
+        Vector3 forward=Vector3.ProjectOnPlane(rotation*Vector3.forward,Vector3.up);
+        return forward.sqrMagnitude<.00001f?Quaternion.identity:Quaternion.LookRotation(forward,Vector3.up);
+    }
+    public void RecenterHead(Vector3 localPosition,Quaternion localRotation) {
+        // Keep gravity vertical: preset pitch must never become the tracking-space tilt.
+        xrAnchorRotation=LevelYaw(viewCamera.transform.rotation)*Quaternion.Inverse(LevelYaw(localRotation));
+        xrAnchorPosition=viewCamera.transform.position-xrAnchorRotation*localPosition;
+        recenterPending=false;
+    }
     void Start() {SetMode(1);}
     void Update() {
+        if(Input.GetKeyDown(KeyCode.Tab) && !QuestReadOnlyDiagnostics.Requested)ShowDiagnostics=!ShowDiagnostics;
+        if(Input.GetKeyDown(KeyCode.Home))SetMode(1);
         if(Input.GetKeyDown(KeyCode.F1)) SetMode(1);
         if(Input.GetKeyDown(KeyCode.F2)) SetMode(2);
         if(Input.GetKeyDown(KeyCode.F3)) SetMode(3);
@@ -20,6 +35,7 @@ public sealed class TwinCameraModes : MonoBehaviour {
             focus=robot.link06.position;
             xrAnchorPosition=robot.link06.TransformPoint(new Vector3(0,.18f,-.35f));
             xrAnchorRotation=Quaternion.LookRotation(focus-xrAnchorPosition,Vector3.up);
+            if(XRSettings.isDeviceActive)xrAnchorRotation=LevelYaw(xrAnchorRotation);
             if(!XRSettings.isDeviceActive) {
                 viewCamera.transform.position=xrAnchorPosition;
                 viewCamera.transform.rotation=xrAnchorRotation;
@@ -33,8 +49,10 @@ public sealed class TwinCameraModes : MonoBehaviour {
         if(((pan || orbit || look) && (Mathf.Abs(dx)+Mathf.Abs(dy)>0)) || Mathf.Abs(wheel)>0) {
             if(mode!=3) ActivateFree();
             if(XRSettings.isDeviceActive) {
-                if(look || orbit) xrAnchorRotation=Quaternion.AngleAxis(dx*2f,Vector3.up)*xrAnchorRotation*
-                    Quaternion.AngleAxis(-dy*2f,Vector3.right);
+                if(look || orbit) {
+                    xrAnchorRotation=Quaternion.AngleAxis(dx*2f,Vector3.up)*xrAnchorRotation;
+                    xrAnchorPosition+=Vector3.up*(dy*.02f);
+                }
                 if(pan) xrAnchorPosition-=xrAnchorRotation*(new Vector3(dx,dy,0)*.02f);
                 if(Mathf.Abs(wheel)>0) xrAnchorPosition+=xrAnchorRotation*Vector3.forward*(wheel*.8f);
             } else {
@@ -47,8 +65,11 @@ public sealed class TwinCameraModes : MonoBehaviour {
         if(XRSettings.isDeviceActive) {
             var head=InputDevices.GetDeviceAtXRNode(XRNode.Head);
             Vector3 localPosition;Quaternion localRotation;
-            if(head.isValid && head.TryGetFeatureValue(CommonUsages.devicePosition,out localPosition) &&
+            bool tracked;
+            if(head.isValid && head.TryGetFeatureValue(CommonUsages.isTracked,out tracked) && tracked &&
+               head.TryGetFeatureValue(CommonUsages.devicePosition,out localPosition) &&
                head.TryGetFeatureValue(CommonUsages.deviceRotation,out localRotation)) {
+                if(recenterPending)RecenterHead(localPosition,localRotation);
                 viewCamera.transform.position=xrAnchorPosition+xrAnchorRotation*localPosition;
                 viewCamera.transform.rotation=xrAnchorRotation*localRotation;
                 return;
@@ -64,7 +85,11 @@ public sealed class TwinCameraModes : MonoBehaviour {
     }
     void ActivateFree() {
         if(mode==4 && robot.link06!=null) focus=robot.link06.position;
-        mode=3;xrAnchorPosition=viewCamera.transform.position;xrAnchorRotation=viewCamera.transform.rotation;
+        mode=3;
+        // In XR the camera already includes the head pose. Keep its anchor instead of applying that pose twice.
+        if(!XRSettings.isDeviceActive) {
+            xrAnchorPosition=viewCamera.transform.position;xrAnchorRotation=viewCamera.transform.rotation;
+        }
     }
     public void Orbit(float dx,float dy) {
         if(mode!=3)ActivateFree();
@@ -102,7 +127,12 @@ public sealed class TwinCameraModes : MonoBehaviour {
         var view=robot.config.views[mode==1?0:mode==2?1:2];
         focus=TwinRobot.CadToUnity(view.look_at_cad_m);
         viewCamera.transform.position=TwinRobot.CadToUnity(view.position_cad_m);
+        // Also works when reusing an older generated asset pack: F1 faces the table squarely.
+        if(mode==1) {
+            Vector3 aligned=viewCamera.transform.position;aligned.x=focus.x;viewCamera.transform.position=aligned;
+        }
         viewCamera.transform.LookAt(focus,Vector3.up);
         xrAnchorPosition=viewCamera.transform.position;xrAnchorRotation=viewCamera.transform.rotation;
+        recenterPending=true;
     }
 }

@@ -16,6 +16,7 @@ using UnityEngine;
     public float[] hand_angle_rad;
     public float feedback_age_ms;
     public double sent_wall_unix_s;
+    public TwinTrackingPacket tracking;
 }
 public sealed class TwinStateReceiver : MonoBehaviour {
     public TwinRobot robot;
@@ -27,12 +28,14 @@ public sealed class TwinStateReceiver : MonoBehaviour {
     public int received=0,rejected=0;
     public string sourceMode="unknown";
     public int replayApplied=0;
+    public TwinTrackingMarkers trackingMarkers;
     UdpClient udp; Thread thread; volatile bool running; readonly object gate=new object();
     TwinStatusPacket pending; float lastArrival=-999f, demoStart;
     string dataDir,recordPath;
     StreamWriter recordFile;
     List<TwinStatusPacket> replay=new List<TwinStatusPacket>();int replayIndex=0;float replayNext=0;
     void Start() {
+        trackingMarkers=gameObject.AddComponent<TwinTrackingMarkers>();trackingMarkers.robot=robot;
         dataDir=Environment.GetEnvironmentVariable("V2_TWIN_DATA_DIR");
         if(string.IsNullOrEmpty(dataDir))
             dataDir=Path.GetFullPath(Path.Combine(Application.dataPath,Application.isEditor?"../../data":"../../../data"));
@@ -49,7 +52,7 @@ public sealed class TwinStateReceiver : MonoBehaviour {
             var raw=udp.Receive(ref peer);
             if(!IPAddress.IsLoopback(peer.Address)) continue;
             var packet=JsonUtility.FromJson<TwinStatusPacket>(Encoding.UTF8.GetString(raw));
-            if(packet.schema!=1 || packet.q_rad==null || packet.q_rad.Length!=6) { Interlocked.Increment(ref rejected); continue; }
+            if(packet.schema!=1 || (packet.feedback_valid && (packet.q_rad==null || packet.q_rad.Length!=6))) { Interlocked.Increment(ref rejected); continue; }
             lock(gate) pending=packet; // bounded latest-slot: never block render or servo threads.
         } catch(SocketException) { } catch(ObjectDisposedException) { break; }
           catch(Exception) { Interlocked.Increment(ref rejected); }
@@ -59,6 +62,7 @@ public sealed class TwinStateReceiver : MonoBehaviour {
         if(packet!=null) {
             if(packet.feedback_valid && robot.Apply(packet.q_rad)) {
                 received++;lastArrival=Time.unscaledTime;state=packet.state;alarm=packet.alarm;sourceMode=packet.mode;
+                trackingMarkers.Apply(packet);
                 if(packet.hand_feedback_valid) {
                     var hand=robot.GetComponentInChildren<TwinHand>();
                     if(hand==null || !hand.Apply(packet.hand_angle_rad))rejected++;
@@ -67,9 +71,10 @@ public sealed class TwinStateReceiver : MonoBehaviour {
                     tcpText=string.Format("TCP mm: {0:F1}, {1:F1}, {2:F1} (只读, 模型外参未确认)",
                         packet.tcp_mm_rad[0],packet.tcp_mm_rad[1],packet.tcp_mm_rad[2]);
                 if(recording && recordFile!=null) { recordFile.WriteLine(JsonUtility.ToJson(packet));recordFile.Flush(); }
-            } else rejected++;
+            } else {rejected++;lastArrival=-999f;trackingMarkers.Clear();state=packet.state;}
         }
         stale=Time.unscaledTime-lastArrival>.25f;
+        if(stale)trackingMarkers.Clear();
         // 真机试验窗口只显示反馈；反馈过期时不能切到仿真动画冒充实机。
         if(VrPoseUdpSender.CommissioningInputRequested)demoMotion=false;
         else if(Input.GetKeyDown(KeyCode.F5)) {demoMotion=!demoMotion;demoStart=Time.unscaledTime;}
@@ -114,6 +119,12 @@ public sealed class TwinStateReceiver : MonoBehaviour {
     }
     void OnGUI() {
         if(QuestReadOnlyDiagnostics.Requested) return;
+        if(UnityEngine.XR.XRSettings.isDeviceActive)return;
+        if(!TwinCameraModes.ShowDiagnostics) {
+            GUI.Box(new Rect(10,10,730,30),(sourceMode=="simulation"?"影子模拟":"状态显示")+" | "+state+" | "+(stale?"反馈过期":"反馈新鲜")+" | Tab 详情 · Home 回正视角");
+            if(!string.IsNullOrEmpty(alarm))GUI.Label(new Rect(20,44,700,24),"报警: "+alarm);
+            return;
+        }
         GUI.Box(new Rect(10,10,650,216),"V2 数字孪生 · "+(sourceMode=="simulation"?"模拟状态（非实机反馈）":"状态显示 / Quest输入"));
         GUI.Label(new Rect(20,32,440,22),"状态: "+state+" | "+(stale?"反馈过期":"反馈新鲜")+" | UDP: "+received+" / 拒绝 "+rejected);
         GUI.Label(new Rect(20,54,440,22),"左 S5: "+(robot.config!=null?robot.config.s5_serial:"配置缺失")+" | ZED-M eye-in-hand: 外参未确认");
@@ -127,6 +138,7 @@ public sealed class TwinStateReceiver : MonoBehaviour {
         GUI.Label(new Rect(20,186,620,22),right==null?"等待右手柄；单轴入口自动开启发送，无需F6":
             string.Format("右手追踪={0} Grip={1:F2} 摇杆Y={2:F2} 点击={3} | 输入方式/阶段请看下方提示",right.pose_valid,right.grip,right.thumbstick.y,right.thumbstick_click));
         if(!string.IsNullOrEmpty(alarm)) GUI.Label(new Rect(20,226,600,24),"报警: "+alarm);
+        if(trackingMarkers!=null)GUI.Label(new Rect(20,250,1040,50),trackingMarkers.status);
     }
     void OnDestroy() {running=false; if(udp!=null)udp.Close();if(thread!=null)thread.Join(500);StopRecording();}
 }

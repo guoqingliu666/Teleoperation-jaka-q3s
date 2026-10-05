@@ -8,8 +8,10 @@ from .global_kinematics import SerialPoE
 from .continuous_pose import ContinuousPoseServo,ContinuousReceiver
 from .twin_publish import TwinPublisher
 from .shadow_telemetry import ShadowTelemetry
+from .tracking_observation import shadow_tracking
 
 def load_model(path=None):
+    use_current_tool=path is None
     if path is None:
         ref=json.loads((ROOT/'config/local/continuous_model.json').read_text(encoding='utf-8'))
         path=ROOT/ref['path']
@@ -18,7 +20,12 @@ def load_model(path=None):
     if (r.get('scope')!='official_FK_readonly_full_joint_domain_math_only' or not r.get('passed_math_only') or
         r.get('failure') or r.get('cleanup_errors') or r.get('motion_commands')!=0 or r.get('mode_changes')!=0):
         raise ValueError('Not validated readonly official model evidence')
-    return SerialPoE(r['model']),r['model']['q_reference_rad'],path
+    if use_current_tool:
+        from .tool_frames import configured_shadow_tool
+        model=configured_shadow_tool(r,ROOT/'config/tcp_frames.json')
+    else:
+        model=SerialPoE(r['model'])
+    return model,r['model']['q_reference_rad'],path
 
 def synthetic_frame(i,dt,basis):
     t=i*dt;phase=t%24;held=1<phase<10 or 13<phase<22
@@ -31,20 +38,23 @@ def synthetic_frame(i,dt,basis):
         position_m=p.tolist(),rotation_xyzw=[math.sin(angle/2),0.,0.,math.cos(angle/2)],
         software_stop=False,synthetic=True)
 
-def run(folder,duration=60.,synthetic=False,model_path=None):
+def run(folder,duration=60.,synthetic=False,model_path=None,orientation_mode='frozen'):
     folder=Path(folder).resolve()
     if not folder.is_relative_to(ROOT/'data'):raise ValueError('shadow logs must be under project data')
     folder.mkdir(parents=True,exist_ok=False)
     model,q0,source=load_model(model_path);cfg=load();profile=json.loads((ROOT/'config/continuous.json').read_text(encoding='utf-8'))
+    if orientation_mode not in ('frozen','one-to-one'):raise ValueError('unknown shadow orientation mode')
+    if orientation_mode=='one-to-one':
+        profile=dict(profile,orientation_mapping='anchored_one_to_one',rotation_gain=1.)
     basis=np.array(json.loads((ROOT/'config/quest_xyz_commissioning.json').read_text(encoding='utf-8'))['basis'])
     planner=ContinuousPoseServo(q0,cfg,model,profile,basis);q=np.array(q0);origin=model.forward(q)[0]
     logger=JsonLogger(folder/'events.jsonl');receiver=None;twin=None;telemetry=None;timer=WindowsTimerResolution();stop=threading.Event()
     report=dict(scope='continuous_shadow_synthetic_plant_no_robot_SDK',motion_commands=0,servo_mode_changes=0,
         synthetic_input=synthetic,clock='virtual_time' if synthetic else 'host_monotonic',
         model_evidence=str(source),model_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
-        profile=profile,filters=cfg['filters'],failure=None,physical_feedback=False,live_accepted=False,
+        profile=profile,filters=cfg['filters'],tool_provenance=getattr(model,'tool_provenance',None),failure=None,physical_feedback=False,live_accepted=False,
         fixed_start_sphere=False,fixed_30s_stop=False,samples=0,follow_samples=0,
-        twin_publish_target_hz=1/cfg['period_s'],status_target_hz=5,twin_offers=0)
+        twin_publish_target_hz=1/cfg['period_s'],status_target_hz=5,twin_offers=0,orientation_mode=orientation_mode)
     logger.emit(event='startup',**report)
     def watch_stop():
         while not stop.wait(.05):
@@ -82,18 +92,19 @@ def run(folder,duration=60.,synthetic=False,model_path=None):
             durations.append((time.perf_counter()-begin)*1000)
             # 明确的理想模拟反馈；不伪造实际机器人测量、时延或停止距离。
             feedback=motion.q.copy();tcp=model.forward(feedback)[0]
+            tracking=shadow_tracking(planner,tcp,frame,now,report['model_sha256'])
             delta=(tcp[:3,3]-origin[:3,3])*1000;spans.append(delta.tolist())
             peaks=np.maximum(peaks,[np.max(np.abs(motion.v)),np.max(np.abs(motion.a)),np.max(np.abs(motion.j))])
             logger.emit(event='continuous_shadow_sample',clock_s=now,sequence=i,phase=planner.phase,
                 q_command=motion.q.tolist(),simulated_feedback_q=feedback.tolist(),v=motion.v.tolist(),a=motion.a.tolist(),
-                j=motion.j.tolist(),tcp_displacement_mm=delta.tolist(),raw_intent=frame,robot_commands=0)
+                j=motion.j.tolist(),tcp_displacement_mm=delta.tolist(),raw_intent=frame,tracking=tracking,robot_commands=0)
             # 加速离线回放可比实时时钟快十几倍；仅虚拟时钟允许等待审计落盘。
             # 实时Quest路径不得在伺服周期中flush，队列过载仍明确失败。
             if synthetic and i%125==0:logger.flush()
             if not synthetic:
                 # 关节状态每个8ms周期进入独立UDP最新槽。不要放回5Hz文字刷新分支。
                 state=dict(mode='simulation',state='CONTINUOUS_SHADOW_'+planner.phase,connected=True,active=planner.held,
-                    q=feedback.tolist(),tcp=None,feedback_age_ms=0.,feedback_age_basis='synthetic_plant_not_robot',session=str(folder))
+                    q=feedback.tolist(),tcp=None,tracking=tracking,feedback_age_ms=0.,feedback_age_basis='synthetic_plant_not_robot',session=str(folder))
                 twin.offer(state);report['twin_offers']+=1
             if not synthetic and now-latest_status>=.2:
                 latest_status=now
@@ -103,8 +114,11 @@ def run(folder,duration=60.,synthetic=False,model_path=None):
                     grip=None if frame is None else frame.get('grip'),filters_enabled=cfg['filters']['enabled'],
                     simulated_tcp_delta_mm=delta.tolist(),commands_to_robot=0,elapsed_s=elapsed,
                     twin_publish_target_hz=1/cfg['period_s'],shadow_requested_twist_limit_mm_s=profile['linear_speed_m_s']*1000,
-                    shadow_joint_limit_deg_s=profile['joint_velocity_deg_s'])
-                telemetry.offer(status,'仅模拟；请求速度上限 '+str(profile['linear_speed_m_s']*1000)+'mm/s，关节 '+str(profile['joint_velocity_deg_s'])+'度/s；状态125Hz。\n模拟TCP位移mm='+str(np.round(delta,1).tolist())+'；'+planner.phase)
+                    shadow_joint_limit_deg_s=profile['joint_velocity_deg_s'],tracking=tracking)
+                errors=('目标未绑定' if not tracking['target_valid'] else
+                    '跟踪误差 %.1fmm / %.1f度'%(tracking['position_error_mm'],tracking['orientation_error_deg']))
+                mapping_label='一比一候选' if orientation_mode=='one-to-one' else '半倍率对照'
+                telemetry.offer(status,'青球=模拟TCP1，紫球=映射目标；RGB=XYZ轴。'+errors+'\n姿态'+mapping_label+'；'+tracking['tool_model']+'；'+','.join(tracking['warnings'])+'；'+planner.phase)
             report['samples']=i+1;i+=1
     except BaseException as exc:report['failure']=str(exc)
     finally:
@@ -133,10 +147,11 @@ def run(folder,duration=60.,synthetic=False,model_path=None):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--synthetic',action='store_true')
     p.add_argument('--duration',type=float,default=120);p.add_argument('--model',type=Path);p.add_argument('--session',type=Path)
+    p.add_argument('--orientation',choices=('frozen','one-to-one'),default='frozen',help='shadow only; change only between sessions')
     a=p.parse_args()
     if not 1<=a.duration<=3600:p.error('duration must be 1..3600s; this only limits the observation session')
     folder=a.session or ROOT/'data'/('continuous_shadow_'+datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f'))
-    r=run(folder,a.duration,a.synthetic,a.model);print('REPORT '+str(folder/'report.json'))
+    r=run(folder,a.duration,a.synthetic,a.model,a.orientation);print('REPORT '+str(folder/'report.json'))
     return 0 if r['passed_shadow_only'] else 2
 
 if __name__=='__main__':raise SystemExit(main())

@@ -18,6 +18,10 @@ def limited(v,maximum):
     n=np.linalg.norm(v)
     return v/max(1.,n/maximum)
 
+def anchored_orientation(basis,hand_now,hand_anchor,robot_anchor):
+    """一比一相对姿态，无逐帧角度缩放积分；跨180°仍直接使用旋转矩阵。"""
+    return basis@(hand_now@hand_anchor.T)@basis.T@robot_anchor
+
 class ContinuousMapping(QuestJ1Mapping):
     def decode(self,payload,address,stamp):
         f=super().decode(payload,address,stamp);right=payload['right'];p=right['position_m']
@@ -34,18 +38,27 @@ class ContinuousReceiver(QuestInput):
 class GlobalVelocityServo(VelocityServo):
     def __init__(self,q,cfg,model):
         super().__init__(q,cfg);self.arm=model;self.feedback_scale=1.
+        self.velocity_scale=1.;self.raw_joint_velocity=np.zeros(6);self.filtered_twist=np.zeros(6)
     def joint_velocity(self,axes,space,speed):
         _,jac,_=self.arm.forward(self.state.q);weight=np.diag([1,1,1,.2,.2,.2]);a=weight@jac
         self.sigma=float(np.linalg.svd(a,compute_uv=False)[-1])
         if self.sigma<.005:raise SafetyFault('Continuous global Jacobian near singularity')
         twist=vector(axes)*np.array([.25]*3+[.5]*3)*speed
         v=np.linalg.solve(a.T@a+np.eye(6)*.0001**2,a.T@(weight@twist))
+        self.filtered_twist=twist.copy();self.raw_joint_velocity=v.copy()
+        self.velocity_scale=1/max(1.,float(np.max(np.abs(v)/np.array(self.limits['velocity_rad_s']))))
+        # 保持冻结版运算顺序；以下字段只观测，不改变候选控制输出。
         return v/max(1.,float(np.max(np.abs(v)/np.array(self.limits['velocity_rad_s']))))*self.feedback_scale
 
 class ContinuousPoseServo:
     def __init__(self,q,cfg,model,profile,basis):
         if not cfg['filters']['enabled']:raise SafetyFault('Continuous filtering must stay enabled')
         self.p=dict(profile);self.cfg=copy.deepcopy(cfg);self.model=model;self.basis=np.asarray(basis,float)
+        self.orientation_mapping=profile.get('orientation_mapping','incremental_scaled')
+        if self.orientation_mapping not in ('incremental_scaled','anchored_one_to_one'):
+            raise ValueError('unknown orientation mapping')
+        if self.orientation_mapping=='anchored_one_to_one' and profile['rotation_gain']!=1.:
+            raise ValueError('anchored one-to-one requires rotation_gain=1')
         if self.basis.shape!=(3,3) or not np.allclose(self.basis.T@self.basis,np.eye(3)):raise ValueError('bad VR basis')
         for key in ('translation_gain','rotation_gain','linear_speed_m_s','angular_speed_rad_s',
                     'position_servo_gain_s_inv','rotation_servo_gain_s_inv','controlled_stop_budget_s'):
@@ -61,6 +74,8 @@ class ContinuousPoseServo:
         self.locked=False;self.stop_reason=None;self.stop_started=None;self.last_seq=-1;self.last_stamp=-1.
         self.hand_reference=None;self.robot_reference=None;self.hand_rotation=None;self.goal=None
         self.events=[];self.pending_stop=None;self.stop_peak_q=None;self.last_frame=None
+        self.requested_twist=np.zeros(6)
+        self.hand_anchor_rotation=None
 
     @property
     def state(self):return self.servo.state
@@ -69,6 +84,7 @@ class ContinuousPoseServo:
         if self.pending_stop is None and (self.held or not self.quiet()):
             self.pending_stop=dict(reason=reason,started_s=now,q_start=self.state.q.copy(),tcp_start=self.model.forward(self.state.q)[0][:3,3].copy())
         self.held=False;self.released=False;self.hand_reference=None;self.hand_rotation=None
+        self.hand_anchor_rotation=None
         if lock and not self.locked:self.locked=True;self.stop_reason=reason;self.stop_started=now
 
     def step(self,frame,now,actual_q,feedback_stamp,hardware_fault=None):
@@ -100,11 +116,14 @@ class ContinuousPoseServo:
                 else:
                     self.held=True;self.hand_reference=hand.copy();self.robot_reference=current.copy()
                     self.hand_rotation=rotation.copy();self.goal=current.copy()
+                    self.hand_anchor_rotation=rotation.copy()
             if moving:
                 d=self.basis@(hand-self.hand_reference);n=np.linalg.norm(d)
                 d=d*max(0.,1-self.p['position_deadzone_m']/max(n,1e-12))
                 self.goal[:3,3]=self.robot_reference[:3,3]+d*self.p['translation_gain']
-                if new_frame:
+                if self.orientation_mapping=='anchored_one_to_one':
+                    self.goal[:3,:3]=anchored_orientation(self.basis,rotation,self.hand_anchor_rotation,self.robot_reference[:3,:3])
+                elif new_frame:
                     rv=rotation_log(self.basis@(rotation@self.hand_rotation.T)@self.basis.T)*self.p['rotation_gain']
                     angle=np.linalg.norm(rv)
                     if angle>1e-12:self.goal[:3,:3]=rotate(rv/angle,angle)@self.goal[:3,:3]
@@ -115,6 +134,7 @@ class ContinuousPoseServo:
                 twist[3:]=limited(error*self.p['rotation_servo_gain_s_inv'],self.p['angular_speed_rad_s'])
         if valid:self.last_seq=frame['sequence'];self.last_stamp=frame['stamp'];self.last_frame=frame
         axes=twist/np.array([.25]*3+[.5]*3)
+        self.requested_twist=twist.copy()
         motion=self.servo.step(axes,'cartesian',1.,1.,hold=not moving)
         self.phase='LOCKED_STOP' if self.locked else ('FOLLOW' if moving else 'RELEASE_BRAKE')
         if self.pending_stop is not None and self.quiet():

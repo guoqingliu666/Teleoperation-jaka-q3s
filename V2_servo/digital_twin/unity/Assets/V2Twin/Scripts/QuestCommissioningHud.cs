@@ -6,7 +6,7 @@ using UnityEngine.XR;
 
 /// <summary>既有Player的现场阶段提示。只读显示文件，不连接SDK、不发运动权限。</summary>
 public sealed class QuestCommissioningHud : MonoBehaviour {
-    public const string Version="20261003-mapping-readout";
+    public const string Version="20261004-world-anchored-opt-in";
     [Serializable] public sealed class Guidance {
         public int schema;
         public string scope,stage,title,instruction,detail,input_mode,session,control_scope;
@@ -22,6 +22,9 @@ public sealed class QuestCommissioningHud : MonoBehaviour {
     float nextPoll; Guidance latest; bool stale=true;
     Canvas canvas; Text heading,body; Image panel; Font font; Material overlayMaterial;
     Camera view; AudioSource sound; AudioClip cue;
+    bool previouslyVisible;
+    public bool PanelVisible {get{return canvas!=null && canvas.enabled;}}
+    public Vector3 PanelPosition {get{return canvas.transform.position;}}
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Boot() {
         if(!VrPoseUdpSender.CommissioningInputRequested || QuestReadOnlyDiagnostics.Requested)return;
@@ -41,6 +44,7 @@ public sealed class QuestCommissioningHud : MonoBehaviour {
         var root=new GameObject("Quest_Stage_WorldSpace",typeof(RectTransform),typeof(Canvas),typeof(CanvasGroup));
         root.transform.SetParent(transform,false);
         canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.WorldSpace;canvas.worldCamera=view;
+        canvas.enabled=false;
         canvas.sortingOrder=200;
         var rect=root.GetComponent<RectTransform>();rect.sizeDelta=new Vector2(1100,260);
         root.transform.localScale=Vector3.one*.00065f;
@@ -107,12 +111,18 @@ public sealed class QuestCommissioningHud : MonoBehaviour {
     void LateUpdate() {
         if(view==null)view=Camera.main;
         if(view==null || canvas==null)return;
-        // 跟随现有相机位置；不覆写相机、鼠标或OpenXR头部追踪。
-        canvas.transform.position=view.transform.TransformPoint(new Vector3(0,-.25f,1.05f));
-        canvas.transform.rotation=view.transform.rotation;
+        bool visible=TwinCameraModes.ShowDiagnostics && XRSettings.isDeviceActive;
+        // Details are opt-in and placed once beside the operator, never glued to their head.
+        if(visible && !previouslyVisible)PlaceDetails();
+        canvas.enabled=visible;previouslyVisible=visible;
+    }
+    public void PlaceDetails() {
+        Quaternion yaw=TwinCameraModes.LevelYaw(view.transform.rotation);
+        canvas.transform.position=view.transform.position+yaw*new Vector3(.85f,-.12f,1.15f);
+        canvas.transform.rotation=yaw;
     }
     void OnGUI() {
-        if(canvas==null || XRSettings.isDeviceActive)return; // 桌面另外显示大字；VR使用真实世界空间Canvas。
+        if(canvas==null || XRSettings.isDeviceActive || !TwinCameraModes.ShowDiagnostics)return;
         var titleStyle=new GUIStyle(GUI.skin.label){font=font,fontSize=23,wordWrap=true};
         var bodyStyle=new GUIStyle(GUI.skin.label){font=font,fontSize=18,wordWrap=true};
         float width=Mathf.Min(730,Screen.width-20),contentWidth=width-30;

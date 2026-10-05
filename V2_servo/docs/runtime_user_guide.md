@@ -1,44 +1,54 @@
-# V2 流畅影子基线 · v2.0.0-shadow-smooth.20261004
+# V2 统一入口逐点击说明（2026-10-04）
 
-用户确认流畅的 Quest → 连续规划 → Unity 模拟反馈基线。125Hz发布、实际桌面约72Hz应用；滤波开启。
-**本包不包含JAKA/DH116厂家SDK，不允许真机运动；台面碰撞、Trigger手部、A/B独立腕部旋转尚未实现。**
-最新用户会话最终触发接近奇异位形保护，不能称为全部动作/全空间通过。
+2026-10-04 最新修复：影子控制与标记统一使用 TCP1=TCP2 局部 +Z 200mm；启动视角回正，中央遮挡面板默认收起。`Home` 回正，`Tab` 详情。[报告、截图与操作步骤](tcp_camera_fix_20261004.md)。真机新工具仍未验收，原冻结 Release 不变。
 
-## 下载复现
+启动 `D:\ChatGPT\Projects\VR\V2_servo\START_V2.cmd`。根目录只保留这一个 START；不要从历史文档恢复旧启动器混用模式。
 
-下载Release的 `-windows-public.zip` 和 `SHA256SUMS.txt`，不要只下载GitHub自动Source code ZIP。
-解压至新的D盘目录，不覆盖旧项目。在Anaconda Prompt进入解压后的V2_servo目录：
+## 启动和依赖
 
-```bat
-powershell -NoProfile -ExecutionPolicy Bypass -File development/tools/restore_frozen_environment.ps1 -VerifyOnly
-powershell -NoProfile -ExecutionPolicy Bypass -File development/tools/restore_frozen_environment.ps1 -EnvironmentPath D:\ChatGPT\Environments\v2_shadow_public
-conda activate D:\ChatGPT\Environments\v2_shadow_public
-python run_v2_app.py --check
-START_V2.cmd
-```
+1. Anaconda Prompt 输入 `conda activate jaka`，再 `cd /d D:\ChatGPT\Projects\VR\V2_servo`。
+2. 输入 `python run_v2_app.py --check`。预期 `SDK_connection_attempts: 0`、`SDK_inside_project: true`、`Player_present: true`、`ruckig_import: true`，SDK 在当前 V2 的 `vendor/jaka/`。这只查文件，不连接控制器。
+3. 输入 `START_V2.cmd`，或双击同名文件。预期出现“V2 伺服遥操作 · 统一入口”。打开主窗口不连接、不使能机器人。
+4. Python 找不到时激活 jaka 后运行 `python run_v2_app.py`。Ruckig/numpy 缺失按本项目 requirements 安装；不在 jaka 安装 CAD/OCC。SDK 缺失按 `vendor/jaka/README.md` 安装相同官方版本，不能任意换 DLL 沿用旧硬件证据。
 
-安装器从包内33个精确Conda包离线创建环境，不改旧jaka。若同名环境存在，换一个新D盘路径。Python 3.12.14、numpy 2.5.2、Ruckig 0.12.2，Ruckig二进制及Pillow截图依赖在.deps。需要电脑已有Conda；Quest Link/OpenXR与显卡驱动需另行安装配置。
+## 连续大范围候选：影子模式
 
-检查预期：`SDK_connection_attempts=0`，`Player_present=true`、`ruckig_import=true`；SDK未随公开包提供是正常情况。
-点击“连续遥操作影子”，先松Grip再握持自然移动/转动，松Grip减速，摇杆点击停止；不会运动真机。
+让自然手柄动作在新连续规划链中运行，检查输入、规划和可视化；**不动真机，不要求上电/使能**。
 
-离线验证：
-```bat
-set "PYTHONPATH=%CD%\src;%CD%\.deps;%CD%;%CD%\tests"
-set OMP_NUM_THREADS=1
-set OPENBLAS_NUM_THREADS=1
-python -m unittest test_continuous_pose test_global_kinematics test_shadow_telemetry test_runtime_paths -v
-python -m v2_servo.teleop.continuous_shadow --synthetic --duration 60
-```
+2026-10-04 跟手修复：孪生状态改为每 8 ms 发布到最新槽，文字仍每 200 ms 刷新，文件写入独立线程。默认影子请求速度从 30 提至 120 mm/s，关节速度从 6 提至 30°/s，位置/姿态跟随增益从 2 提至 6；滤波保持开启。这些仅是影子参数，不能复制到真机。120 mm/s 是请求 twist 上限，经过关节 jerk 约束后的实际笛卡尔速度并非硬性保证，详见[慢与卡顿修复](shadow_response_fix_20261004.md)。
 
-Unity工程在digital_twin/unity，版本2022.3.62f3；预编译Player已包含，不必重新导入CAD。开发在新分支进行；回滚请重新解压同一Release，不覆盖当前工作目录。
+更新后先停止影子并关闭旧 Player/主窗口，再从项目根目录重新双击 START_V2.cmd，选择“连续遥操作影子”。不要启动 releases 中早期快照；无需再做历史逐轴步骤。
 
-## 已知限制
+1. 正常退出已有 V2Twin，Quest Link 连接后点“连续遥操作影子”。已有其他 Player 会拒绝抢占，请手动关闭。
+2. 预期原有场景显示“连续大范围影子运行 · 不控制真机”，主窗口显示日志目录。
+3. 初始松开右 Grip，追踪有效后握 Grip，平移/转动手柄。首次握持绑定参考点，之后相对位姿驱动规划。候选平移倍率 1.0、旋转倍率 0.5；速度受限，不要求重复毫米级逐轴动作。
+4. 松 Grip：规划减速、解绑；停稳换手位后再握不跳回旧目标。追踪丢失/超时锁停，必须重新松开再握。摇杆点击锁定软件停止，需结束任务再启动。
+5. 点“停止影子任务”，等“影子任务结束”，正常关闭 Player。最长 1 小时是本次观察时长，不是控制器每 30 秒截断。
+6. 不动先看 `status.json` 状态、Player 追踪/Grip；看 `logs/continuous_quest_*/shadow_console.log`、`data/continuous_quest_*/report.json` 的 `failure`。不关闭滤波或保护消除报错。
 
-旧数学模型对应旧Tool1。用户2026-10-04已把真实Tool1改为[0,0,200]mm、RX/RY/RZ=0；本冻结影子保留旧模型以复现体验，不可用于新的真实TCP。台下模型穿透尚无整臂碰撞限制。旋转第六轴即使TCP位于轴线上，也会改变姿态，只可能保持位置。
+反馈来自理想模拟，不能证明真机延迟、停止、碰撞安全、任务精度。本模式不实际控制 DH116。
 
-真实连续伺服、全臂/工具/手/线缆碰撞边界、实际停止距离、手部触觉与力控均未在本版本验收。公开版启动器禁用历史真机按钮；没有上传原始现场会话或厂家SDK。
+## 当前真机路径：原有局部受监督试验
 
-运动核/滤波/参数与冻结本机版本相同；公开分发只修改启动器SDK诊断与真机按钮、SDK路径和数学证据脱敏引用。差异及哈希见PUBLIC_EXPORT.json、RELEASE_MANIFEST.json。
+**2026-10-04工具变更：控制器Tool1已由用户改为[0,0,200]mm、姿态全零，而冻结模型仍为旧偏置。下面是历史入口说明，当前不得照此恢复运动；先完成新Tool1只读核对与模型/安全验收。**
 
-本项目自有代码沿用仓库许可；第三方二进制、依赖、Unity资源保留各自来源及权利，不因此自动变为MIT。请遵守THIRD_PARTY_NOTICE.md，不将本包当成厂家授权的真机系统。
+仍为 ≤10 mm / ≤30 s 的已有调试入口，不是连续大范围发布。整理目录不扩大其许可范围、不重判旧日志。
+
+1. 点“开发 / 受监督试验”，再点“现有局部真机伺服试验”，出现**单独黑色控制台**。
+2. 预检复用 H8 六轴响应与最近 H9 稳定记录，不自动补 X。文件就绪不等于运动通过；证据过期/版本不符会停止，不改日期绕过。
+3. 当前现场间隙、无人接触、急停值守满足后，在黑窗提示处输入 `READY200`，不要在聊天或 Unity 中输入。旧桥占用控制器时人工断开，程序不杀进程。
+4. 等当前状态检查、新 H1、官方模型完成，Player 出现绿色 H10，再握 Grip。等待/反馈过期时松 Grip 看黑窗，不以画面推断已停。
+5. 松 Grip 正常减速；摇杆点击或黑窗 Ctrl+C 退出软件试验；异常用实体急停。主窗口“停止影子任务”不是该真机任务停止按钮。
+6. 等黑窗确认退出伺服并保存后再关窗。没有自动返程；原始记录在 `data/h10_*/`，失败不能记通过。
+
+## 其它入口与记录
+
+| 按钮/目录 | 用途 | 排错 |
+|---|---|---|
+| Quest 只读诊断 | 追踪/按键，不连接 JAKA | 检查 Link、追踪、重复 Player |
+| 原有仿真 GUI | SIM 键盘 jog/录制回放 | GUI 内旧 Live 入口仍需原有完整部署门槛 |
+| 连续大范围真机 | 当前禁用 | 等新控制器真机时序、停止和现场碰撞边界验收 |
+| data / logs | 原始报告、Player/控制台日志、截图 | 保存完整会话名和 failure |
+| development/legacy_launchers | 旧入口不可执行文本与 SHA256 | 不作为日常入口恢复 |
+
+后续连续真机通过后在同一窗口开放，不再增加一串 START 文件。
