@@ -1,0 +1,17 @@
+build/
+install/
+log/
+.venv/
+.cache/
+.tmp/
+__pycache__/
+*.pyc
+.venv-zed/
+.ros/
+.colcon/
+outputs/releases/
+artifacts/
+quest/Library/
+quest/Temp/
+quest/Logs/
+quest/obj/

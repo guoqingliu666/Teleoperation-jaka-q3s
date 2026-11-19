@@ -1,0 +1,13 @@
+std_msgs/Header header
+string hand_name
+string bus_name
+int32 address
+int32 active_dof
+int32[] joint_ids
+float64[] angles
+float64[] angular_velocities
+int32[] positions
+int32[] position_velocities
+float64[] currents
+int32[] statuses
+int32[] alarms

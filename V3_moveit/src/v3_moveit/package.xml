@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>v3_moveit</name><version>3.1.0</version>
+  <description>JAKA S5 Quest teleoperation using upstream MoveIt Servo on Ubuntu 24.04.</description>
+  <maintainer email="local@example.invalid">V3 local integration</maintainer>
+  <license>Proprietary local integration; upstream assets retain their licenses</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <depend>rclcpp</depend><depend>rclcpp_lifecycle</depend><depend>rclpy</depend>
+  <depend>hardware_interface</depend><depend>pluginlib</depend>
+  <depend>geometry_msgs</depend><depend>sensor_msgs</depend><depend>trajectory_msgs</depend>
+  <depend>std_msgs</depend><depend>std_srvs</depend><depend>control_msgs</depend>
+  <depend>moveit_msgs</depend><depend>tf2_ros</depend><depend>shape_msgs</depend>
+  <exec_depend>ament_index_python</exec_depend><exec_depend>rosidl_runtime_py</exec_depend>
+  <depend>moveit_servo</depend><depend>moveit_ros_planning</depend><exec_depend>moveit_ros_move_group</exec_depend>
+  <exec_depend>moveit_planners_ompl</exec_depend><exec_depend>moveit_kinematics</exec_depend>
+  <exec_depend>controller_manager</exec_depend><depend>joint_trajectory_controller</depend>
+  <depend>controller_interface</depend><depend>rclcpp_action</depend><depend>moveit_core</depend><depend>ruckig</depend>
+  <exec_depend>joint_state_broadcaster</exec_depend><exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>xacro</exec_depend><exec_depend>rviz2</exec_depend>
+  <exec_depend>python3-numpy</exec_depend><exec_depend>python3-scipy</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

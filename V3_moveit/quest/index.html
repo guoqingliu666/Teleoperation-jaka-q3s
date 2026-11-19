@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V3 手柄输入</title>
+<style>body{font:20px system-ui;background:#102330;color:#edf6fa;max-width:800px;margin:40px auto;padding:24px}button{font:inherit;padding:18px 28px;border:0;border-radius:12px;background:#55d5c1;margin:12px 12px 12px 0}#stop{background:#ff846d}p{line-height:1.7}pre{white-space:pre-wrap;font:16px monospace}body.xr{background:transparent}body.xr h1,body.xr p,body.xr #start{display:none}body.xr #status{position:fixed;bottom:20px;padding:12px;background:#102330cc;border-radius:8px}body.xr #stop{position:fixed;top:20px;right:20px}</style>
+<h1>V3 手柄输入</h1><p>握住右侧 Grip 跟随，松开暂停。按右摇杆可软件停止。</p>
+<section id="overlay"><button id="start">进入透视模式</button><button id="stop">停止输入</button>
+<pre id="status">正在检查浏览器支持…</pre></section><canvas id="xr" style="width:1px;height:1px;pointer-events:none"></canvas>
+<script type="module">
+import {display} from '/input-view.js';
+const status=document.querySelector('#status'),start=document.querySelector('#start'),stop=document.querySelector('#stop');
+const entryLabel=start.textContent,stopLabel=stop.textContent;
+let current=null,sequence=0;
+const show=t=>status.textContent=t;
+start.disabled=true;
+if(!window.isSecureContext)show('需要 HTTPS 连接，当前页面不是安全来源。');
+else if(!navigator.xr)show('此浏览器没有 WebXR，请使用 Quest 内的 Meta 浏览器。');
+else try{
+ if(await navigator.xr.isSessionSupported('immersive-ar')){
+  show('正在准备透视画面…');
+  await display.ready;
+  start.disabled=false;show('可以进入透视模式。');
+ }else show('当前浏览器未提供透视模式。');
+}catch(error){show('透视画面准备失败：'+error.message);}
+
+function finish(run,message,sessionEnded=false){
+ if(current!==run)return;
+ current=null;
+ clearTimeout(run.waitHint);
+ run.socket?.close();
+ const session=run.session;
+ if(session){
+  if(!sessionEnded)session.end().catch(()=>{});
+  try{display.exit(session);}catch(error){console.warn('透视画面清理失败',error);}
+ }
+ document.body.classList.remove('xr');start.textContent=entryLabel;start.disabled=false;stop.textContent=stopLabel;show(message);
+}
+stop.onclick=()=>{if(current)finish(current,current.socket?'输入已停止。':'已取消进入透视。');};
+start.onclick=async()=>{
+ if(current||start.disabled)return;
+ const run={session:null,socket:null};current=run;start.disabled=true;start.textContent='正在进入透视…';stop.textContent='取消进入';show('正在进入 V3 透视…');
+ run.waitHint=setTimeout(()=>{if(current===run&&!run.session)show('正在等待 Quest 开启透视，请查看头显里的系统提示。');},2500);
+ try{
+  // Request presentation in the button's activation, before any network or graphics waits.
+  const session=await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['local-floor'],optionalFeatures:['layers','dom-overlay'],domOverlay:{root:document.querySelector('#overlay')}});
+  clearTimeout(run.waitHint);
+  if(current!==run){await session.end();return;}
+  run.session=session;
+  session.addEventListener('end',()=>finish(run,'已退出透视模式。',true),{once:true});
+  const space=await session.requestReferenceSpace('local-floor');
+  if(current!==run)return;
+  let sentTrackedPose=false,lastSent=0,lastLabel=0;
+  space.addEventListener('reset',()=>{
+    if(current!==run)return;
+    if(sentTrackedPose){finish(run,'追踪空间已重置，输入已停止。请重新进入透视模式。');return;}
+    // Quest may establish its floor origin during entry, before any input uses it.
+    display.resetPlacement?.();
+  });
+  const sendInput=(t,xrFrame)=>{
+    const ws=run.socket;
+    if(current!==run||!ws||ws.readyState===WebSocket.CONNECTING||t-lastSent<10)return;
+    lastSent=t;
+    const source=Array.from(session.inputSources).find(s=>s.handedness==='right');
+    const pose=session.visibilityState==='visible'&&source?.gripSpace?xrFrame.getPose(source.gripSpace,space):null;
+    const pad=source?.gamepad;
+    // W3C xr-standard：0 为扳机，1 为 Grip，3 为摇杆按键。
+    const valid=!!pose&&pad?.mapping==='xr-standard'&&pad.buttons.length>=4&&session.visibilityState==='visible';
+    const p=pose?.transform.position??{x:0,y:0,z:0},q=pose?.transform.orientation??{x:0,y:0,z:0,w:1};
+    const packet={schema:3,sequence:sequence++,unity_time_s:t/1000,source:'quest-webxr',right:{
+     connected:!!source,tracked:valid,pose_valid:valid,
+     // WebXR 右手坐标转换成旧项目已定义的 Unity 左手坐标，位置单位为米。
+     position_m:{x:p.x,y:p.y,z:-p.z},rotation_xyzw:{x:-q.x,y:-q.y,z:q.z,w:q.w},
+     grip:valid?pad.buttons[1].value:0,trigger:valid?pad.buttons[0].value:0,
+     thumbstick_click:valid?pad.buttons[3].pressed:false,stick_click_available:valid}};
+    // TCP 积压时退出，不继续发送过期手柄轨迹。
+    if(ws.readyState!==WebSocket.OPEN||ws.bufferedAmount>8192){finish(run,'手柄通道未及时发送，输入已停止。');return;}
+    ws.send(JSON.stringify(packet));
+    if(valid)sentTrackedPose=true;
+    if(t-lastLabel>=250){lastLabel=t;show(`${valid?'追踪有效':'追踪不可用'} · Grip ${packet.right.grip.toFixed(2)} · 已发送 ${sequence} 帧`);}
+  };
+  await display.enter(session,space,sendInput,error=>finish(run,'透视帧处理失败：'+error.message));
+  if(current!==run)return;
+  document.body.classList.add('xr');stop.textContent=stopLabel;show('透视已开启，正在连接手柄通道…');
+  const ws=new WebSocket(`wss://${location.host}/input`);run.socket=ws;
+  ws.onerror=()=>finish(run,'手柄输入连接失败，请检查与上位机的连接。');
+  ws.onclose=()=>finish(run,'手柄输入连接中断。');
+ }catch(error){
+  let message='进入透视失败：'+error.message;
+  if(!run.session&&error.name==='NotSupportedError')message='Quest 未能开启透视。请完全退出 Quest Browser，再重新打开 V3。';
+  if(!run.session&&error.name==='NotAllowedError')message='Quest 未授权这次透视。请在头显内重新点击进入，并查看权限提示。';
+  finish(run,message);
+ }
+};
+</script></html>

@@ -1,0 +1,11 @@
+{
+  "sources": {
+    "/home/gq/projects_lgq/灵巧手_DH116/ROS2/软件本体/hand_control_ws_lhandpro/src/hand_control_service/src/SOEM/oshw/linux/nicdrv.c": "89d9ce61f659e4ba67b91033d2c079071fbca0ce32d6b64974b67a6b27fc59f3",
+    "/home/gq/projects_lgq/灵巧手_DH116/上位机_linux/LHandProLib-API-Linux-x86_64-20261031/x86_64/lib/libLHandProLib.so": "9fa6ffb14b79af3728dc20339137e48fdd2ca46226de0728e165e55f7a6069bd",
+    "/home/gq/projects_lgq/灵巧手_DH116/上位机_linux/LHandProLib-API-Linux-x86_64-20261031/x86_64/include/LHandProLib/LHandProLib.hpp": "d8696d50a2aee13880c9568548d473ea8758013ee5df1edbf75b7566c568bc9d"
+  },
+  "adaptations": [
+    "SOEM build EC_PRIMARY_MAC=02:ec:00:00:01:16",
+    "Omit global SIOCSIFFLAGS; broadcast-only receive socket"
+  ]
+}

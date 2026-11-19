@@ -1,0 +1,15 @@
+{
+  "payload_kg": 2.276,
+  "cog_mm": [
+    -0.241,
+    -0.64,
+    70.763
+  ],
+  "tool_id": 1,
+  "refresh_payload_readback": {
+    "utc": "2026-11-19T12:17:19.958958+00:00",
+    "source": "artifacts/tooling_updates/20261119T121719_958766Z/capture.jsonl",
+    "sha256": "1ec6412cc5e000fe5614aa4a99b6671a5d440130a73cfee5bb39fa286c2a7ab3",
+    "controller_payload_written": false
+  }
+}

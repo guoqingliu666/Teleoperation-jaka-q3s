@@ -1,0 +1,22 @@
+{
+  "source": "/home/gq/projects_lgq/灵巧手_DH116/上位机_linux/LHandPro-v1.4.5-linux-x86_64-2026-10-31-11-14-7b9d225f.deb",
+  "source_sha256": "c25831a15f4b8678e2c1c7b2c5fbf8963b90abc3329ac31b38bab52d8bd69ade",
+  "method": "Read-only extraction of embedded Qt resource data from the vendor ELF; source resource files unmodified",
+  "files": {
+    "config/layout.ini": "69def7d231052820ca94a852e42a86fa60a1e19c0a9e41be7c35ac8d9e2dd034",
+    "config/params_DH116.csv": "4346ba5dea778341faab02e1d6a51e56a32d3a0f1f4557297de3b94cd519a7e5",
+    "config/params_DH116S.csv": "8985ff54e890f8b8d8511f1b8187330b5af2be341b872cc8b4a7139fb5c0400b",
+    "config/params_DH116V2.csv": "a1b7e3dd2e9461db6bfc8e40adac653761568b403ba269b4483e8a1c202ab968",
+    "config/params_sdo_address.csv": "c1682e4609fdbba1ec9aef453be46ab2840b27c4f70b9e6f21f1187b9e57789b",
+    "i18n/LHandPro_en_US.qm": "d4c40440f162e46e34489ea6d4b925c7ae3191082a73e46e68e97c0ccd7415f3",
+    "i18n/LHandPro_zh_CN.qm": "667e356820c5b45f990e4f6be1bcd0c499f29bd02317a6242e09a9518cbe9082",
+    "model/DH116/model_config.yaml": "080da799a5d9ad042c39e593a282d0e9f3e6feabfb4744dec8227415e3a7617e",
+    "model/DH116S/model_config.yaml": "fd8cfe777991f2dad1cb60c5c359780dd80c82b0e5bfcf9883e4bed94398354d",
+    "model/DH116V2/model_config.yaml": "aca4f2c6eb23f3e2be924bbc913fcc59ea6e57beb00b81b6a15dc13da8eb5adc",
+    "model/DH2116/model_config.yaml": "6c832ac1c759686e8c0f826f1bc5bbf52456532047571366d4febce95ec13db0",
+    "yaml/preset_gestures.yaml": "a7f66555148b2a8caf75382a5505a830f24af38254416c2272d1b6b814c6da5c"
+  },
+  "project_sdk_replaced": false,
+  "vendor_sdk_sha256": "9314f185db1c51223d075fd7296aa65b8b45e13a94897117f0184fe346224b97",
+  "project_sdk_sha256": "9fa6ffb14b79af3728dc20339137e48fdd2ca46226de0728e165e55f7a6069bd"
+}

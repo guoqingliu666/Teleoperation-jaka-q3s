@@ -1,0 +1,30 @@
+{
+  "review_date": "2026-11-12",
+  "note": "Sources reviewed for interfaces. Actual Ubuntu apt versions will be recorded after installation; these references are not a claim of a completed build.",
+  "sources": [
+    {
+      "repo": "moveit/moveit2",
+      "branch": "jazzy",
+      "reviewed_commit": "f11204b8a9b98e4ba28e564721d24a7077f5f969",
+      "url": "https://github.com/moveit/moveit2/tree/f11204b8a9b98e4ba28e564721d24a7077f5f969"
+    },
+    {
+      "repo": "ros-controls/ros2_control",
+      "branch": "jazzy",
+      "reviewed_commit": "aa78deb257d96e2c79efa36e47ae2e13d77d29b5",
+      "url": "https://github.com/ros-controls/ros2_control/tree/aa78deb257d96e2c79efa36e47ae2e13d77d29b5"
+    },
+    {
+      "repo": "ros-controls/ros2_controllers",
+      "branch": "jazzy",
+      "reviewed_commit": "1937ab5cb0058e5aa65b2795f9d4884a0524b160",
+      "url": "https://github.com/ros-controls/ros2_controllers/tree/1937ab5cb0058e5aa65b2795f9d4884a0524b160"
+    },
+    {
+      "repo": "JAKARobotics/jaka_ros2",
+      "branch": "main",
+      "reviewed_commit": "f6b28c6be93f289f101c6cc3907caf7804fb1a47",
+      "url": "https://github.com/JAKARobotics/jaka_ros2/tree/f6b28c6be93f289f101c6cc3907caf7804fb1a47"
+    }
+  ]
+}

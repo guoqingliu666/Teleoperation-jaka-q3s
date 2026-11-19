@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=V3 Operator
+Name[zh_CN]=V3 遥操作工作台
+Comment=JAKA S5 / Quest 3S operator console
+Exec=/usr/bin/bash -c "exec /usr/bin/bash \"\$(dirname -- \"\$1\")/START_OPERATOR.sh\"" v3 %k
+Icon=applications-engineering
+Terminal=false
+Categories=Science;Robotics;
+StartupWMClass=operator_panel.py

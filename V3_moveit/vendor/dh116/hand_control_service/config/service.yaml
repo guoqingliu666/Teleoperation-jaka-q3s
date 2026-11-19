@@ -1,0 +1,27 @@
+/**:
+  ros__parameters:
+    # Default single-hand topology. Keep compat_single_hand_services=true to
+    # preserve the old unprefixed service names.
+    bus_names: [bus0]
+    hand_names: [hand]
+    default_hand: hand
+    compat_single_hand_services: true
+    publish_realtime_state: true
+    realtime_state_publish_rate_hz: 100.0
+
+    buses:
+      bus0:
+        type: canfd
+        channel: 0
+        canfd_arb_baudrate: 1000000
+        canfd_data_baudrate: 5000000
+        rs485_baudrate: 500000
+
+    hands:
+      hand:
+        bus: bus0
+        address: 1
+        hand_type: LAC_DOF_6_S
+
+# See two_hands_same_bus.yaml and two_hands_two_buses.yaml
+# for complete two-hand examples.

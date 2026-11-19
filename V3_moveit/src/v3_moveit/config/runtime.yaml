@@ -1,0 +1,23 @@
+# 初始动态沿用旧场景的低速配置，不把它称为实机通过的新参数。
+robot_ip: 192.168.110.224
+edg_client_ip: 192.168.110.96
+edg_port: 30003
+tool_id: 1
+tcp_mm_rad: [0.0, 0.0, 200.0, 0.0, 0.0, 0.0]
+quest_bind: 0.0.0.0
+quest_port: 5006
+# Unity 左手坐标 -> 机器人基坐标。现场方向核对仍需做。
+tracking_to_robot_basis: [[0, 0, 1], [-1, 0, 0], [0, 1, 0]]
+input_timeout_s: 0.08
+feedback_timeout_s: 0.024
+safety_timeout_s: 0.15
+command_timeout_s: 0.08
+joint_velocity_rad_s: 0.17453292519943295
+joint_acceleration_rad_s2: 0.6981317007977318
+joint_jerk_rad_s3: 2.792526803190927
+tracking_error_rad: 0.08726646259971647
+velocity_tracking: true
+auto_replan: true
+planning_time_s: 0.3
+stable_target_s: 0.25
+scene: s5_only

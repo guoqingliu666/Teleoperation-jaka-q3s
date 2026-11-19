@@ -1,0 +1,119 @@
+{
+  "utc": "2026-11-19T13:03:59.300476+00:00",
+  "url": "https://localhost:8443/",
+  "page_sha256": "430e819c34488294fa38f46f77854406e3af511d7b2b32804078740f8ff9a90a",
+  "observed_original_error": "125637_574938.json",
+  "older_browser_exit": "browser_exit.json",
+  "operator_session_trace": "130252_721770.json",
+  "observer_started_session": false,
+  "observer_ended_session": false,
+  "physical_headset": "Quest 3",
+  "duration_s": 61.89,
+  "stereo_samples": 24,
+  "all_samples_stereo": true,
+  "eyes": [
+    {
+      "eye": "left",
+      "viewport": [
+        1680,
+        1760
+      ],
+      "cardCenterInside": true
+    },
+    {
+      "eye": "right",
+      "viewport": [
+        1680,
+        1760
+      ],
+      "cardCenterInside": true
+    }
+  ],
+  "passthrough_blend_mode": "alpha-blend",
+  "controller_packets": {
+    "count": 5399,
+    "tracked": 5358,
+    "grip_released": 961,
+    "sequence_increasing": true,
+    "first": 1139,
+    "last": 6537
+  },
+  "input_active_at_end": true,
+  "last_in_headset": "TCP1 跟随中",
+  "operator_feedback": [
+    {
+      "elapsed_s": 0.001,
+      "mode": "hardware",
+      "phase": "paused",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 0.404,
+      "mode": "hardware",
+      "phase": "paused",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 0.806,
+      "mode": "hardware",
+      "phase": "paused",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 1.208,
+      "mode": "hardware",
+      "phase": "tracking",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 1.61,
+      "mode": "hardware",
+      "phase": "tracking",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 2.012,
+      "mode": "hardware",
+      "phase": "tracking",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 2.414,
+      "mode": "hardware",
+      "phase": "tracking",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    },
+    {
+      "elapsed_s": 2.816,
+      "mode": "hardware",
+      "phase": "stopping",
+      "tool_id": 1,
+      "arm_fresh": true,
+      "hand_fresh": true
+    }
+  ],
+  "max_arm_feedback_excursion_rad": 3.490658504023969e-05,
+  "workstation_session": {
+    "source": "artifacts/operator_sessions/20261119T130155_185053Z/session.json",
+    "mode": "hardware",
+    "task": "teleop",
+    "exit_code": 0,
+    "canceled": true,
+    "servo_exit_confirmed": true,
+    "move_group_cleanup_warning": true
+  }
+}

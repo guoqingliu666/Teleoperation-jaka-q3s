@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>V3 遥操作</title>
+  <link rel="stylesheet" href="/xr/style.css">
+  <script type="importmap">{"imports":{"three":"/xr/vendor/three.module.js"}}</script>
+</head>
+<body>
+  <header><h1>三维工作台</h1><span id="feedback" class="badge">模型预览 · 等待反馈</span></header>
+  <main>
+    <section class="viewport"><canvas id="xr" aria-label="机械臂与灵巧手三维工作台"></canvas>
+      <div id="guide" role="status" aria-live="polite"><i aria-hidden="true"></i><div><strong>正在连接上位机</strong><small>读取遥操作状态</small></div><span class="guide-mode"></span></div>
+      <div class="legend"><span class="x">X</span><span class="y">Y</span><span class="z">Z</span><span>基坐标 · 1:1 尺寸</span><span>目标轨迹 5 s</span></div><div id="loading">正在加载本地模型…</div></section>
+    <section id="overlay">
+      <div class="controls"><button id="start" disabled>进入透视模式 · 三维工作台</button><button id="reset">工作台移到面前</button><button id="stop">停止输入</button></div>
+      <pre id="status" role="status">正在检查浏览器支持…</pre>
+      <p class="hint">头显显示「可以开始遥操作」时，握住右侧 Grip 跟随，松开暂停。按右摇杆可软件停止。</p>
+      <p class="note">虚拟工作台用于观察，尚未与真实机械臂位置对齐。“移到面前”只调整视图，不校正手柄控制方向。</p>
+      <div class="readouts"><span id="target">目标 · 等待跟随</span><span id="hand">灵巧手 · 模型预览</span></div>
+    </section>
+  </main>
+  <script type="module">/* CANONICAL_QUEST_INPUT */</script>
+</body>
+</html>

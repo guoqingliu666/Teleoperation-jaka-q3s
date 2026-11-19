@@ -1,0 +1,4 @@
+# S5 no. 2 on enp11s0. The EDG client address is Ubuntu's wired IPv4.
+robot_ip: 192.168.110.224
+edg_client_ip: 192.168.110.67
+edg_port: 30003

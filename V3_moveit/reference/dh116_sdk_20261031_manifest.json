@@ -1,0 +1,8 @@
+{
+  "source": "/home/gq/projects_lgq/灵巧手_DH116/上位机_linux/LHandProLib-API-Linux-x86_64-20261031/x86_64",
+  "files": {
+    "lib/libLHandProLib.so": "9fa6ffb14b79af3728dc20339137e48fdd2ca46226de0728e165e55f7a6069bd",
+    "include/LHandProLib/LHandProLib.h": "175605fc223084ccab14a35c5739f0731b342bd8e9dae6dbb76bc941905b1402",
+    "include/LHandProLib/LHandProLib.hpp": "d8696d50a2aee13880c9568548d473ea8758013ee5df1edbf75b7566c568bc9d"
+  }
+}

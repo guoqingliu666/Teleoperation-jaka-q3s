@@ -1,0 +1,31 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 125
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    arm_controller:
+      type: v3_moveit/SmoothTrajectoryController
+arm_controller:
+  ros__parameters:
+    joints: [joint_1, joint_2, joint_3, joint_4, joint_5, joint_6]
+    command_interfaces: [position]
+    state_interfaces: [position, velocity]
+    allow_partial_joints_goal: false
+    open_loop_control: false
+    interpolate_from_desired_state: true
+    allow_nonzero_velocity_at_trajectory_end: true
+    smooth_stop:
+      max_velocity: [0.1745329252, 0.1745329252, 0.1745329252, 0.1745329252, 0.1745329252, 0.1745329252]
+      max_acceleration: [0.6981317008, 0.6981317008, 0.6981317008, 0.6981317008, 0.6981317008, 0.6981317008]
+      max_jerk: [2.7925268032, 2.7925268032, 2.7925268032, 2.7925268032, 2.7925268032, 2.7925268032]
+      max_duration: 1.5
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 1.0
+      decelerate_on_cancel: true
+      joint_1: {max_deceleration_on_cancel: 0.6981317008}
+      joint_2: {max_deceleration_on_cancel: 0.6981317008}
+      joint_3: {max_deceleration_on_cancel: 0.6981317008}
+      joint_4: {max_deceleration_on_cancel: 0.6981317008}
+      joint_5: {max_deceleration_on_cancel: 0.6981317008}
+      joint_6: {max_deceleration_on_cancel: 0.6981317008}

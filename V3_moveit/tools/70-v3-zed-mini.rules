@@ -1,0 +1,4 @@
+# Local SDK access for the ZED Mini only. No robot/network devices.
+SUBSYSTEM=="usb", ATTR{idVendor}=="2b03", ATTR{idProduct}=="f681", GROUP="plugdev", MODE="0660", TAG+="uaccess"
+SUBSYSTEM=="usb", ATTR{idVendor}=="2b03", ATTR{idProduct}=="f682", GROUP="plugdev", MODE="0660", TAG+="uaccess"
+KERNEL=="hidraw*", ATTRS{idVendor}=="2b03", ATTRS{idProduct}=="f681", GROUP="plugdev", MODE="0660", TAG+="uaccess"

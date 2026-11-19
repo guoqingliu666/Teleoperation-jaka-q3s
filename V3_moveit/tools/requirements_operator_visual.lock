@@ -1,0 +1,4 @@
+# Install into .cache/operator/python, not the system interpreter.
+# NumPy / SciPy / PyQt5 come from existing Ubuntu packages.
+pyqtgraph==0.13.4
+PyOpenGL==3.1.10

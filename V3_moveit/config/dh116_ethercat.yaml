@@ -1,0 +1,21 @@
+# Prepared for the vendor service. Not automatically launched by the panel.
+# The local feedback adapter selects the exact physical interface name.
+/**:
+  ros__parameters:
+    bus_names: [bus0]
+    hand_names: [hand]
+    default_hand: hand
+    compat_single_hand_services: true
+    publish_realtime_state: true
+    realtime_state_publish_rate_hz: 100.0
+    buses:
+      bus0:
+        type: ethercat
+        channel: 0
+        interface: enp11s0
+    hands:
+      hand:
+        bus: bus0
+        address: 1
+        # Standard DH116; do not inherit the vendor example's DH116S setting.
+        hand_type: LAC_DOF_6

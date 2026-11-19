@@ -1,0 +1,149 @@
+models:
+  - file: /model/DH116S/base_link.STL
+    position: [0, 0, 0]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+  - file: /model/DH116S/finger11_link.STL
+    position: [0.0193, -0.0085, 0.0344]
+    rotation: [0, 0, -90]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: z
+    drive_dir: [1, 1, 1]
+  - file: /model/DH116S/finger12_link.STL
+    parent_link: finger11_link
+    position: [-0.0025, -0.0150, 0.0067]
+    rotation: [-90.0, 15.0, 0.0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [1, 1, 1]
+  - file: /model/DH116S/finger13_link.STL
+    parent_link: finger12_link
+    position: [0, 0, 0.0405]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [1.5708, 1, 1]
+  - file: /model/DH116S/finger14_link.STL
+    parent_link: finger12_link
+    position: [0, 0, 0.0405]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: x
+    drive_dir: [1.5708, 1, 1]
+  - file: /model/DH116S/finger21_link.STL
+    position: [0.0262, 0.0047, 0.0838]
+    rotation: [0.0, -7.0, 11.0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1, 1, 1]
+  - file: /model/DH116S/finger22_link.STL
+    parent_link: finger21_link
+    position: [0.0000, -0.0035, 0.0280]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger23_link.STL
+    parent_link: finger21_link
+    position: [0.0000, -0.0035, 0.0280]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger31_link.STL
+    position: [0.0086, 0.0063, 0.0881]
+    rotation: [-8.0, -1.0, 5.0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1, 1, 1]
+  - file: /model/DH116S/finger32_link.STL
+    parent_link: finger31_link
+    position: [0, -0.0002, 0.0325]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger33_link.STL
+    parent_link: finger31_link
+    position: [0, -0.0002, 0.0325]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger41_link.STL
+    position: [-0.0087, 0.0070, 0.0876]
+    rotation: [-8.0, 2.0, 0.0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1, 1, 1]
+  - file: /model/DH116S/finger42_link.STL
+    parent_link: finger41_link
+    position: [0, 0, 0.0294]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger43_link.STL
+    parent_link: finger41_link
+    position: [0, 0, 0.0294]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger51_link.STL
+    position: [-0.0263, 0.0052, 0.0830]
+    rotation: [-5.0, 5.0, -7.0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1, 1, 1]
+  - file: /model/DH116S/finger52_link.STL
+    parent_link: finger51_link
+    position: [0, 0.0, 0.0251]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  - file: /model/DH116S/finger53_link.STL
+    parent_link: finger51_link
+    position: [0, 0.0, 0.0251]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: x
+    drive_dir: [-1.14, 1, 1]
+  # 胶皮波纹管：CPU 顶点形变。
+  #   顶点分区(蓝固定/绿形变/红锚点)、权重、形变控制参数全部来自 segmentation JSON。
+  #   红锚点区刚性跟随大拇指 finger12(含旋转)，绿区按权重弯曲+泊松收缩，蓝区固定。
+  #   几何也从 JSON 读取(绕过 assimp)以保证顶点索引与分割数据对齐。
+  #   follow_offset_pos：只平移开口(红区)此向量对准手指；绿区被拉伸跟随，蓝区不动(米)。
+  #   follow_offset_euler：手指 0° 时把胶皮绕 pivot 旋转此角度对齐手指(欧拉角,度,ZYX)。
+  #   必须放在列表末尾，避免打乱前面关节→模型索引的位置映射。
+  - file: /model/DH116S/rubber_link.STL
+    name: rubber_link
+    parent_link: base_link
+    position: [0, 0, 0]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    type: rubber
+    fixed_link: base_link
+    follow_link: finger12_link
+    segmentation: /model/DH116S/segmented_mesh_result.json
+    follow_offset_pos: [0.01, 0.022, -0.011]
+    follow_offset_euler: [0, 0, 0]

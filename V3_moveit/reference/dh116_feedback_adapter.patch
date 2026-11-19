@@ -1,0 +1,141 @@
+--- manufacturer/src/hand_control_service.cpp
++++ feedback_adapter/src/hand_control_service.cpp
+@@ -231,6 +231,7 @@
+   std::string name;
+   BusType type{BusType::Canfd};
+   int channel{0};
++  std::string interface;
+   int canfd_arb_baudrate{CANFD_ARB_BAUDRATE};
+   int canfd_data_baudrate{CANFD_DATA_BAUDRATE};
+   int rs485_baudrate{RS485_BAUDRATE};
+@@ -401,44 +402,45 @@
+ 
+     for (int joint_id = 1; joint_id <= active_dof_; ++joint_id) {
+       float angle = 0.0f;
+-      readNowAngleLocked(joint_id, &angle, nullptr);
++      if (sdk_->get_now_angle(joint_id, &angle) != HC_SDK_NS::LER_NONE || !std::isfinite(angle)) return false;
+ 
+       float angular_velocity = 0.0f;
+       if (sdk_->get_now_angular_velocity(joint_id, &angular_velocity) !=
+           HC_SDK_NS::LER_NONE) {
+-        angular_velocity = 0.0f;
++        return false;
+       }
+ 
+       int position = 0;
+       if (sdk_->get_now_position(joint_id, &position) !=
+           HC_SDK_NS::LER_NONE) {
+-        position = 0;
++        return false;
+       }
+ 
+       int position_velocity = 0;
+       if (sdk_->get_now_position_velocity(joint_id, &position_velocity) !=
+           HC_SDK_NS::LER_NONE) {
+-        position_velocity = 0;
++        return false;
+       }
+ 
+       int current = 0;
+       if (sdk_->get_now_current(joint_id, &current) !=
+           HC_SDK_NS::LER_NONE) {
+-        current = 0;
++        return false;
+       }
+ 
+       int status = -1;
+       if (sdk_->get_now_status(joint_id, &status) !=
+           HC_SDK_NS::LER_NONE) {
+-        status = -1;
++        return false;
+       }
+ 
+       int alarm = 0;
+       if (sdk_->get_now_alarm(joint_id, &alarm) !=
+           HC_SDK_NS::LER_NONE) {
+-        alarm = 0;
+-      }
+-
++        return false;
++      }
++
++      if (!std::isfinite(angular_velocity)) return false;
+       msg.joint_ids.push_back(joint_id);
+       msg.angles.push_back(static_cast<double>(angle));
+       msg.angular_velocities.push_back(static_cast<double>(angular_velocity));
+@@ -708,7 +710,11 @@
+                    config_.channel);
+       return false;
+     }
+-    if (!master_->init(config_.channel) || !master_->start()) {
++    if (config_.interface.empty()) {
++      RCLCPP_ERROR(logger, "Explicit wired interface name required for this adapter");
++      return false;
++    }
++    if (!master_->initInterface(config_.interface) || !master_->start()) {
+       RCLCPP_ERROR(logger, "[%s] EtherCAT 启动失败", name().c_str());
+       return false;
+     }
+@@ -805,7 +811,7 @@
+     createHands();
+     startBuses();
+     attachHands();
+-    registerAllServices();
++    RCLCPP_INFO(logger(), "Feedback-only adapter: motor services are not registered");
+     registerRealtimeStatePublishers();
+     reconnect_timer_ = node_->create_wall_timer(
+         std::chrono::seconds(5), [this]() { checkAndReconnect(); });
+@@ -860,6 +866,7 @@
+           "buses." + bus_name + ".type", default_type));
+       cfg.channel =
+           node_->declare_parameter<int>("buses." + bus_name + ".channel", 0);
++      cfg.interface = node_->declare_parameter<std::string>("buses." + bus_name + ".interface", "");
+       cfg.canfd_arb_baudrate = node_->declare_parameter<int>(
+           "buses." + bus_name + ".canfd_arb_baudrate", CANFD_ARB_BAUDRATE);
+       cfg.canfd_data_baudrate = node_->declare_parameter<int>(
+--- manufacturer/src/EthercatMaster.cpp
++++ feedback_adapter/src/EthercatMaster.cpp
+@@ -161,6 +161,14 @@
+   return descrptions;
+ }
+ 
++bool EthercatMaster::initInterface(const std::string& interface) {
++  for (size_t i = 0; i < interfaces_.size(); ++i) {
++    if (interfaces_[i] == interface) return init(static_cast<int>(i));
++  }
++  ECOUT << "Requested interface not in physical adapter list: " << interface << "\n";
++  return false;
++}
++
+ bool EthercatMaster::init(int index) {
+   if (index < 0 || static_cast<size_t>(index) >= interfaces_.size()) {
+     ECOUT << "Index not available\n";
+--- manufacturer/src/EthercatMaster.h
++++ feedback_adapter/src/EthercatMaster.h
+@@ -133,6 +133,7 @@
+ 
+   std::vector<std::string> scanNetworkInterfaces();
+   bool init(int index);
++  bool initInterface(const std::string& interface);
+   bool start();
+   void stop();
+   void run();  // 启动子线程（非阻塞）
+--- manufacturer/src/SOEM/oshw/linux/nicdrv.c
++++ feedback_adapter/src/SOEM/oshw/linux/nicdrv.c
+@@ -155,13 +155,9 @@
+    strcpy(ifr.ifr_name, ifname);
+    r |= ioctl(*psock, SIOCGIFINDEX, &ifr);
+    ifindex = ifr.ifr_ifindex;
+-   strcpy(ifr.ifr_name, ifname);
+-   ifr.ifr_flags = 0;
+-   /* reset flags of NIC interface */
+-   r |= ioctl(*psock, SIOCGIFFLAGS, &ifr);
+-   /* set flags of NIC interface, here promiscuous and broadcast */
+-   ifr.ifr_flags = ifr.ifr_flags | IFF_PROMISC | IFF_BROADCAST;
+-   r |= ioctl(*psock, SIOCSIFFLAGS, &ifr);
++   /* V3 feedback adapter sends/receives broadcast EtherCAT frames.
++    * Do not change NIC flags/IP/routes on the shared robot network.
++    * AF_PACKET requires CAP_NET_RAW only; no CAP_NET_ADMIN needed. */
+    /* bind socket to protocol, in this case RAW EtherCAT */
+    sll.sll_family = AF_PACKET;
+    sll.sll_ifindex = ifindex;

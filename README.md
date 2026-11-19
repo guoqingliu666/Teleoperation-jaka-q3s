@@ -1,4 +1,12 @@
-# Meta Quest 3S → JAKA S5 数字孪生与六维遥操作
+# JAKA S5 与 Meta Quest 遥操作
+
+## V3.1.0 · Ubuntu 上位机
+
+V3.1.0 使用 Ubuntu 24.04、ROS 2 Jazzy、MoveIt Servo 和 Quest 浏览器，包含 JAKA S5、DH116、ZED Mini、C922 以及工作站所用的三维模型和配置。2026 年 11 月 19 日，操作者在 2 号 JAKA S5 上完成了第一阶段真机遥操作。
+
+下载 Release 中的 `V3.1.0-ubuntu24.04.tar.zst`，解压后进入 `V3_moveit`，运行 `bash INSTALL_UBUNTU.sh` 安装，然后运行 `bash START_OPERATOR.sh` 打开上位机。[下载 V3.1.0](https://github.com/guoqingliu666/Teleoperation-jaka-q3s/releases/tag/V3.1.0) · [首次安装、现场连接与恢复](V3_moveit/docs/V3.1.0.md)
+
+## Windows / Unity 历史版本
 
 这是一套 Windows/Unity/Meta Quest 3S/JAKA S5 的研究工程。`v1.5.0` 在 V1 厂商运动规划路线中加入有界意图接纳、动态轨迹采样、自适应厂商逆解检查和深度 2 圆滑队列；不使用 `servo_j/servo_p`，V2 才研究伺服滤波。2026-09-28 已完成固定中等幅真机验收：启动 TCP 周围 10cm、相对姿态 10°、30mm/s、60mm/s²、5°/s、单条≤20mm/2°；10/10 段、9 次交接、0 次迟交接、0 次断供，操作者确认连续性良好、姿态未卡住，且无报警或异响。更高速度和全范围入口仍标为待验收候选，不能继承本次结论。灵巧手实物开合仍未放开。项目曾发生J4欠压及保护停机，见[安全事件记录](docs/安全事件_20260919_真机遥操作停用与初步调查.md)。
 

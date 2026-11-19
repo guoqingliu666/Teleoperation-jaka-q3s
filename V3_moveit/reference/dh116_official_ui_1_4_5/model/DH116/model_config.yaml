@@ -1,0 +1,129 @@
+models:
+  - file: /model/DH116/base_link.STL
+    position: [0, 0, 0]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+  - file: /model/DH116/finger11_link.STL
+    position: [0.0175, 0.0215, 0.0435]
+    rotation: [0, 0, -10]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: z
+    drive_dir: [1, 1, 1]
+  - file: /model/DH116/finger12_link.STL
+    parent_link: finger11_link
+    position: [0.0198, 0.0051, -0.0054]
+    rotation: [0, -45.0, -15.0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, 1, 1]
+  - file: /model/DH116/finger13_link.STL
+    parent_link: finger12_link
+    position: [0.0004, 0.0000, 0.0452]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, 1, 1.5708]
+  - file: /model/DH116/finger14_link.STL
+    parent_link: finger12_link
+    position: [0.0004, 0.0000, 0.0452]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: y
+    drive_dir: [1, 01, 1.5708]
+  - file: /model/DH116/finger21_link.STL
+    position: [-0.0114, 0.0319, 0.0999]
+    rotation: [2.0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1, 1]
+  - file: /model/DH116/finger22_link.STL
+    parent_link: finger21_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger23_link.STL
+    parent_link: finger21_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger31_link.STL
+    position: [-0.0127, 0.0104, 0.1035]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1, 1]
+  - file: /model/DH116/finger32_link.STL
+    parent_link: finger31_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger33_link.STL
+    parent_link: finger31_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger41_link.STL
+    position: [-0.0151, -0.0111, 0.1025]
+    rotation: [-3.0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1, 1]
+  - file: /model/DH116/finger42_link.STL
+    parent_link: finger41_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger43_link.STL
+    parent_link: finger41_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger51_link.STL
+    position: [-0.0133, -0.0322, 0.0983]
+    rotation: [-4.0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1, 1]
+  - file: /model/DH116/finger52_link.STL
+    parent_link: finger51_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#E5EAED"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]
+  - file: /model/DH116/finger53_link.STL
+    parent_link: finger51_link
+    position: [0, 0, 0.0351]
+    rotation: [0, 0, 0]
+    scale: 1
+    color: "#2A2A2A"
+    drive_axis: y
+    drive_dir: [1, -1.14, 1]

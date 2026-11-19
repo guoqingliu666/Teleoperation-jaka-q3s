@@ -1,0 +1,32 @@
+{
+  "version": "V3.1.0",
+  "os": "Ubuntu 24.04 amd64",
+  "ros": "Jazzy",
+  "clean_working_directory": true,
+  "install_script_exit": 0,
+  "panel_preview_png_size": [
+    1708,
+    1083
+  ],
+  "offline_tests": 21,
+  "fk_configurations": 65,
+  "ros_mock_smoke_passed": true,
+  "ros_fixed_servo_passed": true,
+  "ros_teardown_clean": false,
+  "earlier_mock_run": "Supervisor latched FAULT once during parallel verification. The independent full rerun passed.",
+  "simulated_browser": {
+    "chromium": true,
+    "synthetic_webxr": true,
+    "two_views": true,
+    "reentry": true,
+    "hand_fanout": true
+  },
+  "workstation_archive": "Full restore compared byte-for-byte with the frozen source directory. No differences.",
+  "hardware_field_report": "artifacts/quest_stereo_20261119/entry_result.json",
+  "zed_environment": {
+    "vendor_sdk": "5.5.1",
+    "python_api": "5.5",
+    "system": "Ubuntu 24.04 amd64",
+    "validated": "Downloaded pinned official installer, extracted SDK, installed isolated Python packages and imported cv2 and pyzed.sl; no camera capture in release check."
+  }
+}

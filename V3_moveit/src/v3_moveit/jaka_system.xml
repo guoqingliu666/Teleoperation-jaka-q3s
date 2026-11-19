@@ -1,0 +1,5 @@
+<library path="v3_jaka_system">
+  <class name="v3_moveit/JakaSystem" type="v3_moveit::JakaSystem" base_class_type="hardware_interface::SystemInterface">
+    <description>EDG joint-position interface with independent safety polling and stale-data rejection.</description>
+  </class>
+</library>

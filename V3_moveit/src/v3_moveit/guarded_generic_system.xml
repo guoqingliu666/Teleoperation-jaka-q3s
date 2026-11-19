@@ -1,0 +1,5 @@
+<library path="v3_guarded_generic_system">
+  <class name="v3_moveit/GuardedGenericSystem" type="v3_moveit::GuardedGenericSystem" base_class_type="hardware_interface::SystemInterface">
+    <description>Fake-only final write Guard audit; no robot SDK. strict=false records audit-only failures.</description>
+  </class>
+</library>

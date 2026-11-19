@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.28)
+project(v3_dh116_feedback LANGUAGES C CXX)
+set(CMAKE_CXX_STANDARD 17)
+get_filename_component(ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../.." ABSOLUTE)
+set(EC_PRIMARY_MAC "02:ec:00:00:01:16" CACHE STRING "Switch-compatible source MAC" FORCE)
+set(SOEM_BUILD_SAMPLES OFF CACHE BOOL "No motor examples" FORCE)
+add_subdirectory("${ROOT}/vendor/dh116/soem" soem)
+add_executable(v3_dh116_feedback main.cpp)
+target_include_directories(v3_dh116_feedback PRIVATE "${ROOT}/vendor/dh116/include")
+target_link_libraries(v3_dh116_feedback PRIVATE soem "${ROOT}/vendor/dh116/lib/libLHandProLib.so")
+
+add_executable(v3_dh116_vendor_motion_test vendor_motion_test.cpp "${ROOT}/vendor/dh116/motion_example/EthercatMaster.cpp")
+target_include_directories(v3_dh116_vendor_motion_test PRIVATE "${ROOT}/vendor/dh116/include/LHandProLib" "${ROOT}/vendor/dh116/motion_example")
+target_link_libraries(v3_dh116_vendor_motion_test PRIVATE soem "${ROOT}/vendor/dh116/lib/libLHandProLib.so")
+
+add_executable(v3_dh116_grasp grasp_service.cpp "${ROOT}/vendor/dh116/motion_example/EthercatMaster.cpp")
+target_include_directories(v3_dh116_grasp PRIVATE "${ROOT}/vendor/dh116/include/LHandProLib" "${ROOT}/vendor/dh116/motion_example")
+target_link_libraries(v3_dh116_grasp PRIVATE soem "${ROOT}/vendor/dh116/lib/libLHandProLib.so")
+
+include(CTest)
+if(BUILD_TESTING)
+  add_executable(v3_dh116_workspace_tests grasp_workspace_tests.cpp)
+  add_test(NAME dh116_workspace COMMAND v3_dh116_workspace_tests)
+endif()
+
+add_executable(v3_dh116_sdo_readonly sdo_readonly.cpp)
+target_link_libraries(v3_dh116_sdo_readonly PRIVATE soem)

@@ -1,0 +1,5 @@
+<library path="v3_smooth_trajectory_controller">
+  <class name="v3_moveit/SmoothTrajectoryController" type="v3_moveit::SmoothTrajectoryController" base_class_type="controller_interface::ControllerInterface">
+    <description>Upstream JTC with Ruckig cancellation from the current commanded position, velocity and acceleration.</description>
+  </class>
+</library>

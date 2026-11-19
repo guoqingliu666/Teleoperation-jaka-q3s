@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "active": 0,
+  "brightness": 100,
+  "scope_hz": 60,
+  "scope_signals": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "scope_quantity": "position",
+  "profiles": [
+    {
+      "name": "方案一",
+      "enabled": {
+        "arm": true,
+        "quest": true,
+        "hand": true,
+        "zed": true,
+        "c922": true
+      },
+      "sensor_domain": 0,
+      "hand_topic": "/hand_control/realtime_state",
+      "zed_left_topic": "/zed/zed_node/left/color/rect/image",
+      "zed_depth_topic": "/zed/zed_node/depth/depth_registered",
+      "c922_topic": "/c922/image_raw",
+      "camera_source": "local"
+    },
+    {
+      "name": "方案二",
+      "enabled": {
+        "arm": true,
+        "quest": true,
+        "hand": true,
+        "zed": true,
+        "c922": true
+      },
+      "sensor_domain": 0,
+      "hand_topic": "/hand_control/realtime_state",
+      "zed_left_topic": "/zed/zed_node/left/color/rect/image",
+      "zed_depth_topic": "/zed/zed_node/depth/depth_registered",
+      "c922_topic": "/c922/image_raw",
+      "camera_source": "local"
+    },
+    {
+      "name": "方案三",
+      "enabled": {
+        "arm": true,
+        "quest": true,
+        "hand": true,
+        "zed": true,
+        "c922": true
+      },
+      "sensor_domain": 0,
+      "hand_topic": "/hand_control/realtime_state",
+      "zed_left_topic": "/zed/zed_node/left/color/rect/image",
+      "zed_depth_topic": "/zed/zed_node/depth/depth_registered",
+      "c922_topic": "/c922/image_raw",
+      "camera_source": "local"
+    }
+  ],
+  "camera_modes": {
+    "zed": "hd1080_30",
+    "c922": "720p30"
+  }
+}

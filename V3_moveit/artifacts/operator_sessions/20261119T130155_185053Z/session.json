@@ -1,0 +1,30 @@
+{
+  "mode": "hardware",
+  "task": "teleop",
+  "events": [
+    {
+      "label": "正在启动真机遥操作。",
+      "argv": [
+        "ros2",
+        "launch",
+        "--noninteractive",
+        "v3_moveit",
+        "bringup.launch.py",
+        "mode:=hardware",
+        "runtime_config:=/home/gq/projects_lgq/V3_moveit/.cache/operator/runtime.yaml",
+        "rviz:=false",
+        "sigterm_timeout:=86400",
+        "sigkill_timeout:=86400",
+        "payload_config:=/home/gq/projects_lgq/V3_moveit/src/v3_moveit/config/payload.json"
+      ],
+      "log": "/home/gq/projects_lgq/V3_moveit/artifacts/operator_sessions/20261119T130155_185053Z/0.log",
+      "exit_code": 0,
+      "cleanup_warnings": [
+        "[ERROR] [move_group-5]: process has died [pid 169996, exit code -11, cmd '/opt/ros/jazzy/lib/moveit_ros_move_group/move_group --ros-args --params-file /home/gq/projects_lgq/V3_moveit/.tmp/launch_params_4tp4mjog --params-file /home/gq/projects_lgq/V3_moveit/.tmp/launch_params_il42fxhf --params-file /home/gq/projects_lgq/V3_moveit/.tmp/launch_params_clt7a8ry --params-file /home/gq/projects_lgq/V3_moveit/.tmp/launch_params_xksa6qd3 --params-file /home/gq/projects_lgq/V3_moveit/.tmp/launch_params__4_sjzth --params-file /home/gq/projects_lgq/V3_moveit/.tmp/launch_params_wtuns_pp']."
+      ],
+      "servo_exit_confirmed": true
+    }
+  ],
+  "exit_code": 0,
+  "canceled": true
+}

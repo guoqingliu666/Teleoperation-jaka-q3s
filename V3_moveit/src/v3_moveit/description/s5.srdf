@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="v3_s5">
+  <group name="arm">
+    <chain base_link="base_link" tip_link="tcp" />
+  </group>
+  <group_state name="reference" group="arm">
+    <joint name="joint_1" value="-0.5610825730281083" />
+    <joint name="joint_2" value="1.5856222980266734" />
+    <joint name="joint_3" value="-1.3430758018114668" />
+    <joint name="joint_4" value="1.4126046666970458" />
+    <joint name="joint_5" value="2.0086184585364566" />
+    <joint name="joint_6" value="0.5435565864742854" />
+  </group_state>
+  <disable_collisions link1="base_link" link2="Link_01" reason="Adjacent" />
+  <disable_collisions link1="Link_01" link2="Link_02" reason="Adjacent" />
+  <disable_collisions link1="Link_02" link2="Link_03" reason="Adjacent" />
+  <disable_collisions link1="Link_03" link2="Link_04" reason="Adjacent" />
+  <disable_collisions link1="Link_04" link2="Link_05" reason="Adjacent" />
+  <disable_collisions link1="Link_05" link2="Link_06" reason="Adjacent" />
+  <disable_collisions link1="Link_06" link2="tcp" reason="Adjacent" />
+</robot>

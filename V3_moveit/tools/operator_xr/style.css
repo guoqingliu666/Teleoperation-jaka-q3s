@@ -1,0 +1,41 @@
+:root{color-scheme:dark;font-family:system-ui,sans-serif;color:#e7f0f5;background:#0c151f}*{box-sizing:border-box}body{margin:0;padding:24px 32px;max-width:1600px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}.eyebrow{font-size:11px;letter-spacing:2px;color:#73cdbc}h1{font-size:30px;letter-spacing:1px;font-weight:600;margin:6px 0 0}.badge{font-size:13px;color:#edbd78;background:#2a251f;border:1px solid #584936;padding:10px 14px;border-radius:20px}.badge.live{color:#8ce8c8;background:#15332e;border-color:#2f6355}.viewport{position:relative;border:1px solid #2a3b4b;border-radius:16px;overflow:hidden;background:#111d2b;height:65vh;min-height:300px}canvas#xr{width:100%;height:100%;display:block;touch-action:none}.legend{position:absolute;bottom:18px;left:20px;display:flex;align-items:center;gap:14px;color:#98acbf;font-size:12px;pointer-events:none}.x{color:#ff5656}.y{color:#64e27d}.z{color:#5798ff}#loading{position:absolute;top:16px;left:20px;font-size:14px;color:#b9d2e5}.controls{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}button{font:inherit;font-size:15px;font-weight:600;border:1px solid #364b60;border-radius:10px;padding:13px 20px;background:#1a2b3c;color:#e6f0f6;cursor:pointer}button:hover{filter:brightness(1.2)}button:disabled{opacity:.45;cursor:wait}#start{background:#60d6ba;border-color:#60d6ba;color:#092820}#stop{color:#ffb2a4;border-color:#64453e;background:#322420}.hint,.note{font-size:13px;line-height:1.7;color:#a1b4c5;margin:8px 0}.note{color:#8396a8}.readouts{display:flex;flex-wrap:wrap;gap:24px;font:13px ui-monospace,monospace;color:#70d6c3;padding:12px 0}pre{white-space:pre-wrap;font:12px ui-monospace,monospace;color:#a8b9c7;margin:0 0 8px}body.xr{background:transparent;padding:0}body.xr header,body.xr .hint,body.xr .note,body.xr #start,body.xr .readouts{display:none}body.xr #overlay{position:fixed;bottom:20px;left:20px;max-width:650px;padding:12px 18px;background:#0c151fd9;border:1px solid #364b60;border-radius:14px}body.xr .controls{margin:0 0 10px}@media(max-width:600px){body{padding:20px 14px}header{align-items:flex-start}.badge{font-size:11px}h1{font-size:24px}.viewport{height:52vh}.legend{gap:9px;font-size:10px}button{padding:12px;font-size:14px}}
+
+#guide {
+  --signal: #e0e4ed;
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 13px 20px;
+  color: #fff;
+  background: linear-gradient(130deg, rgba(59, 65, 77, .94), rgba(28, 31, 39, .94));
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 22px;
+  box-shadow: 0 6px 22px #0003;
+  pointer-events: none;
+}
+#guide i {
+  width: 11px;
+  height: 11px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--signal) 15%, transparent);
+}
+#guide strong, #guide small {display: block;}
+#guide strong {font-size: 18px; font-weight: 600;}
+#guide small {margin-top: 3px; font-size: 13px; color: #d4d9e1;}
+.guide-mode {color: #c5ccd7; font-size: 12px; align-self: flex-start;}
+.guide-mode:empty {display: none;}
+body.xr #status {display: none;}
+body.xr #overlay {padding: 0; border: 0; background: transparent;}
+body.xr .controls {margin: 0;}
+
+/* Keep the XR drawing surface attached while the system presents it. */
+body.xr .viewport {position:fixed;inset:0;width:100vw;height:100vh;min-height:1px;background:transparent;border:0;border-radius:0;pointer-events:none;}
+body.xr .viewport > :not(canvas) {display:none;}

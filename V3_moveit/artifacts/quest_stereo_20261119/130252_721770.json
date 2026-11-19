@@ -1,0 +1,741 @@
+{
+  "utc": "2026-11-19T12:59:13.838518+00:00",
+  "physical_headset": true,
+  "starts_robot": false,
+  "tab": "53",
+  "websocket_events": [
+    [
+      "Network.webSocketCreated",
+      null
+    ],
+    [
+      "Network.webSocketHandshakeResponseReceived",
+      101
+    ]
+  ],
+  "observed_input_packets": {
+    "count": 5399,
+    "tracked": 5358,
+    "grip_released": 961,
+    "sequence_increasing": true,
+    "first": 1139,
+    "last": 6537
+  },
+  "initial": {
+    "title": "V3 遥操作",
+    "model": true,
+    "xr": false,
+    "eyes": 0,
+    "visibility": "visible",
+    "focus": false,
+    "secure": true,
+    "phase": "idle",
+    "titleCard": "等待遥操作",
+    "detail": "在上位机点击启动",
+    "startDisabled": false,
+    "status": "输入已停止。",
+    "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36"
+  },
+  "health_before": {
+    "service": "v3-quest-workbench",
+    "version": 1,
+    "visual_guidance": true,
+    "input_active": false
+  },
+  "capabilities": {
+    "ar": true,
+    "secure": true,
+    "spatialTrackingPolicy": true,
+    "sitePermission": {
+      "xr-spatial-tracking": "TypeError",
+      "augmented-reality": "TypeError",
+      "virtual-reality": "TypeError"
+    }
+  },
+  "changes": [
+    {
+      "xr": false,
+      "eyes": 0,
+      "status": "输入已停止。",
+      "phase": "idle"
+    },
+    {
+      "xr": false,
+      "eyes": 0,
+      "status": "正在进入 V3 透视…",
+      "phase": "idle"
+    }
+  ],
+  "current": {
+    "title": "V3 遥操作",
+    "model": true,
+    "xr": true,
+    "eyes": 2,
+    "visibility": "visible",
+    "focus": false,
+    "secure": true,
+    "phase": "idle",
+    "titleCard": "等待遥操作",
+    "detail": "在上位机点击启动",
+    "startDisabled": true,
+    "status": "追踪不可用 · Grip 0.00 · 已发送 1140 帧",
+    "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36"
+  },
+  "frame_sample": {
+    "presenting": true,
+    "visibility": "visible",
+    "blend": "alpha-blend",
+    "framesAdvanced": 4,
+    "features": [
+      "local",
+      "viewer",
+      "layers",
+      "webxr",
+      "local-floor"
+    ],
+    "seen": [
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": false,
+        "grip": 0
+      },
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": false,
+        "grip": 0
+      },
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": false,
+        "grip": 0
+      },
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": false,
+        "grip": 0
+      }
+    ]
+  },
+  "sustained_samples": [
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "idle",
+      "titleCard": "等待遥操作",
+      "detail": "在上位机点击启动",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 0.00 · 已发送 1387 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 2.51,
+      "frame_count": 16456
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "starting",
+      "titleCard": "正在准备",
+      "detail": "控制器就绪后会在这里提示",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 0.00 · 已发送 1591 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 5.06,
+      "frame_count": 16684
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "starting",
+      "titleCard": "正在准备",
+      "detail": "控制器就绪后会在这里提示",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 0.00 · 已发送 1819 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 7.6,
+      "frame_count": 16913
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "starting",
+      "titleCard": "正在准备",
+      "detail": "控制器就绪后会在这里提示",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 0.00 · 已发送 2049 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 10.11,
+      "frame_count": 17139
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 2267 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 12.7,
+      "frame_count": 17369
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 2491 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 15.28,
+      "frame_count": 17602
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 2731 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 17.92,
+      "frame_count": 17839
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 2949 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 20.47,
+      "frame_count": 18067
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 3148 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 23.01,
+      "frame_count": 18296
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 3390 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 25.6,
+      "frame_count": 18529
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 3610 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 28.19,
+      "frame_count": 18762
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 3832 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 30.78,
+      "frame_count": 18995
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 4050 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 33.37,
+      "frame_count": 19228
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 4272 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 35.95,
+      "frame_count": 19461
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 4489 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 38.54,
+      "frame_count": 19693
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 4710 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 41.13,
+      "frame_count": 19926
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 4955 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 43.77,
+      "frame_count": 20163
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 5176 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 46.36,
+      "frame_count": 20396
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 5398 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 48.94,
+      "frame_count": 20629
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 5622 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 51.53,
+      "frame_count": 20862
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 5847 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 54.12,
+      "frame_count": 21095
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 6065 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 56.71,
+      "frame_count": 21325
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 6284 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 59.3,
+      "frame_count": 21558
+    },
+    {
+      "title": "V3 遥操作",
+      "model": true,
+      "xr": true,
+      "eyes": 2,
+      "visibility": "visible",
+      "focus": false,
+      "secure": true,
+      "phase": "following",
+      "titleCard": "TCP1 跟随中",
+      "detail": "松开 Grip 暂停",
+      "startDisabled": true,
+      "status": "追踪有效 · Grip 1.00 · 已发送 6507 帧",
+      "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+      "elapsed_seconds": 61.89,
+      "frame_count": 21791
+    }
+  ],
+  "latest_frame_sample": {
+    "presenting": true,
+    "visibility": "visible",
+    "blend": "alpha-blend",
+    "framesAdvanced": 4,
+    "features": [
+      "local",
+      "viewer",
+      "layers",
+      "webxr",
+      "local-floor"
+    ],
+    "seen": [
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": true,
+        "grip": 1
+      },
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": true,
+        "grip": 1
+      },
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": true,
+        "grip": 1
+      },
+      {
+        "eyes": [
+          {
+            "eye": "left",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          },
+          {
+            "eye": "right",
+            "viewport": [
+              1680,
+              1760
+            ],
+            "cardCenterInside": true
+          }
+        ],
+        "visible": true,
+        "inDrawList": true,
+        "rightTracked": true,
+        "grip": 1
+      }
+    ]
+  },
+  "after": {
+    "title": "V3 遥操作",
+    "model": true,
+    "xr": true,
+    "eyes": 2,
+    "visibility": "visible",
+    "focus": false,
+    "secure": true,
+    "phase": "following",
+    "titleCard": "TCP1 跟随中",
+    "detail": "松开 Grip 暂停",
+    "startDisabled": true,
+    "status": "追踪有效 · Grip 1.00 · 已发送 6507 帧",
+    "browser": "Mozilla/5.0 (X11; Linux x86_64; Quest 3) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/150.1.0.24.52.1046134268 Chrome/150.0.7871.224 VR Safari/537.36",
+    "elapsed_seconds": 61.89,
+    "frame_count": 21791
+  },
+  "health_after": {
+    "service": "v3-quest-workbench",
+    "version": 1,
+    "visual_guidance": true,
+    "input_active": true
+  },
+  "console": [],
+  "frames_sent_during_check": 5399
+}

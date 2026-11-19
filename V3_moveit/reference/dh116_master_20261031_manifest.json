@@ -1,0 +1,8 @@
+{
+  "source": "/home/gq/projects_lgq/灵巧手_DH116/上位机_linux/LHandProLib-API-Linux-x86_64-20261031/x86_64/share/LHandProLib/examples/EtherCAT_cpp",
+  "files": {
+    "EthercatMaster.cpp": "83060d8729f8a1021e835ca44514ccb59c5e92589512fa04dd9e0f5b45ba2a1d",
+    "EthercatMaster.h": "21dfa1c6946783029218458f9255213919f49be13bc23c49ed5e64fb8abdec94",
+    "EthercatIoMapBounds.h": "49e7a046f8d133512641b9420d14a1d266027a4d111e06385b0f106e5e71e454"
+  }
+}

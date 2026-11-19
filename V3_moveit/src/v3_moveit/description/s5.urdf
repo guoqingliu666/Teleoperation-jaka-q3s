@@ -1,0 +1,695 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="v3_s5">
+  <link name="world" />
+  <link name="base_link">
+    <collision name="Link_00_contact_proxy">
+      <origin xyz="0.0002474919143690649 0.0004429513722618127 -0.0006188386026197079" rpy="-3.213072043853044e-06 2.491583435126898e-07 -1.264584898458379e-06" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f3e99e9d82b8_Link_00.stl" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_00_contact_proxy">
+      <origin xyz="0.0002474919143690649 0.0004429513722618127 -0.0006188386026197079" rpy="-3.213072043853044e-06 2.491583435126898e-07 -1.264584898458379e-06" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f3e99e9d82b8_Link_00.stl" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="Link_01">
+    <collision name="Link_01_contact_proxy">
+      <origin xyz="9.357834453540067e-05 0.0003162722104143465 1.387778780781446e-17" rpy="-2.853017422542215e-06 -1.498725977100435e-06 -1.49594488814582e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/a4ebba4b000f_Link_01.stl" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_01_contact_proxy">
+      <origin xyz="9.357834453540067e-05 0.0003162722104143465 1.387778780781446e-17" rpy="-2.853017422542215e-06 -1.498725977100435e-06 -1.49594488814582e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/a4ebba4b000f_Link_01.stl" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="Link_02">
+    <collision name="Link_02_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/4e518b57a1f2_Link_02_part_00.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/4e518b57a1f2_Link_02_part_00.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_01_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/c1d8722aeed9_Link_02_part_01.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_01_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/c1d8722aeed9_Link_02_part_01.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_02_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/503bb955187f_Link_02_part_02.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_02_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/503bb955187f_Link_02_part_02.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_03_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f166be3f7974_Link_02_part_03.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_03_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f166be3f7974_Link_02_part_03.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_04_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/522314512dbd_Link_02_part_04.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_04_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/522314512dbd_Link_02_part_04.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_05_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/6b130f28fadb_Link_02_part_05.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_05_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/6b130f28fadb_Link_02_part_05.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_06_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b43cb20de7fa_Link_02_part_06.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_06_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b43cb20de7fa_Link_02_part_06.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_07_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/987bc06416a0_Link_02_part_07.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_07_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/987bc06416a0_Link_02_part_07.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_08_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/9812fbd6342b_Link_02_part_08.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_08_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/9812fbd6342b_Link_02_part_08.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_02_part_09_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/57aac7276cc6_Link_02_part_09.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_02_part_09_contact_proxy">
+      <origin xyz="0.000211850789530732 -9.673047683805098e-05 -1.355252715606881e-19" rpy="-1.276602707630655e-06 -8.013415653262967e-07 1.451606948521793e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/57aac7276cc6_Link_02_part_09.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="Link_03">
+    <collision name="Link_03_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/c19914bde98c_Link_03_part_00.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/c19914bde98c_Link_03_part_00.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_01_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/e3a5208d80f2_Link_03_part_01.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_01_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/e3a5208d80f2_Link_03_part_01.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_02_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/095f6e8933df_Link_03_part_02.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_02_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/095f6e8933df_Link_03_part_02.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_03_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/a4df0688282b_Link_03_part_03.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_03_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/a4df0688282b_Link_03_part_03.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_04_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b22c439082e3_Link_03_part_04.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_04_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b22c439082e3_Link_03_part_04.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_05_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/7e9ac251b2d6_Link_03_part_05.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_05_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/7e9ac251b2d6_Link_03_part_05.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_06_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f904850974fb_Link_03_part_06.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_06_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f904850974fb_Link_03_part_06.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_07_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/29855bbcd36f_Link_03_part_07.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_07_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/29855bbcd36f_Link_03_part_07.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_08_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/22ae4dcc577c_Link_03_part_08.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_08_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/22ae4dcc577c_Link_03_part_08.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="Link_03_part_09_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/4cb810a566c2_Link_03_part_09.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_03_part_09_contact_proxy">
+      <origin xyz="9.375219655322065e-05 -2.105738045099503e-05 -1.897353801849633e-19" rpy="4.924579575096114e-07 -1.424558280449517e-06 -8.971042411400542e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/4cb810a566c2_Link_03_part_09.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="Link_04">
+    <collision name="Link_04_contact_proxy">
+      <origin xyz="-2.994227596642141e-05 5.789073942363832e-05 -1.387778780781446e-17" rpy="-1.32919515367234e-06 -7.107213400026069e-07 8.950014818484954e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/47a398d79c3e_Link_04.stl" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_04_contact_proxy">
+      <origin xyz="-2.994227596642141e-05 5.789073942363832e-05 -1.387778780781446e-17" rpy="-1.32919515367234e-06 -7.107213400026069e-07 8.950014818484954e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/47a398d79c3e_Link_04.stl" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="Link_05">
+    <collision name="Link_05_contact_proxy">
+      <origin xyz="4.590441563834258e-05 1.138399732358852e-05 0" rpy="3.635771795372556e-07 -2.758337635633268e-06 2.567573915320518e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/356f69b0077a_Link_05.stl" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_05_contact_proxy">
+      <origin xyz="4.590441563834258e-05 1.138399732358852e-05 0" rpy="3.635771795372556e-07 -2.758337635633268e-06 2.567573915320518e-17" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/356f69b0077a_Link_05.stl" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="Link_06">
+    <collision name="Link_06_contact_proxy">
+      <origin xyz="0.0003876747722303397 4.758758946915576e-05 5.551115123125783e-17" rpy="-3.200196046388768e-06 1.103398674873191e-06 -1.561206659149396e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/49fa9bf33d1a_Link_06.stl" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="Link_06_contact_proxy">
+      <origin xyz="0.0003876747722303397 4.758758946915576e-05 5.551115123125783e-17" rpy="-3.200196046388768e-06 1.103398674873191e-06 -1.561206659149396e-16" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/49fa9bf33d1a_Link_06.stl" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="DH_quick_change_a_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/9cd75e870ad8_DH_quick_change_a.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="DH_quick_change_a_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/9cd75e870ad8_DH_quick_change_a.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="DH_quick_change_b_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b3cb26328a77_DH_quick_change_b.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="DH_quick_change_b_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b3cb26328a77_DH_quick_change_b.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="DH_connecting_flange_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/0a1b2c24bdc4_DH_connecting_flange.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="DH_connecting_flange_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/0a1b2c24bdc4_DH_connecting_flange.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="DH_mount_adapter_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/6bf1c655ca36_DH_mount_adapter.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="DH_mount_adapter_visual">
+      <origin xyz="-0.000107806701226934 3.418886719752163e-05 -1.683228824420462e-07" rpy="-0.0002551949378034601 0.0009013703668119266 -1.570796222001798" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/6bf1c655ca36_DH_mount_adapter.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="DH_base_link_visual">
+      <origin xyz="3.056995094401625e-05 0.0001741459486573238 0.1072420626773509" rpy="-0.000944009440727811 -0.0003753903428025396 2.357643262738199" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/937889600662_DH_base_link.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="DH_base_link_visual">
+      <origin xyz="3.056995094401625e-05 0.0001741459486573238 0.1072420626773509" rpy="-0.000944009440727811 -0.0003753903428025396 2.357643262738199" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/937889600662_DH_base_link.obj" scale="1 1 1" />
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.15 0.50 0.72 1" />
+      </material>
+    </visual>
+    <collision name="DH_finger1_sweep">
+      <origin xyz="-0.02808827580263961 -0.002556489835447419 0.1505072680010373" rpy="-0.08821000944068103 -0.0003753903428025396 2.357643262738199" />
+      <geometry>
+        <sphere radius="0.10856313495324459" />
+      </geometry>
+    </collision>
+    <collision name="DH_finger2_sweep">
+      <origin xyz="-0.01438278872846415 -0.03073598765427015 0.2072374827436115" rpy="-0.05360419972936592 0.1058692917958297 2.351953414108391" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/db4969633e64_finger2_sweep.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <collision name="DH_finger3_sweep">
+      <origin xyz="0.00213596436619042 -0.01689004885253609 0.2100870293560521" rpy="-0.0009489186501021596 0.1017645639887341 2.357546508632314" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/51ae1da6b5ca_finger3_sweep.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <collision name="DH_finger4_sweep">
+      <origin xyz="0.01841549990449041 -0.002800438866760879 0.2090767055931045" rpy="0.05193270946363904 0.1411116030566963 2.364973214853488" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/5218f391e0b3_finger4_sweep.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <collision name="DH_finger5_sweep">
+      <origin xyz="0.03195919216711778 0.01361722040447813 0.2050654572900512" rpy="0.0778052750074878 0.07333606883474908 2.363384697124205" />
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/80fee17334ce_finger5_sweep.obj" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="DH_static_finger11_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/a4b7b315981c_DH_finger11_link.obj" />
+      </geometry>
+      <origin xyz="-0.0280882758026396 -0.002556489835447548 0.1505072680010373" rpy="-0.08821000944072788 -0.0003753903428020955 2.357643262738199" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger12_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/c1b34447aea6_DH_finger12_link.obj" />
+      </geometry>
+      <origin xyz="-0.04458035622822389 0.007640227742950713 0.1444918908223025" rpy="-0.151105192434061 0.9681626044101876 2.489625859368965" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger13_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/519ce852d8e5_DH_finger13_link.obj" />
+      </geometry>
+      <origin xyz="-0.07782370129982398 0.02449351727566086 0.1697078905125222" rpy="-0.150108639710115 0.9636225841912114 2.490837386718614" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger14_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/d2aa3133e598_DH_finger14_link.obj" />
+      </geometry>
+      <origin xyz="-0.07782370129982398 0.02449351727566086 0.1697078905125222" rpy="-0.150108639710115 0.9636225841912114 2.490837386718614" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger21_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/3cdb554e4353_DH_finger21_link.obj" />
+      </geometry>
+      <origin xyz="-0.01438278872846414 -0.03073598765427022 0.2072374827436116" rpy="-0.05360419972945785 0.1058692917958366 2.351953414108388" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger22_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/39ce0796d3cd_DH_finger22_link.obj" />
+      </geometry>
+      <origin xyz="-0.0183147855986615 -0.02943381804813852 0.2419915293415205" rpy="-0.05367059947410513 0.1169253690351897 2.351356126411762" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger23_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/b473636e4173_DH_finger23_link.obj" />
+      </geometry>
+      <origin xyz="-0.0183147855986615 -0.02943381804813852 0.2419915293415205" rpy="-0.05367059947410513 0.1169253690351897 2.351356126411762" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger31_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/3cdb554e4353_DH_finger31_link.obj" />
+      </geometry>
+      <origin xyz="0.002135964366190407 -0.01689004885253603 0.2100870293560523" rpy="-0.0009489186501021596 0.1017645639888027 2.357546508632314" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger32_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/bd1520c77004_DH_finger32_link.obj" />
+      </geometry>
+      <origin xyz="-0.0004050839039591897 -0.01440276809283898 0.2449059395646043" rpy="-0.0009500510288420472 0.1128365589980842 2.357535935181587" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger33_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/a97c1daf4bc1_DH_finger33_link.obj" />
+      </geometry>
+      <origin xyz="-0.0004050839039591897 -0.01440276809283898 0.2449059395646043" rpy="-0.0009500510288420472 0.1128365589980842 2.357535935181587" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger41_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/3cdb554e4353_DH_finger41_link.obj" />
+      </geometry>
+      <origin xyz="0.01841549990449035 -0.002800438866760934 0.2090767055931046" rpy="0.05193270946372008 0.1411116030566393 2.364973214853499" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger42_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/f971628b9b64_DH_finger42_link.obj" />
+      </geometry>
+      <origin xyz="0.01618242026227132 0.001940894429121468 0.2436820969922618" rpy="0.0520176690735068 0.1521686516750591 2.365554662491641" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger43_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/ceab5173ad1b_DH_finger43_link.obj" />
+      </geometry>
+      <origin xyz="0.01618242026227132 0.001940894429121468 0.2436820969922618" rpy="0.0520176690735068 0.1521686516750591 2.365554662491641" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger51_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/3cdb554e4353_DH_finger51_link.obj" />
+      </geometry>
+      <origin xyz="0.03195919216711782 0.01361722040447798 0.2050654572900512" rpy="0.07780527500739565 0.07333606883472576 2.36338469712419" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger52_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/d88bd1a6eb5d_DH_finger52_link.obj" />
+      </geometry>
+      <origin xyz="0.03204813649188921 0.01734945923780782 0.2398657803086393" rpy="0.07787330855884145 0.0843745440787449 2.364248343103593" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+    <visual name="DH_static_finger53_link">
+      <geometry>
+        <mesh filename="package://v3_moveit/description/meshes/1f1270d5e89c_DH_finger53_link.obj" />
+      </geometry>
+      <origin xyz="0.03204813649188921 0.01734945923780782 0.2398657803086393" rpy="0.07787330855884145 0.0843745440787449 2.364248343103593" />
+      <material name="hand_dark">
+        <color rgba=".18 .20 .24 1" />
+      </material>
+    </visual>
+  </link>
+  <link name="tcp" />
+  <joint name="world_to_base" type="fixed">
+    <parent link="world" />
+    <child link="base_link" />
+    <origin xyz="0.0974177915671947 0.01747825642001924 0.5656188371177316" rpy="3.213071728458416e-06 -2.491624064848708e-07 1.570797591378995" />
+  </joint>
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link" />
+    <child link="Link_01" />
+    <origin xyz="9.941416310320723e-10 -1.548547343967515e-10 0.1195311621208228" rpy="-3.747002206560519e-12 -4.163336342344337e-13 -1.264582360161252e-06" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.2482787221397" upper="6.2482787221397" velocity="0.17453292519943295" effort="2000" />
+  </joint>
+  <joint name="joint_2" type="revolute">
+    <parent link="Link_01" />
+    <child link="Link_02" />
+    <origin xyz="-4.03095233034297e-10 0.0003162720920776329 -0.000213261717534996" rpy="1.570796326801005 -1.498727007165357e-06 1.264582173754469e-06" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.4486232791552935" upper="4.590215932745087" velocity="0.17453292519943295" effort="2000" />
+  </joint>
+  <joint name="joint_3" type="revolute">
+    <parent link="Link_02" />
+    <child link="Link_03" />
+    <origin xyz="0.4302111992825957 -6.447694258719227e-07 3.445768732872529e-07" rpy="2.442424207300821e-12 7.562839243746566e-12 -8.620881786121983e-13" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.01941960595019" upper="3.01941960595019" velocity="0.17453292519943295" effort="2000" />
+  </joint>
+  <joint name="joint_4" type="revolute">
+    <parent link="Link_03" />
+    <child link="Link_04" />
+    <origin xyz="0.3686557993859052 -5.525151589580446e-07 -0.1139994750501442" rpy="2.554910414056484e-12 2.092548356813495e-12 8.22980572581686e-13" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.4486232791552935" upper="4.590215932745087" velocity="0.17453292519943295" effort="2000" />
+  </joint>
+  <joint name="joint_5" type="revolute">
+    <parent link="Link_04" />
+    <child link="Link_05" />
+    <origin xyz="-1.700191180065147e-07 -0.113442109305097 -3.659724495354288e-05" rpy="1.570796326787623 -7.107190820310194e-07 -1.498730510030022e-06" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.2482787221397" upper="6.2482787221397" velocity="0.17453292519943295" effort="2000" />
+  </joint>
+  <joint name="joint_6" type="revolute">
+    <parent link="Link_05" />
+    <child link="Link_06" />
+    <origin xyz="8.351704522402414e-08 0.1175113841219034 0.0004990905054793604" rpy="-1.570796326794746 -2.758340576836105e-06 -7.107167872000275e-07" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.2482787221397" upper="6.2482787221397" velocity="0.17453292519943295" effort="2000" />
+  </joint>
+  <joint name="tool_mount" type="fixed">
+    <parent link="Link_06" />
+    <child link="tcp" />
+    <origin xyz="3.942113302457528e-11 9.972656034307192e-11 0.2003096153473426" rpy="1.506297784342536e-13 1.953992523340276e-13 2.758337959651886e-06" />
+  </joint>
+</robot>

@@ -1,0 +1,26 @@
+/**:
+  ros__parameters:
+    bus_names: [bus0]
+    hand_names: [left, right]
+    default_hand: left
+    compat_single_hand_services: true
+    publish_realtime_state: true
+    realtime_state_publish_rate_hz: 100.0
+
+    buses:
+      bus0:
+        type: canfd
+        channel: 0
+        canfd_arb_baudrate: 1000000
+        canfd_data_baudrate: 5000000
+        rs485_baudrate: 500000
+
+    hands:
+      left:
+        bus: bus0
+        address: 1
+        hand_type: LAC_DOF_6
+      right:
+        bus: bus0
+        address: 2
+        hand_type: LAC_DOF_6

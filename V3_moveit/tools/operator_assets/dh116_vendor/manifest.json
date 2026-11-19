@@ -1,0 +1,40 @@
+{
+  "source": "/opt/lhandpro/LHandPro",
+  "version": "1.4.5",
+  "source_sha256": "5bcc05cc1f5fba5f138e029018118b22b7fb1fe6da81d401f13327a93fc9735f",
+  "attribution": "Leadshine LHandPro bundled artwork; reused unchanged in the local V3 workbench at user request.",
+  "files": {
+    "ring_flex.png": {
+      "qrc": "/icon/ring_flex.png",
+      "sha256": "b2fcd5c2036cdffbae72ebd8c1019772a057c36ba09085d7d5a3647e7e1bfaf2"
+    },
+    "pinky_flex.png": {
+      "qrc": "/icon/pinky_flex.png",
+      "sha256": "a0132de4fded946acc5ee21182b5767befeea45fdbc2730d1c74ddef8a9b356c"
+    },
+    "thumb_abd.png": {
+      "qrc": "/icon/thumb_abd.png",
+      "sha256": "73459e4b005a8f0dcdd2ab7e4e3d8b0442e8c5763ee6f7edfc67d03f8ae291b9"
+    },
+    "middle_flex.png": {
+      "qrc": "/icon/middle_flex.png",
+      "sha256": "11d6ebe998e5f295aa26ea2f6a6956165b76a9a767c8939c197ff3d2e2039c9a"
+    },
+    "index_flex.png": {
+      "qrc": "/icon/index_flex.png",
+      "sha256": "f7d2aa6d3ef7610d5177eb78e7d82fe837e8de7c2d091eacd59837b0361d3cc7"
+    },
+    "thumb_flex.png": {
+      "qrc": "/icon/thumb_flex.png",
+      "sha256": "0df3864f7b260dee290043f51936188b0fc1dab9a718eb2a23b5edfdb8fb895c"
+    },
+    "hand_mask_116.png": {
+      "qrc": "/images/hand_mask_116.png",
+      "sha256": "e30e944cc98e60cf1f81dbf7c13900215f83ada39c26f3c671071d5fcbd17578"
+    },
+    "hand_116.png": {
+      "qrc": "/images/hand_116.png",
+      "sha256": "bfc1697b23171cc97e8a07cf01586fabad4581da5a6459bebf09630bab45b756"
+    }
+  }
+}

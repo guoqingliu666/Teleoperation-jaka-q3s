@@ -1,0 +1,5 @@
+<library path="v3_path_ruckig_retiming">
+  <class name="v3_moveit/PathRuckigRetiming" type="v3_moveit::PathRuckigRetiming" base_class_type="planning_interface::PlanningResponseAdapter">
+    <description>Retimes the original OMPL polyline with phase-synchronized Ruckig curves. Retained corners and both endpoints are stationary; exact jerk-switch knots and an 8 ms grid are exported for JTC interpolation. Follow with ValidateSolution.</description>
+  </class>
+</library>

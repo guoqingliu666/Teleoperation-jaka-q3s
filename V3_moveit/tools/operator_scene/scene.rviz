@@ -1,0 +1,15 @@
+Panels: []
+Visualization Manager:
+  Class: ""
+  Displays: []
+  Global Options:
+    Background Color: 19; 26; 38
+    Fixed Frame: world
+    Frame Rate: 30
+  Tools: []
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+Window Geometry:
+  Width: 880
+  Height: 410

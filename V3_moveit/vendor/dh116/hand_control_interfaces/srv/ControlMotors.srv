@@ -1,0 +1,20 @@
+int32 position_1
+int32 velocity_1
+int32 current_1
+int32 position_2
+int32 velocity_2
+int32 current_2
+int32 position_3
+int32 velocity_3
+int32 current_3
+int32 position_4
+int32 velocity_4
+int32 current_4
+int32 position_5
+int32 velocity_5
+int32 current_5
+int32 position_6
+int32 velocity_6
+int32 current_6
+---
+int32 result

@@ -1,0 +1,4 @@
+Cython==3.3.1
+numpy==2.5.4
+opencv-python-headless==4.14.0.94
+pyzed @ https://download.stereolabs.com/zedsdk/5.5/whl/linux_x86_64/pyzed-5.5-cp312-cp312-linux_x86_64.whl#sha256=caca5e62be91271a17aeccb86d177a963af1a73f6554e92ff83171bda740742c

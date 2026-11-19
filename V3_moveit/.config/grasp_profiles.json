@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "active": 0,
+  "profiles": [
+    {
+      "name": "逐指握拳（已验收）",
+      "style": "包覆",
+      "open": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "closed": [
+        10000,
+        10000,
+        9000,
+        5500,
+        10000,
+        10000
+      ],
+      "velocity": 2000,
+      "current_per_mille": 900,
+      "normal_force_limit_n": 3.0,
+      "force_limit_enabled": true,
+      "manual_velocity": [
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000
+      ],
+      "manual_current": [
+        600,
+        600,
+        600,
+        600,
+        600,
+        600
+      ],
+      "duration_ms": 1000,
+      "tracks": [
+        {
+          "start_ms": 0,
+          "end_ms": 1000,
+          "force_n": 3.0
+        },
+        {
+          "start_ms": 0,
+          "end_ms": 1000,
+          "force_n": 3.0
+        },
+        {
+          "start_ms": 0,
+          "end_ms": 1000,
+          "force_n": 3.0
+        },
+        {
+          "start_ms": 0,
+          "end_ms": 1000,
+          "force_n": 3.0
+        },
+        {
+          "start_ms": 0,
+          "end_ms": 1000,
+          "force_n": 3.0
+        }
+      ],
+      "close_percent": 58.5,
+      "open_percent": 68.0
+    },
+    {
+      "name": "方案二",
+      "style": "两指捏",
+      "open": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "closed": [
+        1500,
+        1500,
+        1500,
+        0,
+        0,
+        0
+      ],
+      "velocity": 2000,
+      "current_per_mille": 200,
+      "normal_force_limit_n": 3.0,
+      "force_limit_enabled": true
+    },
+    {
+      "name": "方案三",
+      "style": "三指捏",
+      "open": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "closed": [
+        1500,
+        1500,
+        1500,
+        1500,
+        0,
+        0
+      ],
+      "velocity": 2000,
+      "current_per_mille": 200,
+      "normal_force_limit_n": 3.0,
+      "force_limit_enabled": true
+    }
+  ]
+}
