@@ -4,6 +4,7 @@
   "ros": "Jazzy",
   "clean_working_directory": true,
   "install_script_exit": 0,
+  "desktop_menu": "Generated an entry in a fresh XDG data directory, validated the desktop file, and launched a test entry with GNOME gio from a project path containing a space.",
   "panel_preview_png_size": [
     1708,
     1083

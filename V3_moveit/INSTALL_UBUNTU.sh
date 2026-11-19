@@ -24,7 +24,7 @@ if [[ ! -f /opt/ros/jazzy/setup.bash && ! -f /usr/share/ros-apt-source/ros2.sour
 fi
 packages=(
   build-essential cmake openssl python3-aiohttp python3-colcon-common-extensions
-  qtbase5-dev python3-pip libcap2-bin pkexec ros-jazzy-rosidl-default-generators
+  qtbase5-dev python3-gi python3-pip libcap2-bin pkexec ros-jazzy-rosidl-default-generators
   python3-numpy python3-scipy python3-yaml python3-pytest python3-pyqt5 python3-pyqt5.qtsvg python3-opencv python3-venv zstd curl adb
   ros-jazzy-ros-base ros-jazzy-moveit ros-jazzy-moveit-servo
   ros-jazzy-ros2-control ros-jazzy-ros2-controllers ros-jazzy-ament-cmake-python
@@ -56,5 +56,6 @@ bash tools/build_dh116.sh
 bash tools/build_operator_arm.sh
 bash tools/build_operator_display.sh
 bash tools/build_dh116_driver.sh
+python3 tools/install_operator_shortcut.py
 dpkg-query -W 'ros-jazzy-moveit*' 'ros-jazzy-joint-trajectory-controller' 'ros-jazzy-controller-manager' > artifacts/installed_versions.txt
 printf '\n安装和编译完成。运行 bash START_OPERATOR.sh 打开 V3 上位机。\n'

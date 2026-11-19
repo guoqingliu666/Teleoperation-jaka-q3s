@@ -10,6 +10,7 @@ __pycache__/
 .ros/
 .colcon/
 outputs/releases/
+/V3-Operator.desktop
 artifacts/
 quest/Library/
 quest/Temp/
